@@ -1,8 +1,7 @@
 const LoginPage = () => {
   return (
     <>
-      <Outlet />
-      <Footer />
+      <div>login</div>
     </>
   );
 };

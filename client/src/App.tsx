@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import styled from 'styled-components';
 import './App.css';
@@ -5,6 +6,7 @@ import './App.css';
 import Layout from './pages/Layout';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
+
 
 function App() {
   const router = createBrowserRouter([
@@ -29,9 +31,7 @@ function App() {
   return (
     <>
       <StyledContainer>
-        <IsLoginProvider>
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
-        </IsLoginProvider>
       </StyledContainer>
     </>
   );
