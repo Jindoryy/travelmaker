@@ -47,11 +47,12 @@ function App() {
 }
 
 const StyledContainer = styled.div`
+  background-color: #fff;
   position: relative;
   margin-left: auto;
   margin-right: auto;
   max-width: 412px;
-  height: 100vh;
+  height: 90vh;
   overscroll-behavior-y: none;
   touch-action: none;
 `;
