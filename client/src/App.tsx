@@ -7,7 +7,6 @@ import Layout from './pages/Layout';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 
-
 function App() {
   const router = createBrowserRouter([
     {
@@ -30,7 +29,7 @@ function App() {
   ]);
   return (
     <>
-      <ThemeProvider theme={darkTheme}> {/* 라이트 테마 또는 다크 테마를 선택하여 사용 */}
+      <ThemeProvider theme={darkTheme}>
         <StyledContainer>
           <RouterProvider router={router} />
         </StyledContainer>
@@ -40,11 +39,12 @@ function App() {
 }
 
 const StyledContainer = styled.div`
+  background-color: #fff;
   position: relative;
   margin-left: auto;
   margin-right: auto;
   max-width: 412px;
-  height: 100vh;
+  height: 90vh;
   overscroll-behavior-y: none;
   touch-action: none;
 `;
