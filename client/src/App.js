@@ -1,11 +1,11 @@
-import "./App.css";
-import Footer from "./components/FooterNav";
+import './App.css';
+import Profile from './components/MainProfile';
 
 function App() {
   return (
     <div>
       Hello World
-      <Footer />
+      <Profile />
     </div>
   );
 }
