@@ -4,6 +4,7 @@ import './App.css';
 
 import Layout from './pages/Layout';
 import LoginPage from './pages/user/LoginPage';
+import ErrorPage from './pages/ErrorPage';
 
 function App() {
   const router = createBrowserRouter([
