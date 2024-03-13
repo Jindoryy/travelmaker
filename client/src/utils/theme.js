@@ -1,20 +1,18 @@
 const theme = {
-    // 이 코드는 예시
     light: {
-        main: '#0B132B',
-        sub: '#D9E3E2',
-        maintext: '#0B132B',
-        subtext: '#D9E3E2',
-        point: '#E06A4E',
+      main: "#566CF0",
+      sub: "#FFC65C",
+      maintext: "#000000",
+      subtext: "#FFFFFF",
+      point: "#DB5DD4",
     },
     dark: {
-        main: '#0B132B',
-        sub: '#0B132B',
-        maintext: '#0B132B',
-        subtext: '#0B132B',
-        point: '#E06A4E',
-    }
-}
-
-
-export default theme;
+      main: "#566CF0",
+      sub: "#FFC65C",
+      maintext: "#000000",
+      subtext: "#FFFFFF",
+      point: "#DB5DD4",
+    },
+  };
+  
+  export default theme;
