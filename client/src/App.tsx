@@ -1,6 +1,6 @@
-import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './utils/theme';
 import './App.css';
 
 import Layout from './pages/Layout';
@@ -30,9 +30,11 @@ function App() {
   ]);
   return (
     <>
-      <StyledContainer>
-          <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
-      </StyledContainer>
+      <ThemeProvider theme={darkTheme}> {/* 라이트 테마 또는 다크 테마를 선택하여 사용 */}
+        <StyledContainer>
+          <RouterProvider router={router} />
+        </StyledContainer>
+      </ThemeProvider>
     </>
   );
 }
