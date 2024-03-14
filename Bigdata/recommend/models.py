@@ -18,3 +18,13 @@ class Destination(models.Model):
 
     class Meta:
         db_table = 'destination'
+
+class Like(models.Model):
+    LIKE_ID = models.AutoField(primary_key=True)
+    DESTINATION_ID = models.IntegerField()
+    USER_ID = models.IntegerField()
+    FLAG = models.BooleanField()
+    FEATURE = models.CharField(max_length=1000)
+
+    class Meta:
+        db_table = 'like'

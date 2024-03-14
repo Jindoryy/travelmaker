@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views import db_dataframe_test1
+from . import views
 
 urlpatterns = [
-    path('pandas1/', db_dataframe_test1),
+    path('getDestination/', views.getDestination),
+    path('getLike/<int:user_id>/', views.getLike),
+    path('recommend_destinations/<int:user_id>/', views.recommend_destinations),
 ]
 
