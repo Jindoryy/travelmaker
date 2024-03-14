@@ -1,24 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-interface ProfileProps {
-  isLoggedIn: boolean;
-}
-
-const StyledProfileContainer = styled.div`
-  background-color: #fbb0b0;
-  color: #000;
-  padding: 10px;
-  text-align: center;
-  border-radius: 20px;
-`;
-
-const StyledProfileImage = styled.img`
-  max-width: 100%;
-  height: auto;
-`;
-
-const Profile = (props: ProfileProps) => {
+const Profile = () => {
   const [userState, setUserState] = useState<'beforeCourse' | 'beforeTravel' | 'onTravel'>(
     'beforeCourse',
   );
@@ -55,5 +38,32 @@ const Profile = (props: ProfileProps) => {
     </StyledProfileContainer>
   );
 };
+
+const StyledProfileContainer = styled.div`
+  background-color: #fbb0b0;
+  color: #000;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 20px;
+`;
+
+const StyledProfileContainerScrolled = styled.div`
+  background-color: #ccc;
+  color: #000;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 20px;
+`;
+
+const StyledProfileImage = styled.img`
+  max-width: 100%;
+  height: auto;
+`;
+const StyledProfileImageScrolled = styled.img`
+  max-width: 100%;
+  height: 100px;
+`;
 
 export default Profile;
