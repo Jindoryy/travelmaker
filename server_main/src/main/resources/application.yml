@@ -4,3 +4,6 @@ spring:
       - optional:file:.env[.properties]
   profiles:
     active: db, security
+
+server:
+  port: 8081
