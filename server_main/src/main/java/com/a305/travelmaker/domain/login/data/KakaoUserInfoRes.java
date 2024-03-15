@@ -11,6 +11,7 @@ public class KakaoUserInfoRes {
 
     @Getter
     static public class KakaoAccount {
+
         private String email;
         private Profile profile;
 

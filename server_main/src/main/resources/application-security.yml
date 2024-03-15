@@ -5,5 +5,5 @@ oauth2:
     token-validity-in-seconds: 86400
   provider:
     kakao:
-      client-id: ${KAKAO_CLIENT_ID}
+      client-rest-key: ${KAKAO_CLIENT_REST_KEY}
       client-secret: ${KAKAO_CLIENT_SECRET}
