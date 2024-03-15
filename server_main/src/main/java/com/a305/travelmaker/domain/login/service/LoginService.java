@@ -2,6 +2,10 @@ package com.a305.travelmaker.domain.login.service;
 
 import com.a305.travelmaker.domain.login.data.KakaoOauthTokenRes;
 import com.a305.travelmaker.domain.login.data.KakaoUserInfoRes;
+import com.a305.travelmaker.domain.login.domain.RefreshToken;
+import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
+import com.a305.travelmaker.domain.user.domain.User;
+import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +23,9 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class LoginService {
 
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
-
     private final RestTemplate restTemplate;
 
     private final String GRANT_TYPE = "authorization_code";
@@ -81,4 +86,25 @@ public class LoginService {
         return gson.fromJson(response.getBody(), KakaoUserInfoRes.class);
     }
 
+    public User accountCheck(KakaoUserInfoRes userinfo) {
+        User loginUser = userRepository.findByKakaoId(userinfo.getId());
+        if(loginUser == null){
+            //User 객체 Builder로 생성
+            loginUser = User.builder()
+                    .tag(0000)// 임시값 추후 tag 로직 추가해서 수정
+                    .kakaoId(userinfo.getId())
+                    .nickname(userinfo.getKakao_account().getProfile().getNickname())
+                    .email(userinfo.getKakao_account().getEmail())
+                    .profileUrl(userinfo.getKakao_account().getProfile().getProfile_image_url())
+                    .build();
+            userRepository.save(loginUser);
+        }
+        return loginUser;
+    }
+
+    public void SaveRefreshToken(User user, String token, long tokenExpiredSecond) {
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUserRefreshToken(user, token, tokenExpiredSecond);
+        refreshTokenRepository.save(refreshToken);
+    }
 }
