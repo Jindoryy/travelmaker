@@ -5,6 +5,7 @@ import com.a305.travelmaker.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,12 +15,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column(nullable = false)
+    private Long kakaoId;
 
     // 사용자 태그를 저장하는 필드
     @Column(nullable = false)
@@ -39,5 +44,6 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private UserStatus status = UserStatus.BEFORE_COURSE;
 }

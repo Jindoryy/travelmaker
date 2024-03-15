@@ -7,12 +7,10 @@ import com.a305.travelmaker.domain.user.domain.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import java.security.Key;
 import java.util.Date;
 import java.sql.Timestamp;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +67,8 @@ public class TokenProvider {
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken)
+                .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
