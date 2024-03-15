@@ -17,7 +17,7 @@ class Destination(models.Model):
     IMG_URL = models.CharField(max_length=100, default='img')
 
     class Meta:
-        db_table = 'destination'
+        db_table = 'DESTINATION'
 
 class Like(models.Model):
     LIKE_ID = models.AutoField(primary_key=True)
@@ -27,4 +27,4 @@ class Like(models.Model):
     FEATURE = models.CharField(max_length=1000)
 
     class Meta:
-        db_table = 'like'
+        db_table = 'LIKE'
