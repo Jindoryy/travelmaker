@@ -3,4 +3,7 @@ spring:
     import:
       - optional:file:.env[.properties]
   profiles:
-    active: db, security
+    active: db, security, swagger
+
+server:
+  port: 8081
