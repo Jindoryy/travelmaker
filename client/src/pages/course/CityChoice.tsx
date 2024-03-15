@@ -139,7 +139,7 @@ const CityChoice = () => {
           <CityLine></CityLine>
           <CityTypography>{cityList[activeStep].label}</CityTypography>
         </CityPaper>
-        <SwipeableViews
+        {/* <SwipeableViews
           axis={themes.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={activeStep}
           onChangeIndex={handleStepChange}
@@ -154,7 +154,7 @@ const CityChoice = () => {
               ) : null}
             </div>
           ))}
-        </SwipeableViews>
+        </SwipeableViews> */}
         <ChooseButton disableRipple onClick={() => choiceButton(cityList[activeStep].label)}>
           선택
         </ChooseButton>

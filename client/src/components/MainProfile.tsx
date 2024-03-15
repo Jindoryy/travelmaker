@@ -31,7 +31,8 @@ const Profile = () => {
   return (
     <StyledProfileContainer>
       <StyledProfileImage src={getProfileImage()} alt="Profile" />
-      <p>{getProfileContent()}</p>
+      <StyledProfileContent>{getProfileContent()}</StyledProfileContent>
+      <br />
       <button onClick={() => setUserState('beforeCourse')}>코스전</button>
       <button onClick={() => setUserState('beforeTravel')}>코스후,여행전</button>
       <button onClick={() => setUserState('onTravel')}>여행중</button>
@@ -40,7 +41,7 @@ const Profile = () => {
 };
 
 const StyledProfileContainer = styled.div`
-  background-color: #fbb0b0;
+  background-color: white;
   color: #000;
   padding: 10px;
   margin: 10px;
@@ -55,6 +56,11 @@ const StyledProfileContainerScrolled = styled.div`
   margin: 10px;
   text-align: center;
   border-radius: 20px;
+`;
+
+const StyledProfileContent = styled.p`
+  font-size: 20px; /* 폰트 크기를 키웁니다. */
+  font-weight: bold;
 `;
 
 const StyledProfileImage = styled.img`

@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import Checkbox from '@mui/material/Checkbox';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
+import { pink } from '@mui/material/colors';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -8,69 +12,143 @@ interface DogImg {
 }
 
 export default function Dogs(): JSX.Element {
-  const [page, setPage] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [dogImgArr, setDogImgArr] = useState<DogImg[]>([]);
+  const [pageLeft, setPageLeft] = useState<number>(0);
+  const [pageRight, setPageRight] = useState<number>(0);
+  const [isLoadingLeft, setIsLoadingLeft] = useState<boolean>(false);
+  const [isLoadingRight, setIsLoadingRight] = useState<boolean>(false);
+  const [dogImgArrLeft, setDogImgArrLeft] = useState<DogImg[]>([]);
+  const [dogImgArrRight, setDogImgArrRight] = useState<DogImg[]>([]);
 
-  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+  const handleObserverLeft = (entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
-    if (target.isIntersecting && !isLoading) {
-      setPage((prevPage) => prevPage + 1);
+    if (target.isIntersecting && !isLoadingLeft) {
+      setPageLeft((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handleObserverRight = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting && !isLoadingRight) {
+      setPageRight((prevPage) => prevPage + 1);
     }
   };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, {
+    const observerLeft = new IntersectionObserver(handleObserverLeft, {
       threshold: 0,
     });
-    const observerTarget = document.getElementById('observer');
-    if (observerTarget) {
-      observer.observe(observerTarget);
+    const observerTargetLeft = document.getElementById('observerLeft');
+    if (observerTargetLeft) {
+      observerLeft.observe(observerTargetLeft);
+    }
+
+    const observerRight = new IntersectionObserver(handleObserverRight, {
+      threshold: 0,
+    });
+    const observerTargetRight = document.getElementById('observerRight');
+    if (observerTargetRight) {
+      observerRight.observe(observerTargetRight);
     }
   }, []);
 
   useEffect(() => {
-    fetchData();
-  }, [page]);
+    fetchDataLeft();
+  }, [pageLeft]);
 
-  const fetchData = async () => {
-    setIsLoading(true);
+  useEffect(() => {
+    fetchDataRight();
+  }, [pageRight]);
+
+  const fetchDataLeft = async () => {
+    setIsLoadingLeft(true);
     try {
-      const API_URL = `https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${page}&limit=10`;
-      const response = await axios.get(API_URL);
+      const API_URL_LEFT = `https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageLeft}&limit=5`;
+      const response = await axios.get(API_URL_LEFT);
       const newData = response.data.map((dogImg: { id: string; url: string }) => ({
         id: dogImg.id,
         dogUrl: dogImg.url,
       })) as DogImg[];
-      setDogImgArr((prevData) => [...prevData, ...newData]);
+      setDogImgArrLeft((prevData) => [...prevData, ...newData]);
     } catch (error) {
       console.log(error);
     }
-    setIsLoading(false);
+    setIsLoadingLeft(false);
   };
 
+  const fetchDataRight = async () => {
+    setIsLoadingRight(true);
+    try {
+      const API_URL_RIGHT = `https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageRight}&limit=5`;
+      const response = await axios.get(API_URL_RIGHT);
+      const newData = response.data.map((dogImg: { id: string; url: string }) => ({
+        id: dogImg.id,
+        dogUrl: dogImg.url,
+      })) as DogImg[];
+      setDogImgArrRight((prevData) => [...prevData, ...newData]);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoadingRight(false);
+  };
+
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
   return (
-    <DogImagesContainer>
-      {dogImgArr.map((dogImg, index) => (
-        <DogImageCard key={dogImg.id}>
-          <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
-          <p>cute_{dogImg.id}</p>
-        </DogImageCard>
-      ))}
-      {isLoading && <p>Loading...</p>}
-      <div id="observer" style={{ height: '10px' }}></div>
-    </DogImagesContainer>
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <DogImagesContainer>
+        {dogImgArrLeft.map((dogImg, index) => (
+          <DogImageCard key={dogImg.id}>
+            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
+            <StyledCheckbox
+              {...label}
+              sx={{
+                '&.Mui-checked': {
+                  color: pink[600],
+                },
+              }}
+              icon={<FavoriteBorder />}
+              checkedIcon={<Favorite />}
+            />
+          </DogImageCard>
+        ))}
+        {isLoadingLeft && <p>Loading...</p>}
+        <div id="observerLeft" style={{ height: '10px' }}></div>
+      </DogImagesContainer>
+      <DogImagesContainer>
+        {dogImgArrRight.map((dogImg, index) => (
+          <DogImageCard key={dogImg.id}>
+            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
+            <StyledCheckbox
+              {...label}
+              sx={{
+                '&.Mui-checked': {
+                  color: pink[600],
+                },
+              }}
+              icon={<FavoriteBorder />}
+              checkedIcon={<Favorite />}
+            />
+          </DogImageCard>
+        ))}
+        {isLoadingRight && <p>Loading...</p>}
+        <div id="observerRight" style={{ height: '10px' }}></div>
+      </DogImagesContainer>
+    </div>
   );
 }
 
 const DogImagesContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 한 줄에 두 개의 열 설정 */
-  gap: 20px; /* 그리드 아이템 간격 설정 */
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 20px;
+  /* padding: 10px; */
+  margin: 10px;
+  width: 45%;
 `;
 
 const DogImageCard = styled.div`
-  border: 1px solid #ccc;
+  position: relative;
   padding: 10px;
   text-align: center;
 
@@ -78,4 +156,10 @@ const DogImageCard = styled.div`
     max-width: 100%;
     height: auto;
   }
+`;
+
+const StyledCheckbox = styled(Checkbox)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
 `;
