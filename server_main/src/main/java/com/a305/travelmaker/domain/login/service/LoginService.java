@@ -50,7 +50,8 @@ public class LoginService {
 //        params.add("client_secret", CLIENT_SECRET);
         params.add("code", code);
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params,
+            headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
             TOKEN_URL, // https://{요청할 서버 주소}
@@ -88,15 +89,15 @@ public class LoginService {
 
     public User accountCheck(KakaoUserInfoRes userinfo) {
         User loginUser = userRepository.findByKakaoId(userinfo.getId());
-        if(loginUser == null){
+        if (loginUser == null) {
             //User 객체 Builder로 생성
             loginUser = User.builder()
-                    .tag(0000)// 임시값 추후 tag 로직 추가해서 수정
-                    .kakaoId(userinfo.getId())
-                    .nickname(userinfo.getKakao_account().getProfile().getNickname())
-                    .email(userinfo.getKakao_account().getEmail())
-                    .profileUrl(userinfo.getKakao_account().getProfile().getProfile_image_url())
-                    .build();
+                .tag(0000)// 임시값 추후 tag 로직 추가해서 수정
+                .kakaoId(userinfo.getId())
+                .nickname(userinfo.getKakao_account().getProfile().getNickname())
+                .email(userinfo.getKakao_account().getEmail())
+                .profileUrl(userinfo.getKakao_account().getProfile().getProfile_image_url())
+                .build();
             userRepository.save(loginUser);
         }
         return loginUser;

@@ -31,10 +31,12 @@ public class LoginController {
     public SuccessResponse<OauthTokenRes> getAccessToken(@RequestBody CodeDTO codeDTO) {
         String code = codeDTO.getCode();
         KakaoOauthTokenRes oauthTokenData = loginService.getTokenValidation(code);
-        KakaoUserInfoRes kakaoUserInfoRes = loginService.getUserInfo(oauthTokenData.getAccess_token());
+        KakaoUserInfoRes kakaoUserInfoRes = loginService.getUserInfo(
+            oauthTokenData.getAccess_token());
         User user = loginService.accountCheck(kakaoUserInfoRes);
         OauthTokenRes oauthTokenRes = tokenProvider.generateTokenDto(user);
-        loginService.SaveRefreshToken(user, oauthTokenRes.getRefreshToken(), oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
+        loginService.SaveRefreshToken(user, oauthTokenRes.getRefreshToken(),
+            oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
         return new SuccessResponse<>(oauthTokenRes);
     }
 
