@@ -2,8 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
-
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import CourseCard from '../../components/CourseCard';
 
 import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -11,14 +10,23 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 const BoxContainer = styled(Box)`
-  max-width: 400px;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: auto;
 `;
+
+const CourseMap = styled.div`
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+`;
+
 const TravelHeader = styled.div`
   width: 90%;
   height: 50px;
@@ -47,6 +55,29 @@ const HeaderDate = styled.div`
 const TravelMap = styled.div`
   width: 100%;
 `;
+
+const EditBody = styled.div`
+  width: 90%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const EditButton = styled(Button)`
+  && {
+    border: none;
+    font-family: 'Pretendard';
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+  }
+`;
+const CourseBody = styled.div`
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 const BeforeConfirm = () => {
   return (
     <StyledEngineProvider>
@@ -54,13 +85,23 @@ const BeforeConfirm = () => {
         <div>
           <HeaderTabs />
         </div>
-        <TravelHeader>
-          <HeaderTitle>대구</HeaderTitle>
-          <HeaderDate>2024.02.15 ~ 2024.02.18</HeaderDate>
-        </TravelHeader>
-        <TravelMap id="map">
-          <KakaoMap />
-        </TravelMap>
+        <CourseMap>
+          <TravelHeader>
+            <HeaderTitle>대구</HeaderTitle>
+            <HeaderDate>2024.02.15 ~ 2024.02.18</HeaderDate>
+          </TravelHeader>
+          <TravelMap id="map">
+            <KakaoMap />
+          </TravelMap>
+        </CourseMap>
+        <EditBody>
+          <EditButton disableRipple>편집</EditButton>
+        </EditBody>
+        <CourseBody>
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+        </CourseBody>
       </BoxContainer>
     </StyledEngineProvider>
   );

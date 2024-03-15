@@ -60,7 +60,7 @@ const StyledContainer = styled.div`
   max-width: 412px;
   height: 90vh;
   overscroll-behavior-y: none;
-  touch-action: none;
+  /* touch-action: none; */
 `;
 
 export default App;
