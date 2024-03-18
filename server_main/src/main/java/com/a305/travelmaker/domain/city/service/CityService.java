@@ -14,14 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class CityService {
 
-  private final CityRepository cityDao;
-  private final FileService fileApplication;
+  private final CityRepository cityRepository;
+  private final FileService fileService;
 
   // 시 리스트 조회
   public List<CityResponse> findCityList() {
 
     List<CityResponse> cityResponses = new ArrayList<>();
-    List<City> cities = cityDao.findAll();
+    List<City> cities = cityRepository.findAll();
 
     for (City city : cities) {
       CityResponse response = CityResponse.builder()
@@ -37,11 +37,11 @@ public class CityService {
   // 시 데이터 저장 (테스트 용)
   public void saveCity(MultipartFile file, String name) {
 
-    String imgUrl = fileApplication.uploadFile(file);
+    String imgUrl = fileService.uploadFile(file);
 
-    cityDao.save(City.builder()
-            .name(name)
-            .imgUrl(imgUrl)
-            .build());
+    cityRepository.save(City.builder()
+        .name(name)
+        .imgUrl(imgUrl)
+        .build());
   }
 }

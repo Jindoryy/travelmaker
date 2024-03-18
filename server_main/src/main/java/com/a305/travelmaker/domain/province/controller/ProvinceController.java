@@ -20,13 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Province", description = "도 API")
 public class ProvinceController {
 
-  private final ProvinceService provinceApplication;
+  private final ProvinceService provinceService;
 
   @Operation(summary = "도 리스트 조회", description = "도 리스트를 조회한다.")
   @GetMapping("/list")
   public SuccessResponse<List<ProvinceResponse>> getProvinceList() {
 
-    return new SuccessResponse<>(provinceApplication.findProvinceList());
+    return new SuccessResponse<>(provinceService.findProvinceList());
   }
 
   @Operation(summary = "도 데이터 입력 (테스트)", description = "도 데이터 입력")
@@ -35,6 +35,6 @@ public class ProvinceController {
       @RequestParam MultipartFile file,
       @RequestParam String name) {
 
-    provinceApplication.saveProvince(file, name);
+    provinceService.saveProvince(file, name);
   }
 }

@@ -1,8 +1,8 @@
 package com.a305.travelmaker.domain.province.service;
 
-import com.a305.travelmaker.domain.province.repository.ProvinceRepository;
-import com.a305.travelmaker.domain.province.entity.Province;
 import com.a305.travelmaker.domain.province.dto.ProvinceResponse;
+import com.a305.travelmaker.domain.province.entity.Province;
+import com.a305.travelmaker.domain.province.repository.ProvinceRepository;
 import com.a305.travelmaker.global.util.FileService;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ProvinceService {
 
-  private final ProvinceRepository provinceDao;
-  private final FileService fileApplication;
+  private final ProvinceRepository provinceRepository;
+  private final FileService fileService;
 
   // 도 리스트 조회
   public List<ProvinceResponse> findProvinceList() {
 
     List<ProvinceResponse> provinceResponses = new ArrayList<>();
-    List<Province> provinces = provinceDao.findAll();
+    List<Province> provinces = provinceRepository.findAll();
 
     for (Province province : provinces) {
       ProvinceResponse response = ProvinceResponse.builder()
@@ -37,11 +37,11 @@ public class ProvinceService {
   // 도 데이터 저장 (테스트 용)
   public void saveProvince(MultipartFile file, String name) {
 
-    String imgUrl = fileApplication.uploadFile(file);
+    String imgUrl = fileService.uploadFile(file);
 
-    provinceDao.save(Province.builder()
-            .name(name)
-            .imgUrl(imgUrl)
-            .build());
+    provinceRepository.save(Province.builder()
+        .name(name)
+        .imgUrl(imgUrl)
+        .build());
   }
 }
