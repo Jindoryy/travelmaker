@@ -4,6 +4,27 @@ import styled from 'styled-components';
 import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 
+const CourseCard = ({ course, spotToSpot }: any) => {
+  useEffect(() => {}, [course]);
+  return (
+    <CardContainer>
+      <NumberCircle>
+        <CircleImage src={course.markerImage} />
+      </NumberCircle>
+      <CardBox>
+        <CardDetail>
+          <DetailDesc>
+            <DetailCategory>{course.destinationCategory}</DetailCategory>
+            <DetailTitle>{course.destinationName}</DetailTitle>
+          </DetailDesc>
+          {spotToSpot ? <DetailTime>예상추정시간: 약 {spotToSpot}분</DetailTime> : <></>}
+        </CardDetail>
+        <CardImage src={course.destinationPath}></CardImage>
+      </CardBox>
+    </CardContainer>
+  );
+};
+
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -89,25 +110,5 @@ const CardImage = styled.img`
   height: 80px;
   border-radius: 10px;
 `;
-const CourseCard = ({ course, spotToSpot }: any) => {
-  useEffect(() => {}, [course]);
-  return (
-    <CardContainer>
-      <NumberCircle>
-        <CircleImage src={course.markerImage} />
-      </NumberCircle>
-      <CardBox>
-        <CardDetail>
-          <DetailDesc>
-            <DetailCategory>{course.destinationCategory}</DetailCategory>
-            <DetailTitle>{course.destinationName}</DetailTitle>
-          </DetailDesc>
-          {spotToSpot ? <DetailTime>예상추정시간: 약 {spotToSpot}분</DetailTime> : <></>}
-        </CardDetail>
-        <CardImage src={course.destinationPath}></CardImage>
-      </CardBox>
-    </CardContainer>
-  );
-};
 
 export default CourseCard;

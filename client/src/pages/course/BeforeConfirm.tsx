@@ -9,76 +9,6 @@ import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-const BoxContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-`;
-
-const CourseMap = styled.div`
-  max-width: 400px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-`;
-
-const TravelHeader = styled.div`
-  width: 90%;
-  height: 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 5px;
-  padding: 5px;
-  font-family: 'Pretendard';
-`;
-
-const HeaderTitle = styled.div`
-  width: 100%;
-  font-size: 20px;
-  font-weight: bold;
-  padding: 2px;
-`;
-
-const HeaderDate = styled.div`
-  width: 100%;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 2px;
-`;
-
-const TravelMap = styled.div`
-  width: 100%;
-`;
-
-const EditBody = styled.div`
-  width: 90%;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const EditButton = styled(Button)`
-  && {
-    border: none;
-    font-family: 'Pretendard';
-    font-size: 16px;
-    font-weight: bold;
-    color: black;
-  }
-`;
-const CourseBody = styled.div`
-  width: 95%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
 // 시 이름, 날짜는 선택한거 기반으로 가져다 쓰기
 const travelInfo = {
   city: '대구',
@@ -237,5 +167,75 @@ const BeforeConfirm = () => {
     </StyledEngineProvider>
   );
 };
+
+const BoxContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+`;
+
+const CourseMap = styled.div`
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+`;
+
+const TravelHeader = styled.div`
+  width: 90%;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 5px;
+  padding: 5px;
+  font-family: 'Pretendard';
+`;
+
+const HeaderTitle = styled.div`
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 2px;
+`;
+
+const HeaderDate = styled.div`
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 2px;
+`;
+
+const TravelMap = styled.div`
+  width: 100%;
+`;
+
+const EditBody = styled.div`
+  width: 90%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const EditButton = styled(Button)`
+  && {
+    border: none;
+    font-family: 'Pretendard';
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+  }
+`;
+const CourseBody = styled.div`
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default BeforeConfirm;

@@ -2,6 +2,21 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 
+const HeaderTabs = ({ selectedTab, onTabChange, size }: any) => {
+  const buttons = Array.from({ length: size }, (_, index) => (
+    <OneButton
+      disableRipple
+      key={index}
+      onClick={() => onTabChange(index + 1)}
+      className={selectedTab === index + 1 ? 'active' : ''}
+    >
+      {index + 1}일차
+    </OneButton>
+  ));
+
+  return <HeaderButtons disableRipple>{buttons}</HeaderButtons>;
+};
+
 const HeaderButtons = styled(Button)`
   && {
     display: flex;
@@ -32,20 +47,5 @@ const OneButton = styled(Button)`
     }
   }
 `;
-
-const HeaderTabs = ({ selectedTab, onTabChange, size }: any) => {
-  const buttons = Array.from({ length: size }, (_, index) => (
-    <OneButton
-      disableRipple
-      key={index}
-      onClick={() => onTabChange(index + 1)}
-      className={selectedTab === index + 1 ? 'active' : ''}
-    >
-      {index + 1}일차
-    </OneButton>
-  ));
-
-  return <HeaderButtons disableRipple>{buttons}</HeaderButtons>;
-};
 
 export default HeaderTabs;
