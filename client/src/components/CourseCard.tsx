@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -50,6 +50,8 @@ const CardDetail = styled(Box)`
   }
 `;
 
+const DetailDesc = styled(Box)``;
+
 const DetailCategory = styled(Box)`
   && {
     width: 90%;
@@ -87,19 +89,22 @@ const CardImage = styled.img`
   height: 80px;
   border-radius: 10px;
 `;
-const CourseCard = () => {
+const CourseCard = ({ course, spotToSpot }: any) => {
+  useEffect(() => {}, [course]);
   return (
     <CardContainer>
       <NumberCircle>
-        <CircleImage src={require('../assets/image/marker/pinkmarker1.png')} />
+        <CircleImage src={course.markerImage} />
       </NumberCircle>
       <CardBox>
         <CardDetail>
-          <DetailCategory>명소</DetailCategory>
-          <DetailTitle>수성못</DetailTitle>
-          <DetailTime>예상추정시간: 12분</DetailTime>
+          <DetailDesc>
+            <DetailCategory>{course.destinationCategory}</DetailCategory>
+            <DetailTitle>{course.destinationName}</DetailTitle>
+          </DetailDesc>
+          {spotToSpot ? <DetailTime>예상추정시간: 약 {spotToSpot}분</DetailTime> : <></>}
         </CardDetail>
-        <CardImage src={require('../assets/image/강릉시.jpg')}></CardImage>
+        <CardImage src={course.destinationPath}></CardImage>
       </CardBox>
     </CardContainer>
   );
