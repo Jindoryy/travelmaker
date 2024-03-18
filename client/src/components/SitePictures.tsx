@@ -91,17 +91,58 @@ export default function Dogs(): JSX.Element {
     setIsLoadingRight(false);
   };
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleCardClick = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <DogImagesContainer>
+        <FlipContainer>
+          <Card isFlipped={isFlipped} onClick={handleCardClick}>
+            <Front>
+              <StyledCheckbox
+                {...label}
+                sx={{
+                  color: pink[600],
+                  '&.Mui-checked': {
+                    color: pink[600],
+                  },
+                }}
+                icon={<FavoriteBorder />}
+                checkedIcon={<Favorite />}
+              />
+              <img src="/img/강릉시.jpg" />
+            </Front>
+            <Back>
+              <StyledCheckbox
+                {...label}
+                sx={{
+                  color: pink[600],
+                  '&.Mui-checked': {
+                    color: pink[600],
+                  },
+                }}
+                icon={<FavoriteBorder />}
+                checkedIcon={<Favorite />}
+              />
+              <BackText>
+                남산서울타워 서울특별시 용산구 남산공원길 105 도심 속 로맨틱 아일랜드로 입지를
+                굳힌 남산서울타워는 예로부터 백년해로의 길지로 널리 알려져있다.
+              </BackText>
+            </Back>
+          </Card>
+        </FlipContainer>
         {dogImgArrLeft.map((dogImg, index) => (
           <DogImageCard key={dogImg.id}>
-            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
             <StyledCheckbox
               {...label}
               sx={{
+                color: pink[600],
                 '&.Mui-checked': {
                   color: pink[600],
                 },
@@ -109,6 +150,7 @@ export default function Dogs(): JSX.Element {
               icon={<FavoriteBorder />}
               checkedIcon={<Favorite />}
             />
+            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
           </DogImageCard>
         ))}
         {isLoadingLeft && <p>Loading...</p>}
@@ -117,10 +159,10 @@ export default function Dogs(): JSX.Element {
       <DogImagesContainer>
         {dogImgArrRight.map((dogImg, index) => (
           <DogImageCard key={dogImg.id}>
-            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
             <StyledCheckbox
               {...label}
               sx={{
+                color: pink[600],
                 '&.Mui-checked': {
                   color: pink[600],
                 },
@@ -128,6 +170,7 @@ export default function Dogs(): JSX.Element {
               icon={<FavoriteBorder />}
               checkedIcon={<Favorite />}
             />
+            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
           </DogImageCard>
         ))}
         {isLoadingRight && <p>Loading...</p>}
@@ -149,17 +192,74 @@ const DogImagesContainer = styled.div`
 
 const DogImageCard = styled.div`
   position: relative;
-  padding: 10px;
+  /* padding: 10px; */
+  margin-top: -10px;
+  margin-bottom: -10px;
   text-align: center;
 
   img {
     max-width: 100%;
     height: auto;
+    border-radius: 5px;
   }
+`;
+
+const FlipContainer = styled.div`
+  width: 100%;
+  height: auto;
+  perspective: 1100px;
+  margin-bottom: 40px;
+`;
+
+const Card = styled.div<{ isFlipped: boolean }>`
+  width: 165px;
+  height: 200px;
+  position: relative;
+  transition: 0.4s;
+  transform-style: preserve-3d;
+
+  ${({ isFlipped }) =>
+    isFlipped &&
+    `
+    transform: rotateY(180deg);
+  `}
+`;
+
+const Front = styled.div`
+  position: absolute;
+  margin-top: -10px;
+  width: 100%;
+  height: 100%;
+  /* background: red; */
+  backface-visibility: hidden;
+  text-align: center;
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+`;
+
+const Back = styled.div`
+  position: absolute;
+  margin-top: 30px;
+  width: 100%;
+  height: 100%;
+  background: lightgrey;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  display: flex;
+  /* justify-content: center; */
+  /* align-items: center; */
+`;
+
+const BackText = styled.p`
+  font-size: 16px;
+  color: black;
 `;
 
 const StyledCheckbox = styled(Checkbox)`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 40px;
+  right: -60px;
 `;
