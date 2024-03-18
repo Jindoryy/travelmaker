@@ -1,7 +1,7 @@
 package com.a305.travelmaker.domain.city.controller;
 
-import com.a305.travelmaker.domain.city.service.CityService;
 import com.a305.travelmaker.domain.city.dto.CityResponse;
+import com.a305.travelmaker.domain.city.service.CityService;
 import com.a305.travelmaker.global.common.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,13 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "City", description = "시 API")
 public class CityController {
 
-  private final CityService cityApplication;
+  private final CityService cityService;
 
   @Operation(summary = "시 리스트 조회", description = "시 리스트를 조회한다.")
   @GetMapping("/list")
   public SuccessResponse<List<CityResponse>> getCityList() {
 
-    return new SuccessResponse<>(cityApplication.findCityList());
+    return new SuccessResponse<>(cityService.findCityList());
   }
 
   @Operation(summary = "시 데이터 입력 (테스트)", description = "시 데이터 입력")
@@ -35,6 +35,6 @@ public class CityController {
       @RequestParam MultipartFile file,
       @RequestParam String name) {
 
-    cityApplication.saveCity(file, name);
+    cityService.saveCity(file, name);
   }
 }
