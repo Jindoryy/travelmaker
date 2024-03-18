@@ -1,10 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-const Profile = () => {
-  const [userState, setUserState] = useState<'beforeCourse' | 'beforeTravel' | 'onTravel'>(
-    'beforeCourse',
-  );
+type UserState = 'beforeCourse' | 'beforeTravel' | 'onTravel';
+
+const Profile: React.FC = () => {
+  const [userState, setUserState] = useState<UserState>('beforeCourse');
+
+  useEffect(() => {
+    const states: UserState[] = ['beforeCourse', 'beforeTravel', 'onTravel'];
+    const randomIndex = Math.floor(Math.random() * states.length);
+    setUserState(states[randomIndex]);
+  }, []);
 
   const getProfileContent = () => {
     switch (userState) {
@@ -33,9 +39,9 @@ const Profile = () => {
       <StyledProfileImage src={getProfileImage()} alt="Profile" />
       <StyledProfileContent>{getProfileContent()}</StyledProfileContent>
       <br />
-      <button onClick={() => setUserState('beforeCourse')}>코스전</button>
+      {/* <button onClick={() => setUserState('beforeCourse')}>코스전</button>
       <button onClick={() => setUserState('beforeTravel')}>코스후,여행전</button>
-      <button onClick={() => setUserState('onTravel')}>여행중</button>
+      <button onClick={() => setUserState('onTravel')}>여행중</button> */}
     </StyledProfileContainer>
   );
 };
@@ -46,16 +52,7 @@ const StyledProfileContainer = styled.div`
   padding: 10px;
   margin: 10px;
   text-align: center;
-  border-radius: 20px;
-`;
-
-const StyledProfileContainerScrolled = styled.div`
-  background-color: #ccc;
-  color: #000;
-  padding: 10px;
-  margin: 10px;
-  text-align: center;
-  border-radius: 20px;
+  border-radius: 15px;
 `;
 
 const StyledProfileContent = styled.p`
@@ -66,10 +63,6 @@ const StyledProfileContent = styled.p`
 const StyledProfileImage = styled.img`
   max-width: 100%;
   height: auto;
-`;
-const StyledProfileImageScrolled = styled.img`
-  max-width: 100%;
-  height: 100px;
 `;
 
 export default Profile;
