@@ -88,8 +88,8 @@ DATABASES = {
         'NAME': 'traveltest',
         'USER': 'root',
         'PASSWORD': 'ssafy',
-        'HOST': 'localhost',
-        # 'HOST': 'j10a305.p.ssafy.io',
+        # 'HOST': 'localhost',
+        'HOST': 'j10a305.p.ssafy.io',
         'PORT': '3306',
     }
 }

@@ -9,10 +9,106 @@ from collections import defaultdict
 from itertools import combinations
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MultiLabelBinarizer
-from surprise import Dataset, Reader, KNNBasic
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from surprise import Dataset, Reader, KNNBasic, SVD
+from surprise.model_selection import train_test_split
+from surprise.accuracy import rmse
 
-from recommend.models import Destination,Like
-from recommend.serializers import DestinationSerializer,LikeSerializer
+from recommend.models import Destination,Like, DestinationCopy, Category, LikeCopy
+from recommend.serializers import DestinationSerializer,LikeSerializer, DestinationCopySerializer, CategorySerializer, LikeCopySerializer
+
+###########################################################################################
+# 3주차 테스트 코드
+
+################################# cbf recommend_like ######################################
+@api_view(['GET'])
+def recommend_like(request, user_id):
+    # 사용자가 좋아요를 누른 장소의 특성을 가져오기
+    user_likes = LikeCopy.objects.filter(USER_ID=user_id, FLAG=True)
+    user_features = []
+    for like in user_likes:
+        destination = DestinationCopy.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
+        if destination:
+            user_features.extend(destination.FEATURE.split(','))
+
+    # 각 특성의 빈도 계산
+    feature_counter = Counter(user_features)
+
+    # 가장 많이 등장한 특성 추출 (최대 10개까지)
+    top_features = [feature for feature, _ in feature_counter.most_common(20)]
+
+    # 가장 많이 등장한 특성들을 가지고 있는 장소 찾기
+    similar_destinations = []
+    for feature in top_features:
+        destinations_with_feature = DestinationCopy.objects.filter(FEATURE__contains=feature)
+        similar_destinations.extend(destinations_with_feature)
+
+    # 중복 제거
+    similar_destinations = list(set(similar_destinations))
+
+    # 유사한 장소 중 사용자가 이미 좋아요를 누른 장소 제외
+    user_liked_destination_ids = [like.DESTINATION_ID for like in user_likes]
+    similar_destinations = [destination for destination in similar_destinations if destination.DESTINATION_ID not in user_liked_destination_ids]
+
+    # 최대한 비슷한 장소로 30개를 채워주기
+    if len(similar_destinations) < 30:
+        remaining_recommendations = 30 - len(similar_destinations)
+        # 비슷한 장소를 추가로 찾아서 추천 목록에 추가
+        more_similar_destinations = DestinationCopy.objects.exclude(DESTINATION_ID__in=user_liked_destination_ids).exclude(pk__in=[d.pk for d in similar_destinations])[:remaining_recommendations]
+        similar_destinations.extend(more_similar_destinations)
+    
+    # 추천 결과를 직렬화
+    serializer = DestinationCopySerializer(similar_destinations, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+#################
+@api_view(['GET'])
+def getDestinationCopy(request):
+    # 목적지 정보를 모두 가져옵니다.
+    destination = DestinationCopy.objects.all()
+    destination_serializer = DestinationCopySerializer(destination, many=True)
+    destination_data = destination_serializer.data
+    
+    # 기능을 카테고리 이름으로 매핑하여 목적지 데이터에 추가합니다.
+    for dest in destination_data:
+        feature_codes = dest['FEATURE'].split(',')  # 여러 기능 코드를 분리합니다.
+        categories = []
+        for code in feature_codes:
+            try:
+                feature = Category.objects.get(CATEGORY_CODE=code.strip())  # 코드로 카테고리를 가져옵니다.
+                categories.append(feature.CATEGORY_NAME)
+            except Category.DoesNotExist:
+                categories.append("알 수 없음")  # 카테고리를 찾을 수 없는 경우 처리
+        dest['CATEGORIES'] = categories  # 목적지 데이터에 새로운 키 'CATEGORIES'를 추가합니다.
+    
+    # Pandas DataFrame으로 변환하여 출력합니다.
+    destination_df = pd.DataFrame(destination_data)
+    print(destination_df.head())  # 처음 5개의 행을 출력합니다.
+
+    return Response(destination_data)
+
+@api_view(['GET'])
+def getCategory(request):
+    category = Category.objects.all()
+    category_serializer = CategorySerializer(category, many=True)
+    category_df = pd.DataFrame(list(category.values()))
+    print(category_df.head())
+    return Response(category_serializer.data)
+
+@api_view(['GET'])
+def getLikeCopy(request, user_id):
+    if not LikeCopy.objects.filter(USER_ID=user_id).exists():
+        return Response({"message": "아이디없음"})
+    
+    # 유저가 like를 누른 목록을 가져옵니다.
+    user_likes = LikeCopy.objects.filter(USER_ID=user_id, FLAG=True)
+    like_serializer = LikeCopySerializer(user_likes, many=True)
+    return Response(like_serializer.data)
+
+###########################################################################################
 
 @api_view(['GET'])
 def getDestination(request):
