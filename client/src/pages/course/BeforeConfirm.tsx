@@ -129,17 +129,17 @@ const BeforeConfirm = () => {
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
   };
+  const letters = ['1일차', '2일차', '3일차'];
 
   return (
     <StyledEngineProvider>
       <BoxContainer>
-        <div>
-          <HeaderTabs
-            selectedTab={selectedTab}
-            onTabChange={handleTabChange}
-            size={courseInfo.length}
-          />
-        </div>
+        <HeaderTabs
+          selectedTab={selectedTab}
+          onTabChange={handleTabChange}
+          size={courseInfo.length}
+          letters={letters}
+        />
         <CourseMap>
           <TravelHeader>
             <HeaderTitle>{travelInfo.city}</HeaderTitle>
