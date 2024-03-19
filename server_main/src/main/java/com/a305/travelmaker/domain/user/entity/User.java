@@ -1,6 +1,6 @@
-package com.a305.travelmaker.domain.user.domain;
+package com.a305.travelmaker.domain.user.entity;
 
-import com.a305.travelmaker.domain.user.data.UserStatus;
+import com.a305.travelmaker.domain.user.dto.UserStatus;
 import com.a305.travelmaker.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

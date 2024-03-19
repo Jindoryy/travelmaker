@@ -1,4 +1,4 @@
-package com.a305.travelmaker.domain.user.data;
+package com.a305.travelmaker.domain.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

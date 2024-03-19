@@ -1,6 +1,6 @@
-package com.a305.travelmaker.domain.login.domain;
+package com.a305.travelmaker.domain.login.entity;
 
-import com.a305.travelmaker.domain.user.domain.User;
+import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
