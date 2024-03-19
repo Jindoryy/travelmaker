@@ -71,7 +71,11 @@ public class TokenProvider {
             .compact();
 
         return OauthTokenRes.builder()
-            .userId(user.getId()).accessToken(accessToken)
+            .userId(user.getId())
+            .nickName(user.getNickname())
+            .profileUrl(user.getProfileUrl())
+            .status(user.getStatus())
+            .accessToken(accessToken)
             .tokenType(BEARER_TYPE)
             .expiresIn(ACCESS_TOKEN_EXPIRE_TIME - 1)
             .refreshToken(refreshToken)
