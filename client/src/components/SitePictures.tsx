@@ -6,18 +6,18 @@ import { pink } from '@mui/material/colors';
 import axios from 'axios';
 import styled from 'styled-components';
 
-interface DogImg {
+interface CatImg {
   id: string;
-  dogUrl: string;
+  catUrl: string;
 }
 
-export default function Dogs(): JSX.Element {
+export default function Cats(): JSX.Element {
   const [pageLeft, setPageLeft] = useState<number>(0);
   const [pageRight, setPageRight] = useState<number>(0);
   const [isLoadingLeft, setIsLoadingLeft] = useState<boolean>(false);
   const [isLoadingRight, setIsLoadingRight] = useState<boolean>(false);
-  const [dogImgArrLeft, setDogImgArrLeft] = useState<DogImg[]>([]);
-  const [dogImgArrRight, setDogImgArrRight] = useState<DogImg[]>([]);
+  const [catImgArrLeft, setCatImgArrLeft] = useState<CatImg[]>([]);
+  const [catImgArrRight, setCatImgArrRight] = useState<CatImg[]>([]);
 
   const handleObserverLeft = (entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
@@ -62,13 +62,13 @@ export default function Dogs(): JSX.Element {
   const fetchDataLeft = async () => {
     setIsLoadingLeft(true);
     try {
-      const API_URL_LEFT = `https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageLeft}&limit=5`;
+      const API_URL_LEFT = `https://api.thecatapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageLeft}&limit=5`;
       const response = await axios.get(API_URL_LEFT);
-      const newData = response.data.map((dogImg: { id: string; url: string }) => ({
-        id: dogImg.id,
-        dogUrl: dogImg.url,
-      })) as DogImg[];
-      setDogImgArrLeft((prevData) => [...prevData, ...newData]);
+      const newData = response.data.map((catImg: { id: string; url: string }) => ({
+        id: catImg.id,
+        catUrl: catImg.url,
+      })) as CatImg[];
+      setCatImgArrLeft((prevData) => [...prevData, ...newData]);
     } catch (error) {
       console.log(error);
     }
@@ -78,13 +78,13 @@ export default function Dogs(): JSX.Element {
   const fetchDataRight = async () => {
     setIsLoadingRight(true);
     try {
-      const API_URL_RIGHT = `https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageRight}&limit=5`;
+      const API_URL_RIGHT = `https://api.thecatapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageRight}&limit=5`;
       const response = await axios.get(API_URL_RIGHT);
-      const newData = response.data.map((dogImg: { id: string; url: string }) => ({
-        id: dogImg.id,
-        dogUrl: dogImg.url,
-      })) as DogImg[];
-      setDogImgArrRight((prevData) => [...prevData, ...newData]);
+      const newData = response.data.map((catImg: { id: string; url: string }) => ({
+        id: catImg.id,
+        catUrl: catImg.url,
+      })) as CatImg[];
+      setCatImgArrRight((prevData) => [...prevData, ...newData]);
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +101,7 @@ export default function Dogs(): JSX.Element {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <DogImagesContainer>
+      <CatImagesContainer>
         <FlipContainer>
           <Card isFlipped={isFlipped} onClick={handleCardClick}>
             <Front>
@@ -131,14 +131,17 @@ export default function Dogs(): JSX.Element {
                 checkedIcon={<Favorite />}
               />
               <BackText>
-                남산서울타워 서울특별시 용산구 남산공원길 105 도심 속 로맨틱 아일랜드로 입지를
-                굳힌 남산서울타워는 예로부터 백년해로의 길지로 널리 알려져있다.
+                남산서울타워
+                <br />
+                <br />
+                도심 속 로맨틱 아일랜드로 입지를 굳힌 남산서울타워는 예로부터 백년해로의 길지로 널리
+                알려져있다.
               </BackText>
             </Back>
           </Card>
         </FlipContainer>
-        {dogImgArrLeft.map((dogImg, index) => (
-          <DogImageCard key={dogImg.id}>
+        {catImgArrLeft.map((catImg, index) => (
+          <CatImageCard key={catImg.id}>
             <StyledCheckbox
               {...label}
               sx={{
@@ -150,15 +153,15 @@ export default function Dogs(): JSX.Element {
               icon={<FavoriteBorder />}
               checkedIcon={<Favorite />}
             />
-            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
-          </DogImageCard>
+            <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
+          </CatImageCard>
         ))}
         {isLoadingLeft && <p>Loading...</p>}
         <div id="observerLeft" style={{ height: '10px' }}></div>
-      </DogImagesContainer>
-      <DogImagesContainer>
-        {dogImgArrRight.map((dogImg, index) => (
-          <DogImageCard key={dogImg.id}>
+      </CatImagesContainer>
+      <CatImagesContainer>
+        {catImgArrRight.map((catImg, index) => (
+          <CatImageCard key={catImg.id}>
             <StyledCheckbox
               {...label}
               sx={{
@@ -170,17 +173,17 @@ export default function Dogs(): JSX.Element {
               icon={<FavoriteBorder />}
               checkedIcon={<Favorite />}
             />
-            <img src={dogImg.dogUrl} alt={`Dog ${dogImg.id}`} />
-          </DogImageCard>
+            <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
+          </CatImageCard>
         ))}
         {isLoadingRight && <p>Loading...</p>}
         <div id="observerRight" style={{ height: '10px' }}></div>
-      </DogImagesContainer>
+      </CatImagesContainer>
     </div>
   );
 }
 
-const DogImagesContainer = styled.div`
+const CatImagesContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -190,7 +193,7 @@ const DogImagesContainer = styled.div`
   width: 45%;
 `;
 
-const DogImageCard = styled.div`
+const CatImageCard = styled.div`
   position: relative;
   /* padding: 10px; */
   margin-top: -10px;
@@ -230,7 +233,6 @@ const Front = styled.div`
   margin-top: -10px;
   width: 100%;
   height: 100%;
-  /* background: red; */
   backface-visibility: hidden;
   text-align: center;
   img {
@@ -243,19 +245,28 @@ const Front = styled.div`
 const Back = styled.div`
   position: absolute;
   margin-top: 30px;
+  padding-bottom: 30px;
+
   width: 100%;
   height: 100%;
   background: lightgrey;
   backface-visibility: hidden;
   transform: rotateY(180deg);
-  display: flex;
+  /* display: flex; */
+  text-align: center;
   /* justify-content: center; */
   /* align-items: center; */
 `;
 
 const BackText = styled.p`
-  font-size: 16px;
+  font-size: 12px;
+  font-weight: bold;
   color: black;
+  font-family: 'Pretendard';
+  margin: 10px;
+  letter-spacing: 1px;
+  white-space: pre-line; /* 줄바꿈 유지 */
+  line-height: 1.5;
 `;
 
 const StyledCheckbox = styled(Checkbox)`

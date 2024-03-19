@@ -57,6 +57,7 @@ const StyledProfileContainer = styled.div`
 
 const StyledProfileContent = styled.p`
   font-size: 20px; /* 폰트 크기를 키웁니다. */
+  font-family: 'Pretendard';
   font-weight: bold;
 `;
 
