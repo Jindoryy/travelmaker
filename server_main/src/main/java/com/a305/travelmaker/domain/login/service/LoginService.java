@@ -1,10 +1,12 @@
 package com.a305.travelmaker.domain.login.service;
 
-import com.a305.travelmaker.domain.login.data.KakaoOauthTokenRes;
-import com.a305.travelmaker.domain.login.data.KakaoUserInfoRes;
-import com.a305.travelmaker.domain.login.domain.RefreshToken;
+import com.a305.travelmaker.domain.login.dto.KakaoOauthTokenRes;
+import com.a305.travelmaker.domain.login.dto.KakaoUserInfoRes;
+import com.a305.travelmaker.domain.login.dto.OauthTokenRes;
+import com.a305.travelmaker.domain.login.dto.UserDetail;
+import com.a305.travelmaker.domain.login.entity.RefreshToken;
 import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
-import com.a305.travelmaker.domain.user.domain.User;
+import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import com.google.gson.Gson;
@@ -87,6 +89,13 @@ public class LoginService {
         return gson.fromJson(response.getBody(), KakaoUserInfoRes.class);
     }
 
+    public User getUserInfoByRefreshToken(String refreshtoken) {
+
+        UserDetail userDetail = tokenProvider.getUserDetailByRefreshToken(refreshtoken);
+
+        return userRepository.findById(userDetail.getId()).orElseThrow();
+    }
+
     public User accountCheck(KakaoUserInfoRes userinfo) {
         User loginUser = userRepository.findByKakaoId(userinfo.getId());
         if (loginUser == null) {
@@ -107,5 +116,17 @@ public class LoginService {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUserRefreshToken(user, token, tokenExpiredSecond);
         refreshTokenRepository.save(refreshToken);
+    }
+
+    public OauthTokenRes replaceToken(User user, RefreshToken refreshToken) {
+
+        OauthTokenRes oauthTokenRes = tokenProvider.generateTokenDto(user);
+        refreshToken.setIsExpired();
+        refreshTokenRepository.save(refreshToken);
+        RefreshToken newRefreshToken = new RefreshToken();
+        newRefreshToken.setUserRefreshToken(user, oauthTokenRes.getRefreshToken(), oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
+        refreshTokenRepository.save(newRefreshToken);
+
+        return oauthTokenRes;
     }
 }

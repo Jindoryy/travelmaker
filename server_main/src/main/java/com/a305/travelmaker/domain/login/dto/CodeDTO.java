@@ -1,4 +1,4 @@
-package com.a305.travelmaker.domain.login.data;
+package com.a305.travelmaker.domain.login.dto;
 
 import lombok.Getter;
 
