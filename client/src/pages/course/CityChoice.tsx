@@ -36,6 +36,58 @@ const cityList = [
   },
 ];
 
+const CityChoice = () => {
+  const themes = useTheme();
+  const [activeStep, setActiveStep] = React.useState(0);
+  const maxSteps = cityList.length;
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step: number) => {
+    setActiveStep(step);
+  };
+
+  const choiceButton = (city: string) => {
+    //시티 선택 완료
+    console.log(city);
+  };
+  return (
+    <StyledEngineProvider>
+      <BoxContainer>
+        <CityPaper>
+          <CityLine></CityLine>
+          <CityTypography>{cityList[activeStep].label}</CityTypography>
+        </CityPaper>
+        <SwipeableViews
+          axis={themes.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={activeStep}
+          onChangeIndex={handleStepChange}
+          enableMouseEvents
+        >
+          {cityList.map((step, index) => (
+            <div key={step.label}>
+              {Math.abs(activeStep - index) <= 2 ? (
+                <ImageBox>
+                  <RealImage src={step.imgPath} alt={step.label} />
+                </ImageBox>
+              ) : null}
+            </div>
+          ))}
+        </SwipeableViews>
+        <ChooseButton disableRipple onClick={() => choiceButton(cityList[activeStep].label)}>
+          선택
+        </ChooseButton>
+      </BoxContainer>
+    </StyledEngineProvider>
+  );
+};
+
 const BoxContainer = styled(Box)`
   max-width: 400px;
   flex-grow: 1;
@@ -110,57 +162,5 @@ const ChooseButton = styled(Button)`
     font-size: 16px;
   }
 `;
-
-const CityChoice = () => {
-  const themes = useTheme();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = cityList.length;
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStepChange = (step: number) => {
-    setActiveStep(step);
-  };
-
-  const choiceButton = (city: string) => {
-    //시티 선택 완료
-    console.log(city);
-  };
-  return (
-    <StyledEngineProvider>
-      <BoxContainer>
-        <CityPaper>
-          <CityLine></CityLine>
-          <CityTypography>{cityList[activeStep].label}</CityTypography>
-        </CityPaper>
-        <SwipeableViews
-          axis={themes.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={activeStep}
-          onChangeIndex={handleStepChange}
-          enableMouseEvents
-        >
-          {cityList.map((step, index) => (
-            <div key={step.label}>
-              {Math.abs(activeStep - index) <= 2 ? (
-                <ImageBox>
-                  <RealImage src={step.imgPath} alt={step.label} />
-                </ImageBox>
-              ) : null}
-            </div>
-          ))}
-        </SwipeableViews>
-        <ChooseButton disableRipple onClick={() => choiceButton(cityList[activeStep].label)}>
-          선택
-        </ChooseButton>
-      </BoxContainer>
-    </StyledEngineProvider>
-  );
-};
 
 export default CityChoice;

@@ -7,6 +7,7 @@ import Layout from './pages/Layout';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
+import BeforeConfirm from './pages/course/BeforeConfirm';
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,11 @@ function App() {
         {
           path: '/login',
           element: <LoginPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/course/beforeconfirm',
+          element: <BeforeConfirm />,
           errorElement: <ErrorPage />,
         },
       ],
@@ -54,7 +60,7 @@ const StyledContainer = styled.div`
   max-width: 412px;
   height: 90vh;
   overscroll-behavior-y: none;
-  touch-action: none;
+  /* touch-action: none; */
 `;
 
 export default App;
