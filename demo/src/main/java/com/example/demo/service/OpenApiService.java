@@ -6,6 +6,7 @@ import com.example.demo.repository.PlaceRepository;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,8 +21,8 @@ public class OpenApiService {
     private final String apiUri = "/areaBasedList";
     private final String serviceKey = "?ServiceKey=FUOnFNLElwv776kHyNZiRWTRUj4wJ41OVvpCh/6oYiqFR95xn9Kq9x9XRHJls0kas8cpLmaRhKduBnbHgbeUnQ==";
     private final String defaultQueryParam = "&MobileOS=ETC&MobileApp=AppTest&_type=json";
-    private final String numOfRows = "&numOfRows=1000";
-    private final String areaCode = "&areaCode=32";
+    private final String numOfRows = "&numOfRows=1000000000";
+    private final String areaCode = "";
     private final String contentTypeId = "";
 
     private final RestTemplate restTemplate;
@@ -53,17 +54,38 @@ public class OpenApiService {
 
         List<Place> places = itemList.stream()
             .filter(item -> {
-                String cat1 = String.valueOf(item.get("cat1")); // cat1 값 추출
+                String cat1 = String.valueOf(item.get("cat1"));
                 return !(cat1.equals("B02") || cat1.equals("C01"));
             })
             .map(item -> {
-                String cat1 = String.valueOf(item.get("cat1")); // cat1 값 추출
-                String type = ""; // type 변수 추가
+                String cat1 = String.valueOf(item.get("cat1"));
+                String cat2 = String.valueOf(item.get("cat2"));
+                String cat3 = String.valueOf(item.get("cat3"));
+                String type = "";
                 if (cat1.equals("A05")) {
                     type = "food";
                 } else {
                     type = "sights";
                 }
+                if(cat3.equals("A05020900")){
+                    type = "cafe";
+                }
+
+                String firstimage = String.valueOf(item.get("firstimage"));
+                String areacode = String.valueOf(item.get("areacode")); // 추가된 부분
+                String mapx = String.valueOf(item.get("mapx"));
+                String mapy = String.valueOf(item.get("mapy"));
+
+
+                if (firstimage.isEmpty()) {
+                    return null;
+                }
+
+                if (mapx.equals("0") || mapy.equals("0")) {
+                    return null;
+                }
+
+
 
                 PlaceDTO placeDTO = new PlaceDTO(
                     String.valueOf(item.get("contentid")),
@@ -72,7 +94,8 @@ public class OpenApiService {
                     String.valueOf(item.get("title")),
                     String.valueOf(item.get("mapx")),
                     String.valueOf(item.get("mapy")),
-                    String.valueOf(item.get("firstimage"))
+                    firstimage,
+                    areacode // 수정된 부분: areacode 값으로 수정
                 );
                 return new Place(
                     placeDTO.getContentid(),
@@ -82,9 +105,15 @@ public class OpenApiService {
                     placeDTO.getMapx(),
                     placeDTO.getMapy(),
                     placeDTO.getFirstimage(),
-                    type // cat1을 type으로 변경
+                    type,
+                    cat1,
+                    cat2,
+                    cat3,
+                    areacode,
+                    null
                 );
             })
+            .filter(Objects::nonNull)
             .toList();
 
         placeRepository.saveAll(places);
