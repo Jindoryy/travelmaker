@@ -4,6 +4,7 @@ import { lightTheme, darkTheme } from './utils/theme';
 import './App.css';
 
 import Layout from './pages/Layout';
+import MainPage from './pages/main/MainPage';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
@@ -23,6 +24,11 @@ function App() {
         {
           path: '/course/city',
           element: <CityChoice />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/main',
+          element: <MainPage />,
           errorElement: <ErrorPage />,
         },
         {
