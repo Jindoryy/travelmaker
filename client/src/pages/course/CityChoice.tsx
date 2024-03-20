@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper as SwiperContainer, SwiperSlide } from 'swiper/react';
 
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -115,39 +115,19 @@ const CityChoice = () => {
         <CityLine></CityLine>
         <CityTypography>{cityList[activeStep].label}</CityTypography>
       </CityPaper>
-      <Swiper
+      <StyledSwiper
         effect={'cube'}
         grabCursor={true}
         pagination={true}
         modules={[EffectCube, Pagination]}
         onSlideChange={(swiper) => handleStepChange(swiper.activeIndex)}
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '98%',
-          height: '500px',
-          margin: '0px 5px',
-        }}
       >
         {cityList.map((city, index) => (
           <SwiperSlide key={index}>
-            <img
-              src={city.imgPath}
-              alt={city.label}
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                margin: 'auto',
-              }}
-            />
+            <SwipeImage src={city.imgPath} alt={city.label} />
           </SwiperSlide>
         ))}
-      </Swiper>
+      </StyledSwiper>
       <ButtonBox>
         <ChooseButton onClick={() => choiceButton(cityList[activeStep].label)}>선택</ChooseButton>
       </ButtonBox>
@@ -189,6 +169,25 @@ const CityTypography = styled.div`
   font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 25px;
+`;
+
+const StyledSwiper = styled(SwiperContainer)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 98%;
+  height: 500px;
+  margin: 0px 5px;
+`;
+
+const SwipeImage = styled.img`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: auto;
 `;
 
 const ButtonBox = styled(Box)`
