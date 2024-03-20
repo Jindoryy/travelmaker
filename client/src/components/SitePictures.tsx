@@ -103,33 +103,22 @@ export default function Cats(): JSX.Element {
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <CatImagesContainer>
         <FlipContainer>
+          <StyledCheckboxs
+            {...label}
+            sx={{
+              color: pink[600],
+              '&.Mui-checked': {
+                color: pink[600],
+              },
+            }}
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite />}
+          />
           <Card isFlipped={isFlipped} onClick={handleCardClick}>
             <Front>
-              <StyledCheckbox
-                {...label}
-                sx={{
-                  color: pink[600],
-                  '&.Mui-checked': {
-                    color: pink[600],
-                  },
-                }}
-                icon={<FavoriteBorder />}
-                checkedIcon={<Favorite />}
-              />
               <img src="/img/강릉시.jpg" />
             </Front>
             <Back>
-              <StyledCheckbox
-                {...label}
-                sx={{
-                  color: pink[600],
-                  '&.Mui-checked': {
-                    color: pink[600],
-                  },
-                }}
-                icon={<FavoriteBorder />}
-                checkedIcon={<Favorite />}
-              />
               <BackText>
                 남산서울타워
                 <br />
@@ -157,7 +146,7 @@ export default function Cats(): JSX.Element {
           </CatImageCard>
         ))}
         {isLoadingLeft && <p>Loading...</p>}
-        <div id="observerLeft" style={{ height: '10px' }}></div>
+        {/* <div id="observerLeft" style={{ height: '10px' }}></div> */}
       </CatImagesContainer>
       <CatImagesContainer>
         {catImgArrRight.map((catImg, index) => (
@@ -177,7 +166,7 @@ export default function Cats(): JSX.Element {
           </CatImageCard>
         ))}
         {isLoadingRight && <p>Loading...</p>}
-        <div id="observerRight" style={{ height: '10px' }}></div>
+        {/* <div id="observerRight" style={{ height: '10px' }}></div> */}
       </CatImagesContainer>
     </div>
   );
@@ -215,7 +204,7 @@ const FlipContainer = styled.div`
 `;
 
 const Card = styled.div<{ isFlipped: boolean }>`
-  width: 165px;
+  width: 100%;
   height: 200px;
   position: relative;
   transition: 0.4s;
@@ -234,7 +223,7 @@ const Front = styled.div`
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  text-align: center;
+
   img {
     max-width: 100%;
     height: auto;
@@ -244,18 +233,18 @@ const Front = styled.div`
 
 const Back = styled.div`
   position: absolute;
-  margin-top: 30px;
-  padding-bottom: 30px;
+  margin-top: -10px;
+  padding-bottom: 20px;
+  border-radius: 5px;
 
   width: 100%;
   height: 100%;
   background: lightgrey;
   backface-visibility: hidden;
   transform: rotateY(180deg);
-  /* display: flex; */
-  text-align: center;
-  /* justify-content: center; */
-  /* align-items: center; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const BackText = styled.p`
@@ -273,4 +262,12 @@ const StyledCheckbox = styled(Checkbox)`
   position: absolute;
   top: 40px;
   right: -60px;
+  z-index: 1;
+`;
+
+const StyledCheckboxs = styled(Checkbox)`
+  position: absolute;
+  top: 30px;
+  right: -120px;
+  z-index: 1;
 `;

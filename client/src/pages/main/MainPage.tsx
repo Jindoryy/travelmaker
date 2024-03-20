@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Button from '@mui/material/Button';
 import Profile from '../../components/MainProfile';
+import ProfileSmall from '../../components/MainProfileSmall';
 import SitePictures from '../../components/SitePictures';
 
 const MainPage = () => {
@@ -13,6 +13,7 @@ const MainPage = () => {
       </LogoLargeContainer>
       <FixedProfile>
         <Profile />
+        {/* <ProfileSmall /> */}
       </FixedProfile>
 
       <SitePicturesContainer>
@@ -34,7 +35,7 @@ const FixedProfile = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1;
+  z-index: 4;
 `;
 
 const SitePicturesStyle = styled.div`
@@ -69,7 +70,6 @@ const LogoContainer = styled.div`
 const Logo = styled.img`
   width: 150px; /* 로고 이미지의 너비 조정 */
   height: auto; /* 비율 유지 */
-  /* background-color: rgb(86, 108, 240, 0.1); */
 `;
 
 export default MainPage;

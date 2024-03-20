@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-const Profile = () => {
+const ProfileSmall = () => {
   const [userState, setUserState] = useState<'beforeCourse' | 'beforeTravel' | 'onTravel'>(
     'beforeCourse',
   );
@@ -40,8 +40,10 @@ const Profile = () => {
 
   return (
     <StyledProfileContainer>
-      <StyledProfileImage src={getProfileImage()} alt="Profile" />
-      <StyledProfileContent>{getProfileContent()}</StyledProfileContent>
+      <StyledProfileContent>
+        <StyledProfileImage src={getProfileImage()} alt="Profile" />
+        {getProfileContent()}
+      </StyledProfileContent>
       <br />
     </StyledProfileContainer>
   );
@@ -52,19 +54,25 @@ const StyledProfileContainer = styled.div`
   color: #000;
   padding: 10px;
   margin: 10px;
-  text-align: center;
+  /* text-align: center; */
+
   border-radius: 15px;
 `;
 
-const StyledProfileContent = styled.p`
+const StyledProfileContent = styled.span`
   font-size: 20px;
   font-family: 'Pretendard';
   font-weight: bold;
+  margin-top: 10px;
+  display: flex; /* 수직 가운데 정렬을 위해 Flexbox 사용 */
+  align-items: center;
 `;
 
 const StyledProfileImage = styled.img`
-  max-width: 100%;
+  max-width: 50px;
   height: auto;
+  margin-right: 20px; /* 이미지와 텍스트 사이의 간격을 조절 */
+  margin-left: 10px;
 `;
 
-export default Profile;
+export default ProfileSmall;
