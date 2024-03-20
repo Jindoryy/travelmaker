@@ -84,7 +84,6 @@ const FooterBox = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 400px;
   width: 100%;
   position: fixed;
   height: 50px;

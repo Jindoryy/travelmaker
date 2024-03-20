@@ -172,13 +172,13 @@ const BoxContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin: auto;
+  justify-content: flex-start;
+  padding-bottom: 100px;
 `;
 
 const CourseMap = styled.div`
   max-width: 400px;
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   align-items: center;
