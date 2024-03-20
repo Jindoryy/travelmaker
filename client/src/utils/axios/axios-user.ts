@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import instance from "./axios-instance";
+import { instance } from "./axios-instance";
 
 interface KakaoAuthResponse {
     status: string;
