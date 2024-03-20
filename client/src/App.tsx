@@ -7,6 +7,8 @@ import Layout from './pages/Layout';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
+import BeforeConfirm from './pages/course/BeforeConfirm';
+import OauthLandingPage from './pages/user/OauthLandingPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +30,15 @@ function App() {
         {
           path: '/login',
           element: <LoginPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/course/beforeconfirm',
+          element: <BeforeConfirm />,
+        },
+        {
+          path: '/login/oauth2/code/kakao',
+          element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
       ],
@@ -54,7 +65,6 @@ const StyledContainer = styled.div`
   max-width: 412px;
   height: 90vh;
   overscroll-behavior-y: none;
-  touch-action: none;
 `;
 
 export default App;
