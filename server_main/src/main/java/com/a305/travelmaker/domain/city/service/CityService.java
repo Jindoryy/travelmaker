@@ -3,7 +3,7 @@ package com.a305.travelmaker.domain.city.service;
 import com.a305.travelmaker.domain.city.dto.CityResponse;
 import com.a305.travelmaker.domain.city.entity.City;
 import com.a305.travelmaker.domain.city.repository.CityRepository;
-import com.a305.travelmaker.global.util.FileService;
+import com.a305.travelmaker.global.util.FileUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CityService {
 
   private final CityRepository cityRepository;
-  private final FileService fileService;
+  private final FileUtil fileService;
 
   // 시 리스트 조회
   public List<CityResponse> findCityList() {
