@@ -144,4 +144,17 @@ public class TokenProvider {
                                     .build();
         return userDetail;
     }
+    
+    //인증 토큰에서 유저 ID 가져오는 기능
+    public Long getUserIdFromToken(String token){
+        Claims claims = parseClaims(token);
+        return Long.valueOf(claims.getSubject());
+    }
+    //컨트롤러에서는 어떻게 사용할까?
+//    public void 서비스 or 컨트롤러(HttpServletRequest request) {
+//        String token = request.getHeader("Authorization").substring(7); // "Bearer " 접두사 제거
+//        Long userId = tokenProvider.getUserIdFromToken(token);
+//        // userId를 사용하는 로직...
+//    }
+
 }
