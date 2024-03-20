@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { kakaoauthentication } from '../../utils/axios/axios-user';
+import useUserInfo from '../../store/useUserStore';
 
 import {
   Dialog,
@@ -15,6 +16,7 @@ import {
 
 const OauthLandingPage = () => {
   const navigate = useNavigate();
+  const { setUserInfo, userInfo } = useUserInfo();
   const [openAlert, setOpenAlert] = useState(false);
   const code = new URL(window.location.href).searchParams.get('code');
 
@@ -24,7 +26,25 @@ const OauthLandingPage = () => {
         .then((response) => {
           // 요청 성공 시 로직
           console.log(response.data); // 서버 응답 확인
-          navigate('/home'); // 예시: 홈페이지로 리다이렉션
+          const { userId, nickName, profileUrl, accessToken, refreshToken } = response.data.data;
+          // 스토어에 사용자 정보 저장
+          setUserInfo({ userId, nickName, profileUrl });
+          // LocalStorage에 사용자 정보 저장
+          localStorage.setItem('userInfo', JSON.stringify({ userId, nickName, profileUrl }));
+          // LocalStorage에 인증토큰,재발급토큰 저장
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          // 스토어와 로컬 스토리지에서 사용자 정보를 읽어와 콘솔에 출력
+          // 저장된 정보 및 토큰 확인
+          console.log(
+            '로컬 스토리지에 저장된 사용자 정보:',
+            JSON.parse(localStorage.getItem('userInfo') || '{}'),
+          );
+          console.log('로컬 스토리지에 저장된 액세스 토큰:', localStorage.getItem('accessToken'));
+          console.log(
+            '로컬 스토리지에 저장된 리프레시 토큰:',
+            localStorage.getItem('refreshToken'),
+          );
         })
         .catch((error) => {
           // 요청 실패 시 로직

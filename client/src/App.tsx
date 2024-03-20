@@ -7,6 +7,7 @@ import Layout from './pages/Layout';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
+import OauthLandingPage from './pages/user/OauthLandingPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,11 @@ function App() {
         {
           path: '/login',
           element: <LoginPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/login/oauth2/code/kakao',
+          element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
       ],
