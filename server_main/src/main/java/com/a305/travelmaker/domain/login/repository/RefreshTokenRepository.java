@@ -1,6 +1,6 @@
 package com.a305.travelmaker.domain.login.repository;
 
-import com.a305.travelmaker.domain.login.entity.RefreshToken;
+import com.a305.travelmaker.domain.login.domain.RefreshToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
