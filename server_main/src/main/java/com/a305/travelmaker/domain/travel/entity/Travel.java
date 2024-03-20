@@ -4,7 +4,7 @@ import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
 import com.a305.travelmaker.domain.travel.dto.Transportation;
-import com.a305.travelmaker.domain.user.domain.User;
+import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

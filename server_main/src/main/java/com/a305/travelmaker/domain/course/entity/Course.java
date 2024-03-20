@@ -1,21 +1,15 @@
 package com.a305.travelmaker.domain.course.entity;
 
-import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
-import com.a305.travelmaker.domain.travel.dto.Transportation;
 import com.a305.travelmaker.domain.travel.entity.Travel;
-import com.a305.travelmaker.domain.user.domain.User;
 import com.a305.travelmaker.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
