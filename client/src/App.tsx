@@ -62,7 +62,7 @@ const StyledContainer = styled.div`
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  max-width: 412px;
+  width: 100vw;
   height: 90vh;
   overscroll-behavior-y: none;
 `;

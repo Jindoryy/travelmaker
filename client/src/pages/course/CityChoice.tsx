@@ -173,6 +173,7 @@ const StyledSwiper = styled(SwiperContainer)`
   width: 98%;
   height: 500px;
   margin: 0px 5px;
+  overflow: hidden;
 `;
 
 const SwipeImage = styled.img`
