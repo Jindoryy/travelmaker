@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -16,5 +17,6 @@ public class DestinationDistanceResponse {
 
   private Integer destinationId;
   private Point point;
-  private double prevDestinationDistance;
+  @Setter
+  private double nextDestinationDistance;
 }
