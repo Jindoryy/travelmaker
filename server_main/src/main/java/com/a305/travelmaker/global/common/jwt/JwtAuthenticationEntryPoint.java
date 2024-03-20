@@ -1,17 +1,6 @@
 package com.a305.travelmaker.global.common.jwt;
 
-import com.a305.travelmaker.global.common.exception.ErrorCode;
-import com.a305.travelmaker.global.common.response.FailResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
-
+public class JwtAuthenticationEntryPoint {
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
