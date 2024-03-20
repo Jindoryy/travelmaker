@@ -8,6 +8,7 @@ import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import OauthLandingPage from './pages/user/OauthLandingPage';
+import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +25,11 @@ function App() {
         {
           path: '/course/city',
           element: <CityChoice />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/course/province',
+          element: <ProvinceChoicePage />,
           errorElement: <ErrorPage />,
         },
         {
