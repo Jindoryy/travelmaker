@@ -20,7 +20,7 @@
 이름(varchar 50)
 성별 (varchar 50)
 연령대 (int)
-생일 (Date ⇒ YYYY-MM-DD)
+생일 (Date ⇒ YYYY-MM-DD) 
 ```
 
 ### 2. 로그인

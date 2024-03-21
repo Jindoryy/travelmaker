@@ -1,14 +1,18 @@
 package com.a305.travelmaker.domain.login.controller;
 
-import com.a305.travelmaker.domain.login.data.CodeDTO;
-import com.a305.travelmaker.domain.login.data.KakaoOauthTokenRes;
-import com.a305.travelmaker.domain.login.data.KakaoUserInfoRes;
-import com.a305.travelmaker.domain.login.data.OauthTokenRes;
+import com.a305.travelmaker.domain.login.dto.CodeDTO;
+import com.a305.travelmaker.domain.login.dto.KakaoOauthTokenRes;
+import com.a305.travelmaker.domain.login.dto.KakaoUserInfoRes;
+import com.a305.travelmaker.domain.login.dto.OauthTokenRes;
+import com.a305.travelmaker.domain.login.entity.RefreshToken;
 import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
 import com.a305.travelmaker.domain.login.service.LoginService;
-import com.a305.travelmaker.domain.user.domain.User;
+import com.a305.travelmaker.domain.user.entity.User;
+import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.exception.CustomException;
+import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
-import com.a305.travelmaker.global.common.response.SuccessResponse;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,4 +41,17 @@ public class LoginController {
         return new SuccessResponse<>(oauthTokenRes);
     }
 
+    @PostMapping("/oauth/token")
+    public SuccessResponse<OauthTokenRes> tokenrReissuance(@RequestBody String refreshToken) {
+        RefreshToken oldRefreshToken = refreshTokenRepository.findByToken(refreshToken)
+            .orElseThrow(() -> new CustomException(ErrorCode.REFRESH_TOKEN_VALIDATION_ERROR));
+
+        if(!oldRefreshToken.isValid(LocalDateTime.now())) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_VALIDATION_ERROR);
+        }
+
+        User user = loginService.getUserInfoByRefreshToken(refreshToken);
+
+        return new SuccessResponse<>(loginService.replaceToken(user, oldRefreshToken));
+    }
 }
