@@ -15,7 +15,6 @@ import lombok.ToString;
 @ToString
 public class DestinationDistanceResponse {
 
-  private Integer destinationId;
   private Point point;
   @Setter
   private double nextDestinationDistance;
