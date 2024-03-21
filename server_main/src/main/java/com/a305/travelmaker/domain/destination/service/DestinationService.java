@@ -25,8 +25,7 @@ public class DestinationService {
   private Point prevPoint, currentPoint;
 
   @Transactional
-  public List<DestinationDistanceResponse> findDestinationDistance(
-      List<Integer> destinationsIdList) {
+  public List<DestinationDistanceResponse> findDestinationDistance(List<Integer> destinationsIdList) {
 
     // 장소 ID 리스트를 0 ~ N-1까지 반복문을 돌면서 하버사인 공식을 이용하여 거리 계산 후 DTO에 담아 반환
     List<DestinationDistanceResponse> destinationDistanceResponses = new ArrayList<>();
@@ -35,9 +34,7 @@ public class DestinationService {
     for (Integer destinationId : destinationsIdList) {
 
       Destination destination = destinationRepository.findById(destinationId).orElse(null);
-      if (destination == null) {
-        continue;
-      }
+      if (destination == null) continue;
 
       currentPoint = Point.builder()
           .destinationId(destination.getId())
@@ -54,7 +51,6 @@ public class DestinationService {
 
       // 현재 목적지 정보를 추가
       destinationDistanceResponses.add(DestinationDistanceResponse.builder()
-          .destinationId(destination.getId())
           .point(currentPoint)
           .build());
 
