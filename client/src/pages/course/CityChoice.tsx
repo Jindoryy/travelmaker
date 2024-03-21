@@ -104,6 +104,7 @@ const CityChoice = () => {
         alignItems: 'center',
         justifyContent: 'center',
         margin: 'auto',
+        height: '100%',
       }}
     >
       <CityPaper>
@@ -132,7 +133,7 @@ const CityChoice = () => {
 
 const CityPaper = styled.div`
   width: 100%;
-  height: 100px;
+  height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -140,6 +141,7 @@ const CityPaper = styled.div`
   background-color: ${(props) => props.theme.subtext};
   margin-top: 30px 0;
   padding-top: 30px;
+  position: relative;
 `;
 
 const CityLine = styled.div`
@@ -171,8 +173,8 @@ const StyledSwiper = styled(SwiperContainer)`
   justify-content: center;
   align-items: center;
   width: 98%;
-  height: 500px;
-  margin: 0px 5px;
+  height: 450px;
+  margin: 3px 5px;
   overflow: hidden;
 `;
 
