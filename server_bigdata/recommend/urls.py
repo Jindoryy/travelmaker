@@ -10,5 +10,7 @@ urlpatterns = [
     path('getLikeCbfDetail/<int:user_id>/', views.getLikeCbfDetail),
 
     path('getTravelList/', views.getTravelList),
+
+    path('getCityList/', views.getCityList),
 ]
 
