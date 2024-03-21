@@ -9,6 +9,7 @@ import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
+import EditCoursePage from './pages/course/EditCoursePage';
 
 function App() {
   const router = createBrowserRouter([
@@ -35,10 +36,16 @@ function App() {
         {
           path: '/course/beforeconfirm',
           element: <BeforeConfirm />,
+          errorElement: <ErrorPage />,
         },
         {
           path: '/login/oauth2/code/kakao',
           element: <OauthLandingPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/editcourse',
+          element: <EditCoursePage />,
           errorElement: <ErrorPage />,
         },
       ],
