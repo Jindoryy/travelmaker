@@ -2,24 +2,28 @@ package com.a305.travelmaker.domain.destination.service;
 
 import com.a305.travelmaker.domain.destination.dto.DestinationDetailResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
+import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
+import com.a305.travelmaker.domain.destination.dto.DestinationType;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @RequiredArgsConstructor
 public class DestinationService {
 
-  private static final int PAGE_DESTINATION_COUNT = 10;
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
   private Point prevPoint, currentPoint;
@@ -77,16 +81,48 @@ public class DestinationService {
         .build();
   }
 
-  public Page<DestinationListResponse> findDestinationList(Integer page) {
+  public List<DestinationListResponse> findDestinationList() {
 
-    PageRequest pageRequest = PageRequest.of(page, PAGE_DESTINATION_COUNT);
+    List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
 
-    return destinationRepository.findAll(pageRequest)
-        .map(destination -> DestinationListResponse.builder()
-            .destinationId(destination.getId())
-            .destinationName(destination.getName())
-            .destinationContent(destination.getContent())
-            .destinationImgUrl(destination.getImgUrl())
-            .build());
+    List<Destination> destinationList = destinationRepository.findTop100ByOrderById();
+
+    for (Destination destination : destinationList) {
+
+      destinationListResponseList.add(DestinationListResponse.builder()
+          .destinationId(destination.getId())
+          .destinationName(destination.getName())
+          .destinationContent(destination.getContent())
+          .destinationImgUrl(destination.getImgUrl())
+          .build());
+    }
+
+    return destinationListResponseList;
   }
+
+  public DestinationRecommendResponse findDestinationRecommend(int cityId, List<Integer> friendTag) {
+    
+    HashMap<String, List<Integer>> destinationRecommendResponse = new HashMap<>();
+    
+    // 친구가 있는 경우에 대한 친구 ID를 담아서 장고 서버로 보내는 로직 필요 - 장고 서버에서 오는 데이터 그대로 반환
+    List<Integer> sights = new ArrayList<>();
+    List<Integer> food = new ArrayList<>();
+    List<Integer> cafe = new ArrayList<>();
+
+    sights.add(1000981);
+    food.add(1004281);
+    cafe.add(1005548);
+    cafe.add(1019796);
+    sights.add(1019843);
+
+    destinationRecommendResponse.put("sights", sights);
+    destinationRecommendResponse.put("food", food);
+    destinationRecommendResponse.put("cafe", cafe);
+
+    return DestinationRecommendResponse.builder()
+        .DestinationRecommendList(destinationRecommendResponse)
+        .build();
+  }
+
+
 }
