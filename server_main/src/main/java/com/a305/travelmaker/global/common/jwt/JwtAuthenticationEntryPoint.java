@@ -1,7 +1,7 @@
 package com.a305.travelmaker.global.common.jwt;
 
+import com.a305.travelmaker.global.common.dto.FailResponse;
 import com.a305.travelmaker.global.common.exception.ErrorCode;
-import com.a305.travelmaker.global.common.response.FailResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

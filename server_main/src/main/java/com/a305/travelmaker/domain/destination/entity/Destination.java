@@ -1,61 +1,58 @@
 package com.a305.travelmaker.domain.destination.entity;
 
+import com.a305.travelmaker.domain.city.entity.City;
+import com.a305.travelmaker.domain.destination.dto.DestinationType;
+import com.a305.travelmaker.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "DESTINATION")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class Destination {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer destinationId;
+  @Id
+  @Column(name = "destination_id")
+  private Integer id;
 
-    @Column
-    private Integer cityId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "city_id")
+  private City city;
 
-    @Column(length = 50, nullable = false)
-    private String name;
+  @Column(length = 1000)
+  private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DestinationType type;
+  @Enumerated(value = EnumType.STRING)
+  private DestinationType type;
 
-    @Column(length = 1000, nullable = false, columnDefinition = "VARCHAR(1000) default '-'")
-    private String content;
+  @Column(length = 1000)
+  private String content;
 
-    @Column(length = 1000, nullable = false)
-    private String feature;
+  @Column(length = 1000)
+  private String feature;
 
-    @Column(nullable = false)
-    private double latitude;
+  private double latitude;
 
-    @Column(nullable = false)
-    private double longitude;
+  private double longitude;
 
-    @Column(length = 100, nullable = false)
-    private String imgUrl;
+  @Column(name = "img_url", length = 500)
+  private String imgUrl;
 
-    @Column(nullable = false)
-    private int contentTypeId;
+  @Column(name = "content_type_id")
+  private int contentTypeId;
 
-}
-
-enum DestinationType {
-    FOOD, SIGHTS, CAFE
+  @Builder
+  public Destination(Integer id) {
+    this.id = id;
+  }
 }

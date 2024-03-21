@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikesRepository extends JpaRepository<Likes, Long> {
 
-    Optional<Object> findByUserIdAndDestinationId(User userId, Destination destinationId);
+    Optional<Likes> findByUserIdAndDestinationId(User userId, Destination destinationId);
 }

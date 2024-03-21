@@ -10,15 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LikesResponse {
 
-    private User userId;
-    private Destination destinationId;
-    private Boolean flag;
+    private Long userId;
+    private Integer destinationId;
 
     @Builder
-    public LikesResponse(User userId,Destination destinationId, Boolean flag) {
+    public LikesResponse(Long userId,Integer destinationId) {
         this.userId = userId;
         this.destinationId = destinationId;
-        this.flag = flag;
     }
-
 }

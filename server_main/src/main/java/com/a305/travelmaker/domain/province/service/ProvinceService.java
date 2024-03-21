@@ -3,7 +3,7 @@ package com.a305.travelmaker.domain.province.service;
 import com.a305.travelmaker.domain.province.dto.ProvinceResponse;
 import com.a305.travelmaker.domain.province.entity.Province;
 import com.a305.travelmaker.domain.province.repository.ProvinceRepository;
-import com.a305.travelmaker.global.util.FileService;
+import com.a305.travelmaker.global.util.FileUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProvinceService {
 
   private final ProvinceRepository provinceRepository;
-  private final FileService fileService;
+  private final FileUtil fileService;
 
   // 도 리스트 조회
   public List<ProvinceResponse> findProvinceList() {

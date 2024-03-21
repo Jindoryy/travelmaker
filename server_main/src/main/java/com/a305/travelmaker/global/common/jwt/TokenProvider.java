@@ -25,6 +25,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+
 @Slf4j
 @Component
 public class TokenProvider {
@@ -120,10 +121,10 @@ public class TokenProvider {
         Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow();
         UserDetail userDetail = UserDetail.builder()
-                                    .id(userId)
-                                    .nickname(user.getNickname())
-                                    .profileUrl(user.getProfileUrl())
-                                    .build();
+            .id(userId)
+            .nickname(user.getNickname())
+            .profileUrl(user.getProfileUrl())
+            .build();
 
 
         return new UserDetailAuthenticationToken(userDetail, authorities);
@@ -138,10 +139,23 @@ public class TokenProvider {
         User user = optionalUser.orElseThrow();
 
         UserDetail userDetail = UserDetail.builder()
-                                    .id(userId)
-                                    .nickname(user.getNickname())
-                                    .profileUrl(user.getProfileUrl())
-                                    .build();
+            .id(userId)
+            .nickname(user.getNickname())
+            .profileUrl(user.getProfileUrl())
+            .build();
         return userDetail;
     }
+
+    //인증 토큰에서 유저 ID 가져오는 기능
+    public Long getUserIdFromToken(String token){
+        Claims claims = parseClaims(token);
+        return Long.valueOf(claims.getSubject());
+    }
+    //컨트롤러에서는 어떻게 사용할까?
+//    public void 서비스 or 컨트롤러(HttpServletRequest request) {
+//        String token = request.getHeader("Authorization").substring(7); // "Bearer " 접두사 제거
+//        Long userId = tokenProvider.getUserIdFromToken(token);
+//        // userId를 사용하는 로직...
+//    }
+
 }
