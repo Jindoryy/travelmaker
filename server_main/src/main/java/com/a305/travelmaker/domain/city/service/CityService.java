@@ -18,10 +18,10 @@ public class CityService {
   private final FileUtil fileService;
 
   // 시 리스트 조회
-  public List<CityResponse> findCityList() {
+  public List<CityResponse> findCityList(Integer id) {
 
     List<CityResponse> cityResponses = new ArrayList<>();
-    List<City> cities = cityRepository.findAll();
+    List<City> cities = cityRepository.findByProvinceId(id);
 
     for (City city : cities) {
       CityResponse response = CityResponse.builder()
