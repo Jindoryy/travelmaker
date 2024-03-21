@@ -3,7 +3,6 @@ package com.a305.travelmaker.domain.destination.service;
 import com.a305.travelmaker.domain.destination.dto.DestinationDetailResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
-import com.a305.travelmaker.domain.destination.dto.DestinationType;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.travel.dto.Point;
@@ -12,13 +11,9 @@ import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +24,8 @@ public class DestinationService {
   private Point prevPoint, currentPoint;
 
   @Transactional
-  public List<DestinationDistanceResponse> findDestinationDistance(List<Integer> destinationsIdList) {
+  public List<DestinationDistanceResponse> findDestinationDistance(
+      List<Integer> destinationsIdList) {
 
     // 장소 ID 리스트를 0 ~ N-1까지 반복문을 돌면서 하버사인 공식을 이용하여 거리 계산 후 DTO에 담아 반환
     List<DestinationDistanceResponse> destinationDistanceResponses = new ArrayList<>();
@@ -38,7 +34,9 @@ public class DestinationService {
     for (Integer destinationId : destinationsIdList) {
 
       Destination destination = destinationRepository.findById(destinationId).orElse(null);
-      if (destination == null) continue;
+      if (destination == null) {
+        continue;
+      }
 
       currentPoint = Point.builder()
           .destinationId(destination.getId())
@@ -100,10 +98,11 @@ public class DestinationService {
     return destinationListResponseList;
   }
 
-  public DestinationRecommendResponse findDestinationRecommend(int cityId, List<Integer> friendTag) {
-    
+  public DestinationRecommendResponse findDestinationRecommend(int cityId,
+      List<Integer> friendTag) {
+
     HashMap<String, List<Integer>> destinationRecommendResponse = new HashMap<>();
-    
+
     // 친구가 있는 경우에 대한 친구 ID를 담아서 장고 서버로 보내는 로직 필요 - 장고 서버에서 오는 데이터 그대로 반환
     List<Integer> sights = new ArrayList<>();
     List<Integer> food = new ArrayList<>();
