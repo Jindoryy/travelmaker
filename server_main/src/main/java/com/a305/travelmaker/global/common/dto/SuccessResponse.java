@@ -1,4 +1,4 @@
-package com.a305.travelmaker.global.common.response;
+package com.a305.travelmaker.global.common.dto;
 
 public class SuccessResponse<T> extends BaseResponse<T> {
 

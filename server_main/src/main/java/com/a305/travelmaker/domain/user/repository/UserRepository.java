@@ -1,5 +1,6 @@
 package com.a305.travelmaker.domain.user.repository;
 
+
 import com.a305.travelmaker.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

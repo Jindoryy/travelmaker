@@ -4,11 +4,13 @@ import { lightTheme, darkTheme } from './utils/theme';
 import './App.css';
 
 import Layout from './pages/Layout';
+import MainPage from './pages/main/MainPage';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
+import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 
 function App() {
   const router = createBrowserRouter([
@@ -25,6 +27,16 @@ function App() {
         {
           path: '/course/city',
           element: <CityChoice />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/main',
+          element: <MainPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/course/province',
+          element: <ProvinceChoicePage />,
           errorElement: <ErrorPage />,
         },
         {
@@ -62,7 +74,7 @@ const StyledContainer = styled.div`
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  max-width: 412px;
+  width: 100vw;
   height: 90vh;
   overscroll-behavior-y: none;
 `;

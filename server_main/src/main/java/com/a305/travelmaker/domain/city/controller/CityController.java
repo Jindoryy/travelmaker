@@ -2,7 +2,7 @@ package com.a305.travelmaker.domain.city.controller;
 
 import com.a305.travelmaker.domain.city.dto.CityResponse;
 import com.a305.travelmaker.domain.city.service.CityService;
-import com.a305.travelmaker.global.common.response.SuccessResponse;
+import com.a305.travelmaker.global.common.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

@@ -8,16 +8,15 @@ import com.a305.travelmaker.domain.login.entity.RefreshToken;
 import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
 import com.a305.travelmaker.domain.login.service.LoginService;
 import com.a305.travelmaker.domain.user.entity.User;
+import com.a305.travelmaker.global.common.dto.SuccessResponse;
 import com.a305.travelmaker.global.common.exception.CustomException;
 import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
-import com.a305.travelmaker.global.common.response.SuccessResponse;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
