@@ -6,7 +6,9 @@ import Box from '@mui/material/Box';
 const Layout = () => {
   return (
     <ContainerBox>
-      <Outlet />
+      <OutletBox>
+        <Outlet />
+      </OutletBox>
       <Footer />
     </ContainerBox>
   );
@@ -17,5 +19,9 @@ const ContainerBox = styled(Box)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const OutletBox = styled(Box)`
+  padding-bottom: 80px;
 `;
 export default Layout;
