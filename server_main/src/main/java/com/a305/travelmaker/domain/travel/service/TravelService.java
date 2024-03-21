@@ -48,11 +48,14 @@ public class TravelService {
 
     /*
       0. 데이터 세팅
-        0-0. 이전 군집 내용 초기화
+        0-0. 이전 클러스터, 장소 리스트 초기화
         0-1. 장소 id의 경도, 위도를 pointList에 담기
         0-2. 여행일 수 확인
     */
+    pointList.clear();
     clusters.clear();
+    destinationsIdList.clear();
+
     for (Integer destinationId : travelRequest.getDestinationIdList()) {
 
       Destination destination = destinationRepository.findById(destinationId).get();
@@ -62,6 +65,7 @@ public class TravelService {
           .longitude(destination.getLongitude())
           .build());
     }
+
     long travelDays = travelRequest.calculateTravelDays();
 
     System.out.println(pointList);
