@@ -44,5 +44,6 @@ const FooterBox = styled(Box)`
   weight: 100vw;
   height: 3vh;
   margin-top: 8vh;
+  background-color: #fff;
 `;
 export default Layout;
