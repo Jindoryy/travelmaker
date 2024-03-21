@@ -22,7 +22,7 @@ public class TravelController {
   @Operation(summary = "여행 저장", description = "여행 정보를 받아 저장한다.")
   @PostMapping
   public SuccessResponse<TravelResponse> addTravel(@RequestBody TravelRequest travelRequest) {
-    System.out.println(travelRequest);
+
     return new SuccessResponse<>(travelService.saveTravel(travelRequest));
   }
 }
