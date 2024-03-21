@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class DestinationListResponse {
 
   private Integer destinationId;
+  private DestinationType destinationType;
   private String destinationName;
-  private String destinationContent;
   private String destinationImgUrl;
 }

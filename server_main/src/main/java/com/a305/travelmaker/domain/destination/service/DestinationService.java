@@ -89,8 +89,8 @@ public class DestinationService {
 
       destinationListResponseList.add(DestinationListResponse.builder()
           .destinationId(destination.getId())
+          .destinationType(destination.getType())
           .destinationName(destination.getName())
-          .destinationContent(destination.getContent())
           .destinationImgUrl(destination.getImgUrl())
           .build());
     }
