@@ -41,9 +41,10 @@ public class DestinationController {
 
   @Operation(summary = "장소 리스트 조회", description = "장소 리스트를 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<List<DestinationListResponse>> getDestinationList() {
+  public SuccessResponse<List<DestinationListResponse>> getDestinationList(
+      @RequestParam List<Integer> destinationsIdList) {
 
-    return new SuccessResponse<>(destinationService.findDestinationList());
+    return new SuccessResponse<>(destinationService.findDestinationList(destinationsIdList));
   }
 
   @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")

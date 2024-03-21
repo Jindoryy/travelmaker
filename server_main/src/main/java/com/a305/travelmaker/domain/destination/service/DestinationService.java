@@ -79,13 +79,13 @@ public class DestinationService {
         .build();
   }
 
-  public List<DestinationListResponse> findDestinationList() {
+  public List<DestinationListResponse> findDestinationList(List<Integer> destinationsIdList) {
 
     List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
 
-    List<Destination> destinationList = destinationRepository.findTop100ByOrderById();
+    for (Integer id : destinationsIdList) {
 
-    for (Destination destination : destinationList) {
+      Destination destination = destinationRepository.findById(id).get();
 
       destinationListResponseList.add(DestinationListResponse.builder()
           .destinationId(destination.getId())
