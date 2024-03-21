@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DestinationRepository extends JpaRepository<Destination, Integer> {
 
-  List<Destination> findTop100ByOrderById();
 }
