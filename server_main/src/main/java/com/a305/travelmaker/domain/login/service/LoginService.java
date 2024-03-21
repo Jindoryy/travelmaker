@@ -5,12 +5,19 @@ import com.a305.travelmaker.domain.login.dto.KakaoUserInfoRes;
 import com.a305.travelmaker.domain.login.dto.OauthTokenRes;
 import com.a305.travelmaker.domain.login.dto.UserDetail;
 import com.a305.travelmaker.domain.login.entity.RefreshToken;
+import com.a305.travelmaker.domain.login.entity.RefreshTokenRedis;
+import com.a305.travelmaker.domain.login.repository.RefreshTokenRedisRepository;
 import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
+import com.a305.travelmaker.global.common.exception.CustomException;
+import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import com.google.gson.Gson;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +34,7 @@ public class LoginService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final TokenProvider tokenProvider;
     private final RestTemplate restTemplate;
 
@@ -118,15 +126,35 @@ public class LoginService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    public OauthTokenRes replaceToken(User user, RefreshToken refreshToken) {
+    public void SaveRefreshTokenByRedis(User user, String token, long tokenExpiredSecond){
+        RefreshTokenRedis refreshTokenRedis = RefreshTokenRedis.builder()
+            .refreshToken(token)
+            .userId(user.getId())
+            .isExpired(false)
+            .expireDate(LocalDateTime.now().plusSeconds(tokenExpiredSecond))
+            .build();
+        // Redis에 저장
+        refreshTokenRedisRepository.save(refreshTokenRedis);
+    }
+
+    public OauthTokenRes replaceToken(User user, RefreshTokenRedis oldRefreshTokenRedis) {
 
         OauthTokenRes oauthTokenRes = tokenProvider.generateTokenDto(user);
-        refreshToken.setIsExpired();
-        refreshTokenRepository.save(refreshToken);
-        RefreshToken newRefreshToken = new RefreshToken();
-        newRefreshToken.setUserRefreshToken(user, oauthTokenRes.getRefreshToken(), oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
-        refreshTokenRepository.save(newRefreshToken);
+        oldRefreshTokenRedis.setIsExpired();
+        refreshTokenRedisRepository.save(oldRefreshTokenRedis);
+        RefreshTokenRedis newRefreshToken = RefreshTokenRedis.builder()
+            .refreshToken(oauthTokenRes.getRefreshToken())
+            .userId(user.getId())
+            .isExpired(false)
+            .expireDate(LocalDateTime.now().plusSeconds(oauthTokenRes.getRefreshTokenExpiresIn() / 1000))
+            .build();
+        refreshTokenRedisRepository.save(newRefreshToken);
 
         return oauthTokenRes;
+    }
+
+    public RefreshTokenRedis findByToken(String refreshToken) {
+        return refreshTokenRedisRepository.findById(refreshToken)
+            .orElseThrow(() -> new CustomException(ErrorCode.REFRESH_TOKEN_VALIDATION_ERROR));
     }
 }

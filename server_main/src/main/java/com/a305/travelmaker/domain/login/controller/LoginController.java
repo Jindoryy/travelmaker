@@ -5,6 +5,7 @@ import com.a305.travelmaker.domain.login.dto.KakaoOauthTokenRes;
 import com.a305.travelmaker.domain.login.dto.KakaoUserInfoRes;
 import com.a305.travelmaker.domain.login.dto.OauthTokenRes;
 import com.a305.travelmaker.domain.login.entity.RefreshToken;
+import com.a305.travelmaker.domain.login.entity.RefreshTokenRedis;
 import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
 import com.a305.travelmaker.domain.login.service.LoginService;
 import com.a305.travelmaker.domain.user.entity.User;
@@ -36,15 +37,17 @@ public class LoginController {
             oauthTokenData.getAccess_token());
         User user = loginService.accountCheck(kakaoUserInfoRes);
         OauthTokenRes oauthTokenRes = tokenProvider.generateTokenDto(user);
-        loginService.SaveRefreshToken(user, oauthTokenRes.getRefreshToken(),
+//        loginService.SaveRefreshToken(user, oauthTokenRes.getRefreshToken(),
+//            oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
+        loginService.SaveRefreshTokenByRedis(user, oauthTokenRes.getRefreshToken(),
             oauthTokenRes.getRefreshTokenExpiresIn() / 1000);
         return new SuccessResponse<>(oauthTokenRes);
     }
 
     @PostMapping("/oauth/token")
     public SuccessResponse<OauthTokenRes> tokenrReissuance(@RequestBody String refreshToken) {
-        RefreshToken oldRefreshToken = refreshTokenRepository.findByToken(refreshToken)
-            .orElseThrow(() -> new CustomException(ErrorCode.REFRESH_TOKEN_VALIDATION_ERROR));
+
+        RefreshTokenRedis oldRefreshToken = loginService.findByToken(refreshToken);
 
         if(!oldRefreshToken.isValid(LocalDateTime.now())) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_VALIDATION_ERROR);
