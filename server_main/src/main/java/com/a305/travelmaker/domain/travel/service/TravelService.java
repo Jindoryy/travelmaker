@@ -48,9 +48,11 @@ public class TravelService {
 
     /*
       0. 데이터 세팅
+        0-0. 이전 군집 내용 초기화
         0-1. 장소 id의 경도, 위도를 pointList에 담기
         0-2. 여행일 수 확인
     */
+    clusters.clear();
     for (Integer destinationId : travelRequest.getDestinationIdList()) {
 
       Destination destination = destinationRepository.findById(destinationId).get();
