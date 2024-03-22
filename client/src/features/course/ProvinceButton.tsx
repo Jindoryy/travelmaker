@@ -36,6 +36,7 @@ const Image = styled.img`
   height: 10rem;
   left: 0;
   top: 0;
+  margin: 0;
   position: absolute;
   border-radius: 0.5rem;
 `;
