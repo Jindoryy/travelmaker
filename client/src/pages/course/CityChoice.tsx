@@ -50,18 +50,6 @@ const CityChoice = () => {
   const choiceButton = (cityId: number) => {
     //시티 선택 완료
     navigate('/course/checksite', { state: { cityId: cityId } });
-    console.log(cityId);
-    console.log(provinceId);
-    // 추천리스트 조회
-    // destinationDetail(cityId)
-    //   .then((response) => {
-    //     // 요청 성공 시 로직
-    //     console.log(response.data); // 서버 응답 확인
-    //   })
-    //   .catch((error) => {
-    //     // 요청 실패 시 로직
-    //     console.error('Error:', error);
-    //   });
   };
   return (
     <div
