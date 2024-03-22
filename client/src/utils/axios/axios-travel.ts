@@ -50,6 +50,7 @@ interface TravelResponse {
   };
 }
 
+//코스 편집시 거리 가져오기
 interface DestinationDistanceResponse {
   status: string;
   data: [
@@ -64,6 +65,7 @@ interface DestinationDistanceResponse {
   ];
 }
 
+//시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
   return oauthInstance.get<CityResponse>(`city/${provinceId}`, {
     params: {
@@ -72,6 +74,7 @@ const cityDetail = (provinceId: number) => {
   });
 };
 
+//여행 저장하기
 const travelDetail = (
   startDate: string,
   endDate: string,
@@ -88,6 +91,7 @@ const travelDetail = (
   });
 };
 
+// 코스 편집시 거리 가져오기
 const destinationDistance = (destinationIdList: number[]) => {
   return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
     params: {
