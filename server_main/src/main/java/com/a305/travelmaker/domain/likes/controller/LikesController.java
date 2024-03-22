@@ -1,14 +1,15 @@
 package com.a305.travelmaker.domain.likes.controller;
 
-import com.a305.travelmaker.domain.destination.entity.Destination;
-import com.a305.travelmaker.domain.likes.dto.LikesResponse;
 import com.a305.travelmaker.domain.likes.service.LikesService;
-import com.a305.travelmaker.domain.user.entity.User;
+import com.a305.travelmaker.global.common.dto.FailResponse;
 import com.a305.travelmaker.global.common.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,21 +25,38 @@ public class LikesController {
 
     @Operation(summary = "좋아요 추가, 취소", description = "좋아요를 추가하고 취소한다.")
     @PostMapping
-    public SuccessResponse<String> requestLike(@RequestBody Map<String, Object> body) {
-        Integer userId = (Integer) body.get("userId");
-        Integer destinationId = (Integer) body.get("destinationId");
-//        likesService.addOrCancelLike(userId, destinationId);
-
-        return new SuccessResponse<>("Success");
-    }
-    @Operation(summary = "좋아요 추가, 취소", description = "좋아요를 추가하고 취소한다.")
-    @PostMapping("/test1")
-    public SuccessResponse<String> requestLike1(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> requestLike(@RequestBody Map<String, Object> body) {
         Long userId = Long.valueOf((Integer) body.get("userId"));
         Integer destinationId = (Integer) body.get("destinationId");
 
-        likesService.addOrCancelLike(userId, destinationId);
+        try {
+            likesService.addLike(userId, destinationId);
+            return ResponseEntity.ok(new SuccessResponse<>("like success"));
 
-        return new SuccessResponse<>("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new FailResponse<>("like fail"));
+        }
+    }
+
+    @Operation(summary = "토큰 검사 후, 좋아요 추가, 취소", description = "좋아요를 추가하고 취소한다.")
+    @PostMapping("/token")
+    public ResponseEntity<?> requestLikeToken(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+        // token 검사하는 service 하나 만들어서 갔다오기. boolean으로 반환해서 있으면 다음 로직, 없으면 실패 응답
+
+        String token = request.getHeader("Authorization").substring(7);
+        Long userId = Long.valueOf((Integer) body.get("userId"));
+        Integer destinationId = (Integer) body.get("destinationId");
+
+        boolean isIdCheck = likesService.tokenCheck(userId, token);
+        if (isIdCheck) {
+            try {
+                likesService.addLike(userId, destinationId);
+                return ResponseEntity.ok(new SuccessResponse<>("like success"));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new FailResponse<>("like fail"));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new FailResponse<>("token mismatch"));
+        }
     }
 }

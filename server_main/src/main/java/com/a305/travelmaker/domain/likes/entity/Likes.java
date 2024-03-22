@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "LIKES")
@@ -35,6 +36,7 @@ public class Likes extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User userId;
 
+    @Setter
     @Column(nullable = false)
     private Boolean flag;
 

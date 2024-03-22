@@ -2,13 +2,13 @@ package com.a305.travelmaker.domain.likes.service;
 
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
-import com.a305.travelmaker.domain.likes.dto.LikesResponse;
 import com.a305.travelmaker.domain.likes.entity.Likes;
 import com.a305.travelmaker.domain.likes.repository.LikesRepository;
 import com.a305.travelmaker.domain.user.entity.User;
+import com.a305.travelmaker.domain.user.repository.UserRepository;
+import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,38 +17,37 @@ public class LikesService {
 
     private final LikesRepository likesRepository;
     private final DestinationRepository destinationRepository;
+    private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
 
-    //좋아요 추가
-    /**
-     * 유저id & 장소id로 검색해서
-     * 1) 일치하는 데이터가 없을 때 : insert
-     * 2) 일치하는 데이터가 있을 때 : delete
-     *  https://velog.io/@cjy/%EC%A2%8B%EC%95%84%EC%9A%94-%EC%82%AD%EC%A0%9C-%EA%B8%B0%EB%8A%A5-%EA%B0%9C%EC%84%A0
-     */
+    public boolean tokenCheck(Long userId, String token) {
+        //userId와 token에서 가져온 UserId 비교
+        Long tokenUserId = tokenProvider.getUserIdFromToken(token);
+        return userId.equals(tokenUserId);
+    }
 
-    public void  addOrCancelLike(Long userId, Integer destinationId) {
-        User user = User.builder().id(userId).build();
-        Destination destination = Destination.builder().id(destinationId).build();
+    public void addLike(Long userId, Integer destinationId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        Likes like = likesRepository.findByUserIdAndDestinationId(user, destination).orElse(null);
-        System.out.println(like); //null인게 이상함
+        Optional<Destination> optionalDestination = destinationRepository.findById(destinationId);
+        Destination destination = optionalDestination.orElseThrow(() -> new IllegalArgumentException("Destination not found with ID: " + destinationId));
 
-        if (like == null) {
+        Optional<Likes> optionalLikes = likesRepository.findByUserIdAndDestinationId(user.getId(), destination.getId());
+
+        if (optionalLikes.isEmpty()) {
             //좋아요 생성
             Likes newLike = Likes.builder()
                 .destinationId(destination)
                 .userId(user)
                 .flag(true)
                 .build();
-//            System.out.println("========================");
-//            System.out.println(destination.getId()); //잘나옴
-//            System.out.println(newLike.getDestinationId().getId()); //잘나옴
             likesRepository.save(newLike);
-            //근데 insert할 때 자꾸 null이래.......
         } else {
-            //좋아요 삭제
-            likesRepository.delete(like);
+            //한번이라도 이력이 있는 장소에 대해서 flag 업데이트
+            Likes existingLike = optionalLikes.get();
+            existingLike.setFlag(!existingLike.getFlag());
+            likesRepository.save(existingLike);
         }
     }
-
 }

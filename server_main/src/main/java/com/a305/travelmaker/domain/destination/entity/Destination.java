@@ -51,8 +51,7 @@ public class Destination {
   @Column(name = "content_type_id")
   private int contentTypeId;
 
-  @Builder
-  public Destination(Integer id) {
-    this.id = id;
-  }
+  //영진 추가 (join은 안했음)
+  @Column(name = "province_id")
+  private int provinceId;
 }
