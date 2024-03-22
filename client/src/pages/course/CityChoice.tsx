@@ -1,4 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { destinationDetail, cityDetail } from '../../utils/axios/axios-travel';
 import styled from 'styled-components';
 import { Swiper as SwiperContainer, SwiperSlide } from 'swiper/react';
 
@@ -10,92 +12,44 @@ import 'swiper/css/effect-cube';
 import 'swiper/css/pagination';
 import { EffectCube, Pagination } from 'swiper';
 
-// 서버에서 받아오는 도시 리스트
-const cityList = [
-  {
-    label: '강릉',
-    imgPath: require('../../assets/image/kangwondo/강원-강릉.jpg'),
-  },
-  {
-    label: '속초',
-    imgPath: require('../../assets/image/kangwondo/강원-속초.jpg'),
-  },
-  {
-    label: '평창',
-    imgPath: require('../../assets/image/kangwondo/강원-평창.jpg'),
-  },
-  {
-    label: '동해',
-    imgPath: require('../../assets/image/kangwondo/강원-동해.jpg'),
-  },
-  {
-    label: '고성',
-    imgPath: require('../../assets/image/kangwondo/강원-고성.jpg'),
-  },
-  {
-    label: '삼척',
-    imgPath: require('../../assets/image/kangwondo/강원-삼척.jpg'),
-  },
-  {
-    label: '양구',
-    imgPath: require('../../assets/image/kangwondo/강원-양구.jpg'),
-  },
-  {
-    label: '양양',
-    imgPath: require('../../assets/image/kangwondo/강원-양양.jpg'),
-  },
-  {
-    label: '영월',
-    imgPath: require('../../assets/image/kangwondo/강원-영월.jpg'),
-  },
-  {
-    label: '원주',
-    imgPath: require('../../assets/image/kangwondo/강원-원주.jpg'),
-  },
-  {
-    label: '인제',
-    imgPath: require('../../assets/image/kangwondo/강원-인제.jpg'),
-  },
-  {
-    label: '정선',
-    imgPath: require('../../assets/image/kangwondo/강원-정선.jpg'),
-  },
-  {
-    label: '철원',
-    imgPath: require('../../assets/image/kangwondo/강원-철원.jpg'),
-  },
-  {
-    label: '춘천',
-    imgPath: require('../../assets/image/kangwondo/강원-춘천.jpg'),
-  },
-  {
-    label: '태백',
-    imgPath: require('../../assets/image/kangwondo/강원-태백.jpg'),
-  },
-  {
-    label: '홍천',
-    imgPath: require('../../assets/image/kangwondo/강원-홍천.jpg'),
-  },
-  {
-    label: '화천',
-    imgPath: require('../../assets/image/kangwondo/강원-화천.jpg'),
-  },
-  {
-    label: '횡성',
-    imgPath: require('../../assets/image/kangwondo/강원-횡성.jpg'),
-  },
-];
+interface City {
+  cityId: number;
+  cityName: string;
+  cityUrl: string;
+}
 
 const CityChoice = () => {
+  const location = useLocation();
+
+  const [provinceId, setProvinceId] = useState(location.state?.provinceId);
+  const [cityList, setCityList] = useState<City[]>([]);
+
+  useEffect(() => {
+    if (provinceId) {
+      getCity(provinceId);
+    }
+  }, [provinceId]);
+
+  const getCity = (provinceId: number) => {
+    cityDetail(provinceId)
+      .then((response) => {
+        const cityData = response.data.data;
+        setCityList(cityData);
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+      });
+  };
+
   const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = cityList.length;
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
 
-  const choiceButton = (city: string) => {
+  const navigate = useNavigate();
+  const choiceButton = (cityId: number) => {
     //시티 선택 완료
-    console.log(city);
+    navigate('/course/checksite', { state: { cityId: cityId } });
   };
   return (
     <div
@@ -108,7 +62,11 @@ const CityChoice = () => {
     >
       <CityPaper>
         <CityLine></CityLine>
-        <CityTypography>{cityList[activeStep].label}</CityTypography>
+        <CityTypography>
+          {cityList.length > 0 && cityList[activeStep]
+            ? cityList[activeStep].cityName
+            : 'Loading...'}
+        </CityTypography>
       </CityPaper>
       <StyledSwiper
         effect={'cube'}
@@ -119,12 +77,12 @@ const CityChoice = () => {
       >
         {cityList.map((city, index) => (
           <SwiperSlide key={index}>
-            <SwipeImage src={city.imgPath} alt={city.label} />
+            <SwipeImage src={city.cityUrl} alt={city.cityName} />
           </SwiperSlide>
         ))}
       </StyledSwiper>
       <ButtonBox>
-        <ChooseButton onClick={() => choiceButton(cityList[activeStep].label)}>선택</ChooseButton>
+        <ChooseButton onClick={() => choiceButton(cityList[activeStep].cityId)}>선택</ChooseButton>
       </ButtonBox>
     </div>
   );
