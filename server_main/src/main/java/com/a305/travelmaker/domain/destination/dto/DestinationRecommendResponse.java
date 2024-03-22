@@ -1,5 +1,7 @@
 package com.a305.travelmaker.domain.destination.dto;
 
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,10 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DestinationListResponse {
+public class DestinationRecommendResponse {
 
-  private Integer destinationId;
-  private DestinationType destinationType;
-  private String destinationName;
-  private String destinationImgUrl;
+  private Map<String, List<Integer>> DestinationRecommendList;
 }
