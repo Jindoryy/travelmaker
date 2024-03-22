@@ -109,10 +109,27 @@ public class DestinationService {
     List<Integer> cafe = new ArrayList<>();
 
     sights.add(1000981);
-    food.add(1004281);
-    cafe.add(1005548);
-    cafe.add(1019796);
-    sights.add(1019843);
+    sights.add(1003205);
+    sights.add(1004281);
+    sights.add(1004303);
+    sights.add(1005548);
+    sights.add(1005620);
+    sights.add(1007868);
+    sights.add(1008185);
+    sights.add(1008362);
+    sights.add(1008532);
+    food.add(1019796);
+    food.add(1019843);
+    food.add(1019879);
+    food.add(1004303);
+    food.add(1019843);
+    food.add(1007868);
+    food.add(1019796);
+    food.add(1008362);
+    food.add(1008362);
+    cafe.add(2766515);
+    cafe.add(2766516);
+    cafe.add(2766517);
 
     destinationRecommendResponse.put("sights", sights);
     destinationRecommendResponse.put("food", food);
