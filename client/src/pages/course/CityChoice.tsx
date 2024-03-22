@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { destinationDetail, cityDetail } from '../../utils/axios/axios-travel';
+import { cityDetail } from '../../utils/axios/axios-travel';
 import styled from 'styled-components';
 import { Swiper as SwiperContainer, SwiperSlide } from 'swiper/react';
 
