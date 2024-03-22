@@ -12,6 +12,17 @@ interface CityResponse {
   ];
 }
 
+interface DestinationResponse {
+  status: string;
+  data: {
+    destinationRecommendList: {
+      sights: number[];
+      cafe: number[];
+      food: number[];
+    };
+  };
+}
+
 interface TravelResponse {
   status: string;
   data: {
@@ -88,6 +99,14 @@ const travelDetail = (
   });
 };
 
+const destinationDetail = (cityId: number) => {
+  return oauthInstance.get<DestinationResponse>('destination/recommend', {
+    params: {
+      cityId: cityId,
+    },
+  });
+};
+
 const destinationDistance = (destinationIdList: number[]) => {
   return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
     params: {
@@ -95,4 +114,4 @@ const destinationDistance = (destinationIdList: number[]) => {
     },
   });
 };
-export { cityDetail, travelDetail, destinationDistance };
+export { cityDetail, travelDetail, destinationDetail, destinationDistance };

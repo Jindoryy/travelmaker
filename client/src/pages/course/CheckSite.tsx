@@ -1,18 +1,42 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
+import { destinationDetail } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/HeaderTabs';
 import CheckSitePictures from '../../components/CheckSitePictures';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
+
+interface Destination {}
 
 const CheckSite = () => {
   const [selectedTab, setSelectedTab] = useState(1);
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleClick = () => {
-    navigate('/course/beforeconfirm');
+  const [cityId, setCityId] = useState(location.state?.cityId);
+  const [destinationList, setDestinationList] = useState<Destination[]>([]);
+
+  useEffect(() => {
+    if (cityId) {
+      getDestinationInfo(cityId);
+    }
+  }, [cityId]);
+
+  const getDestinationInfo = (cityId: number) => {
+    // 추천리스트 조회
+    destinationDetail(cityId)
+      .then((response) => {
+        // 요청 성공 시 로직
+        console.log(response.data); // 서버 응답 확인
+      })
+      .catch((error) => {
+        // 요청 실패 시 로직
+        console.error('Error:', error);
+      });
   };
+
+  //   const handleClick = () => {
+  //     navigate('/course/beforeconfirm');
+  //   };
 
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
@@ -35,9 +59,7 @@ const CheckSite = () => {
           <CheckSitePictures />
         </SitePicturesStyle>
       </SitePicturesContainer>
-      <ButtonBox>
-        <ChooseButton onClick={handleClick}>선택</ChooseButton>
-      </ButtonBox>
+      <ButtonBox>{/* <ChooseButton onClick={handleClick}>선택</ChooseButton> */}</ButtonBox>
     </MainPageContainer>
   );
 };
