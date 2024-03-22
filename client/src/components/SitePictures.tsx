@@ -6,6 +6,8 @@ import { pink } from '@mui/material/colors';
 import axios from 'axios';
 import styled from 'styled-components';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 interface CatImg {
   id: string;
   catUrl: string;
