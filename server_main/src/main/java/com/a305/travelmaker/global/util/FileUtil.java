@@ -29,7 +29,7 @@ public class FileUtil {
   public String uploadFile(MultipartFile file) {
 
     try {
-      String fileName = baseUrl + UUID.randomUUID() + "_" + file.getOriginalFilename();
+      String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType(file.getContentType());
       metadata.setContentLength(file.getSize());
@@ -39,7 +39,7 @@ public class FileUtil {
       );
       putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
       amazonS3Client.putObject(putObjectRequest);
-      return fileName;
+      return baseUrl + fileName;
     } catch (IOException e) {
     }
     return null;

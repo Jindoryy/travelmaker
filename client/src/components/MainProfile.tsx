@@ -117,7 +117,6 @@ const StyledProfileContainer = styled.div<ProfileProps>`
   background-color: white;
   color: #000;
   padding: 10px;
-
   margin: 10px;
   text-align: center;
   align-items: center;
