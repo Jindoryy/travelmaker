@@ -1,7 +1,18 @@
 import { styled } from 'styled-components';
-import React, { useState, useEffect } from 'react';
+import useUserInfo from '../../store/useUserStore';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProvinceHeader = () => {
+  const navigate = useNavigate();
+  const { userInfo } = useUserInfo();
+  // useEffect(() => {
+  //   if (!userInfo || userInfo.userId === -1) {
+  //     navigate('/login');
+  //   }
+  // }, [userInfo, navigate]);
+  const { nickName } = userInfo;
+
   const getProfileImage = () => {
     return require('../../assets/image/KissingCat.png');
   };
@@ -10,7 +21,7 @@ const ProvinceHeader = () => {
     <>
       <ProfileContainer>
         <ProfileImage src={getProfileImage()} alt="Profile" />
-        <ProfileText>건희님, 어디로 떠나 볼까요?...</ProfileText>
+        <ProfileText>{nickName}님, 어디로 떠나 볼까요?...</ProfileText>
       </ProfileContainer>
     </>
   );
