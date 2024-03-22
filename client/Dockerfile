@@ -12,5 +12,5 @@ RUN rm -rf /etc/nginx/conf.d/*
 COPY ./nginx.conf /etc/nginx/conf.d
 
 COPY --from=builder client/build /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
