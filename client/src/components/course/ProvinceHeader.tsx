@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 const ProvinceHeader = () => {
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
-  // useEffect(() => {
-  //   if (!userInfo || userInfo.userId === -1) {
-  //     navigate('/login');
-  //   }
-  // }, [userInfo, navigate]);
+  useEffect(() => {
+    if (!userInfo || userInfo.userId === -1) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
   const { nickName } = userInfo;
 
   const getProfileImage = () => {
