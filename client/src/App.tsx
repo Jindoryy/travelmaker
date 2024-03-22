@@ -5,12 +5,13 @@ import './App.css';
 
 import Layout from './pages/Layout';
 import MainPage from './pages/main/MainPage';
+import CheckStie from './pages/course/CheckSite';
 import LoginPage from './pages/user/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
-import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
+// import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 
 function App() {
   const router = createBrowserRouter([
@@ -35,10 +36,15 @@ function App() {
           errorElement: <ErrorPage />,
         },
         {
-          path: '/course/province',
-          element: <ProvinceChoicePage />,
+          path: '/course/checksite',
+          element: <CheckStie />,
           errorElement: <ErrorPage />,
         },
+        // {
+        //   path: '/course/province',
+        //   element: <ProvinceChoicePage />,
+        //   errorElement: <ErrorPage />,
+        // },
         {
           path: '/login',
           element: <LoginPage />,

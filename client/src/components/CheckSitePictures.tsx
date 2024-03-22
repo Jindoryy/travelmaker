@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
-import { pink } from '@mui/material/colors';
+import { yellow } from '@mui/material/colors';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -18,6 +18,7 @@ export default function Cats(): JSX.Element {
   const [isLoadingRight, setIsLoadingRight] = useState<boolean>(false);
   const [catImgArrLeft, setCatImgArrLeft] = useState<CatImg[]>([]);
   const [catImgArrRight, setCatImgArrRight] = useState<CatImg[]>([]);
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
 
   const handleObserverLeft = (entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
@@ -99,6 +100,15 @@ export default function Cats(): JSX.Element {
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
+  const handleCheckboxChange = (id: string) => {
+    const isChecked = checkedItems.includes(id);
+    if (isChecked) {
+      setCheckedItems(checkedItems.filter((item) => item !== id));
+    } else {
+      setCheckedItems([...checkedItems, id]);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <CatImagesContainer>
@@ -106,18 +116,17 @@ export default function Cats(): JSX.Element {
           <StyledCheckboxs
             {...label}
             sx={{
-              color: pink[600],
+              color: yellow[600],
               '&.Mui-checked': {
-                color: pink[600],
+                color: yellow[600],
               },
             }}
-            icon={<FavoriteBorder />}
-            checkedIcon={<Favorite />}
           />
           <Card isFlipped={isFlipped} onClick={handleCardClick}>
-            <Front>
+            <Front isDarkened>
               <img src="/img/강릉시.jpg" />
             </Front>
+
             <Back>
               <BackText>
                 남산서울타워
@@ -130,43 +139,39 @@ export default function Cats(): JSX.Element {
           </Card>
         </FlipContainer>
         {catImgArrLeft.map((catImg, index) => (
-          <CatImageCard key={catImg.id}>
+          <CatImageCard key={catImg.id} isDarkened={checkedItems.includes(catImg.id)}>
             <StyledCheckbox
-              {...label}
+              checked={checkedItems.includes(catImg.id)}
+              onChange={() => handleCheckboxChange(catImg.id)}
               sx={{
-                color: pink[600],
+                color: yellow[600],
                 '&.Mui-checked': {
-                  color: pink[600],
+                  color: yellow[600],
                 },
               }}
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite />}
             />
             <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
           </CatImageCard>
         ))}
         {isLoadingLeft && <p>Loading...</p>}
-        {/* <div id="observerLeft" style={{ height: '10px' }}></div> */}
       </CatImagesContainer>
       <CatImagesContainer>
         {catImgArrRight.map((catImg, index) => (
-          <CatImageCard key={catImg.id}>
+          <CatImageCard key={catImg.id} isDarkened={checkedItems.includes(catImg.id)}>
             <StyledCheckbox
-              {...label}
+              checked={checkedItems.includes(catImg.id)}
+              onChange={() => handleCheckboxChange(catImg.id)}
               sx={{
-                color: pink[600],
+                color: yellow[600],
                 '&.Mui-checked': {
-                  color: pink[600],
+                  color: yellow[600],
                 },
               }}
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite />}
             />
             <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
           </CatImageCard>
         ))}
         {isLoadingRight && <p>Loading...</p>}
-        {/* <div id="observerRight" style={{ height: '10px' }}></div> */}
       </CatImagesContainer>
     </div>
   );
@@ -177,14 +182,16 @@ const CatImagesContainer = styled.div`
   flex-direction: column;
   background-color: white;
   border-radius: 20px;
-  /* padding: 10px; */
   margin: 10px;
   width: 45%;
 `;
 
-const CatImageCard = styled.div`
+interface CatImageCardProps {
+  isDarkened: boolean;
+}
+
+const CatImageCard = styled.div<CatImageCardProps>`
   position: relative;
-  /* padding: 10px; */
   margin-top: -10px;
   margin-bottom: -10px;
   text-align: center;
@@ -193,7 +200,23 @@ const CatImageCard = styled.div`
     max-width: 100%;
     height: auto;
     border-radius: 5px;
+    transition: filter 0.3s;
+    filter: ${({ isDarkened }) => (isDarkened ? 'brightness(50%)' : 'none')};
   }
+`;
+
+const StyledCheckbox = styled(Checkbox)`
+  position: absolute;
+  top: 45px;
+  right: -65px;
+  z-index: 1;
+`;
+
+const StyledCheckboxs = styled(Checkbox)`
+  position: absolute;
+  top: 35px;
+  right: -130px;
+  z-index: 1;
 `;
 
 const FlipContainer = styled.div`
@@ -217,12 +240,14 @@ const Card = styled.div<{ isFlipped: boolean }>`
   `}
 `;
 
-const Front = styled.div`
+const Front = styled.div<CatImageCardProps>`
   position: absolute;
   margin-top: -10px;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
+  transition: filter 0.3s;
+  filter: ${({ isDarkened }) => (isDarkened ? 'brightness(50%)' : 'none')};
 
   img {
     max-width: 100%;
@@ -254,20 +279,6 @@ const BackText = styled.p`
   font-family: 'Pretendard';
   margin: 10px;
   letter-spacing: 1px;
-  white-space: pre-line; /* 줄바꿈 유지 */
+  white-space: pre-line;
   line-height: 1.5;
-`;
-
-const StyledCheckbox = styled(Checkbox)`
-  position: absolute;
-  top: 45px;
-  right: -65px;
-  z-index: 1;
-`;
-
-const StyledCheckboxs = styled(Checkbox)`
-  position: absolute;
-  top: 35px;
-  right: -130px;
-  z-index: 1;
 `;
