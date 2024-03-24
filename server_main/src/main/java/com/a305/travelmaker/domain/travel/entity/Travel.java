@@ -47,9 +47,6 @@ public class Travel extends BaseEntity {
   @Enumerated(value = EnumType.STRING)
   private Transportation transportation;
 
-  @Column(length = 100)
-  private String name;
-
   @Column(name = "city_name", length = 50)
   private String cityName;
 

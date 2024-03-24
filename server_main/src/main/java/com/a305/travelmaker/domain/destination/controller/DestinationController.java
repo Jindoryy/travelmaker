@@ -1,6 +1,5 @@
 package com.a305.travelmaker.domain.destination.controller;
 
-import com.a305.travelmaker.domain.destination.dto.DestinationDetailResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,18 +31,18 @@ public class DestinationController {
   }
 
   @Operation(summary = "장소 조회", description = "장소 정보를 조회한다.")
-  @GetMapping("/{id}")
-  public SuccessResponse<DestinationDetailResponse> getDestinationDetail(@PathVariable Integer id) {
+  @GetMapping
+  public SuccessResponse<List<DestinationListResponse>> getDestinationDetail(
+      @RequestParam List<Integer> destinationsIdList) {
 
-    return new SuccessResponse<>(destinationService.findDestinationDetail(id));
+    return new SuccessResponse<>(destinationService.findDestinationDetail(destinationsIdList));
   }
 
   @Operation(summary = "장소 리스트 조회", description = "장소 리스트를 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<List<DestinationListResponse>> getDestinationList(
-      @RequestParam List<Integer> destinationsIdList) {
+  public SuccessResponse<List<DestinationListResponse>> getDestinationList() {
 
-    return new SuccessResponse<>(destinationService.findDestinationList(destinationsIdList));
+    return new SuccessResponse<>(destinationService.findDestinationList());
   }
 
   @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")
