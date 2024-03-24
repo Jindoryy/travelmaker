@@ -1,11 +1,13 @@
 package com.a305.travelmaker.domain.travel.entity;
 
 import com.a305.travelmaker.domain.course.entity.Course;
+import com.a305.travelmaker.domain.diary.entity.Diary;
 import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
 import com.a305.travelmaker.domain.travel.dto.Transportation;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,11 +40,14 @@ public class Travel extends BaseEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @OneToMany(mappedBy = "travel")
+  @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Course> courseList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "travel")
+  @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Memo> memoList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Diary> diaryList = new ArrayList<>();
 
   @Enumerated(value = EnumType.STRING)
   private Transportation transportation;

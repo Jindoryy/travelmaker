@@ -22,19 +22,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class DiaryService {
 
   private final FileUtil fileUtil;
-  private DiaryRepository diaryRepository;
-  private TravelRepository travelRepository;
-  private FileRepository fileRepository;
+  private final DiaryRepository diaryRepository;
+  private final TravelRepository travelRepository;
+  private final FileRepository fileRepository;
 
   public DiaryDetailResponse findDiaryDetail(Integer id) {
 
     Diary diary = diaryRepository.findById(id).get();
-    Travel travel = travelRepository.findById(diary.getTravel().getId()).get();
 
     return DiaryDetailResponse.builder()
-        .name(travel.getCityName())
-        .startDate(travel.getStartDate())
-        .endDate(travel.getEndDate())
+        .name(diary.getTravel().getCityName())
+        .startDate(diary.getTravel().getStartDate())
+        .endDate(diary.getTravel().getEndDate())
         .text(diary.getText())
         .imgUrls(diary.getFileList().stream().map(File::getImgUrl).collect(Collectors.toList()))
         .build();

@@ -55,7 +55,7 @@ public class DiaryController {
   }
 
   @Operation(summary = "일기 수정", description = "일기를 수정한다.")
-  @PutMapping("{id}")
+  @PutMapping("/{id}")
   public void updateDiary(
       @RequestBody DiaryUpdateRequest diaryUpdateRequest) {
 

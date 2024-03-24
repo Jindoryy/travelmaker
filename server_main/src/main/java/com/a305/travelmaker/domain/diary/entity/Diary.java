@@ -3,6 +3,7 @@ package com.a305.travelmaker.domain.diary.entity;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Diary extends BaseEntity {
   @JoinColumn(name = "travel_id")
   private Travel travel;
 
-  @OneToMany(mappedBy = "diary")
+  @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<File> fileList = new ArrayList<>();
 
   private String text;
