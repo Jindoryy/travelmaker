@@ -1,16 +1,26 @@
-# 단계 1: 빌드 환경
-FROM node:18-alpine as build
-WORKDIR /app
-COPY package.json tsconfig.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# nginx 이미지 사용
+FROM nginx:latest
 
-# 단계 2: 프로덕션 환경
-FROM nginx:stable-alpine as production
-COPY --from=build /app/build /usr/share/nginx/html
-# 리액트 라우터를 사용하는 경우 필요: 모든 요청을 index.html로 리다이렉트
+# root에 /app 폴더 생성
+RUN mkdir /app
+
+# work dir 고정
+WORKDIR /app
+
+# work dir에 build 폴더 생성
+RUN mkdir ./build
+
+# host pc의 현재 경로의 build 폴더를 work dir의 build 폴더로 복사
+ADD ./build ./build
+
+# nginx의 default.conf 삭제
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d
+
+# host pc의 nginx.conf를 아래 경로에 복사
+COPY ./nginx.conf /etc/nginx/conf.d
+
+# 80 포트 개방
 EXPOSE 80
+
+# container 실행 시 자동으로 실행할 command. nginx 시작함
 CMD ["nginx", "-g", "daemon off;"]

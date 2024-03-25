@@ -7,3 +7,7 @@ oauth2:
     kakao:
       client-rest-key: ${KAKAO_CLIENT_REST_KEY}
       client-secret: ${KAKAO_CLIENT_SECRET}
+
+bigdata:
+  server:
+    domain: ${BIGDATA_SERVER_DOMAIN}
