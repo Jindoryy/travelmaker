@@ -1,14 +1,23 @@
 package com.a305.travelmaker.domain.travel.service;
 
+import com.a305.travelmaker.domain.city.entity.City;
+import com.a305.travelmaker.domain.city.repository.CityRepository;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
+import com.a305.travelmaker.domain.diary.entity.Diary;
+import com.a305.travelmaker.domain.diary.entity.File;
+import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
+import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
+import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
+import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TravelService {
 
+  private final FileUtil fileUtil;
   private final DestinationService destinationService;
   private final TravelRepository travelRepository;
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
+  private final CityRepository cityRepository;
+
+  @Value("${cloud.aws.s3.base-url}")
+  private String baseUrl;
 
   private List<Point> pointList = new ArrayList<>(); // 장소의 경도, 위도를 담고 있는 리스트
   private List<Cluster> clusters = new ArrayList<>();
@@ -223,5 +238,50 @@ public class TravelService {
       }
     }
     return centroidsChanged;
+  }
+
+  public TravelBeforeResponse findTravelBeforeDetail(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+    List<Memo> memoList = travel.getMemoList();
+
+    // 이 부분부터 회원 ID와 같은 메모ID를 반환하는 로직 필요
+    Integer memoId = 1;
+//    for (Memo memo : memoList) {
+//      if
+//    }
+
+    City city = cityRepository.findByName(travel.getCityName());
+
+    return TravelBeforeResponse.builder()
+        .travelId(travel.getId())
+        .cityName(travel.getCityName())
+        .imgUrl(city.getImgUrl())
+        .memoId(memoId)
+        .build();
+  }
+
+  public TravelListResponse findTravelList() {
+
+    TravelListResponse travelListResponse = new TravelListResponse();
+
+    // 여행id, 여정명, 시작일, 종료일, 동행자 리스트, 시 사진, 현재 여행 상태(여행전, 일기전, 일기후)
+
+    return travelListResponse;
+  }
+
+  @Transactional
+  public void removeTravel(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+
+    for (Diary diary : travel.getDiaryList()) {
+      for (File file : diary.getFileList()) {
+
+        fileUtil.deleteFile(file.getImgUrl().replace(baseUrl, "")); // S3 도메인 부분 제외한 name으로 삭제
+      }
+    }
+
+    travelRepository.delete(travel);
   }
 }
