@@ -51,7 +51,7 @@ public class Destination {
   @Column(name = "content_type_id")
   private int contentTypeId;
 
-  //영진 추가 (join은 안했음)
+  //영진 추가 (join은 안했음. 주석은 나중에 삭제)
   @Column(name = "province_id")
   private int provinceId;
 }

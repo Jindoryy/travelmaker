@@ -41,8 +41,6 @@ public class LikesController {
     @Operation(summary = "토큰 검사 후, 좋아요 추가, 취소", description = "좋아요를 추가하고 취소한다.")
     @PostMapping("/token")
     public ResponseEntity<?> requestLikeToken(@RequestBody Map<String, Object> body, HttpServletRequest request) {
-        // token 검사하는 service 하나 만들어서 갔다오기. boolean으로 반환해서 있으면 다음 로직, 없으면 실패 응답
-
         String token = request.getHeader("Authorization").substring(7);
         Long userId = Long.valueOf((Integer) body.get("userId"));
         Integer destinationId = (Integer) body.get("destinationId");
