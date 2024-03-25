@@ -53,6 +53,7 @@ public class TokenProvider {
         //Access Toekn
         String accessToken = Jwts.builder()
             .claim("nickname", user.getNickname())
+            .claim(AUTHORITIES_KEY, user.getRoles())
             .signWith(key, SignatureAlgorithm.HS512)
             .setIssuer(ISS)
             .setSubject(String.valueOf(user.getId()))

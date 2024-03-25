@@ -25,19 +25,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.exceptionHandling(authEntryPoint -> authEntryPoint
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler));
         http.sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             http.authorizeHttpRequests(request -> request
-//                .requestMatchers(
-//                        "/login/oauth2/code/kakao",
-//                        "/login/oauth/token",
-//                        "/city/**",
-//                         "/province"
-//                )
-//                .permitAll()
-                .anyRequest().permitAll());
+                .requestMatchers(
+                        "/login/oauth2/code/kakao",
+                        "/login/oauth/token",
+                        "/swagger-ui/**",
+                        "api-docs/**"
+
+                )
+                .permitAll());
         http.logout((logout) -> logout
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .logoutSuccessUrl("/")
