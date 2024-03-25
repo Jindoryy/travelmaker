@@ -42,7 +42,7 @@ const Image = styled.img`
 `;
 
 const TextOverlay = styled.div`
-  width: 10rem;
+  width: 4rem;
   height: 2.5rem;
   left: 0;
   top: 6.675rem;
