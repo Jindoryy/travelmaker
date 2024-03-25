@@ -22,9 +22,7 @@ import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,11 +47,10 @@ public class TravelService {
   private List<Point> pointList = new ArrayList<>(); // 장소의 경도, 위도를 담고 있는 리스트
   private List<Cluster> clusters = new ArrayList<>();
   private List<Integer> destinationsIdList = new ArrayList<>(); // 군집내에 속해 있는 ID 리스트
+  private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
 
   @Transactional
   public TravelResponse saveTravel(TravelRequest travelRequest) {
-
-    Map<Integer, List<DestinationDistanceResponse>> travelList = new HashMap<>();
 
     /*
       0. 데이터 세팅
@@ -72,7 +69,7 @@ public class TravelService {
     */
     pointList.clear();
     clusters.clear();
-    destinationsIdList.clear();
+    destinationDistanceResponses.clear();
 
     for (Integer destinationId : travelRequest.getDestinationIdList()) {
 
@@ -127,21 +124,20 @@ public class TravelService {
      */
     for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
 
-      destinationsIdList = new ArrayList<>();
+      destinationsIdList.clear();
       for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
 
         Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
         destinationsIdList.add(pointId);
       }
 
-      List<DestinationDistanceResponse> destinationDistanceResponses = destinationService.findDestinationDistance(
-          destinationsIdList);
-      travelList.put(i + 1, destinationDistanceResponses);
+      destinationDistanceResponses.add(
+          destinationService.findDestinationDistance(destinationsIdList));
     }
 
-    TravelResponse travelResponse = new TravelResponse(travelList);
-
-    return travelResponse;
+    return TravelResponse.builder()
+        .travelList(destinationDistanceResponses)
+        .build();
   }
 
   // 초기 중심 무작위 선택 (K-Means ++ Algorithm)
@@ -201,48 +197,6 @@ public class TravelService {
     }
   }
 
-
-  private void assignPointsToClusters() { // 데이터 포인트를 가장 가까운 클러스터에 할당하는 역할
-
-    for (Cluster cluster : clusters) {
-      cluster.clearPoints();
-    }
-
-    for (Point point : pointList) {
-
-      Cluster nearestCluster = null;
-      double minDistance = Double.MAX_VALUE;
-      for (Cluster cluster : clusters) {
-
-        double distance = harversineUtil.calculateDistance(cluster.getCentroid(), point);
-        if (distance < minDistance) {
-          minDistance = distance;
-          nearestCluster = cluster;
-        }
-      }
-      nearestCluster.addPoint(point);
-    }
-  }
-
-  private boolean updateCentroids() { // 중심점이 변경되었는지 확인
-
-    boolean centroidsChanged = false;
-    for (Cluster cluster : clusters) {
-
-      Point oldCentroid = cluster.getCentroid();
-      Point newCentroid = cluster.calculateCentroid();
-      double distance = harversineUtil.calculateDistance(oldCentroid,
-          newCentroid); // 이전 중심점과 새 중심점 간의 거리 계산
-
-      if (distance > 0.001) { // 일정한 임계값보다 거리가 크게 변했는지 확인
-
-        centroidsChanged = true;
-        cluster.setCentroid(newCentroid);
-      }
-    }
-    return centroidsChanged;
-  }
-
   public TravelBeforeResponse findTravelBeforeDetail(Integer id) {
 
     Travel travel = travelRepository.findById(id).get();
@@ -297,5 +251,47 @@ public class TravelService {
     }
 
     travelRepository.delete(travel);
+  }
+
+
+  private void assignPointsToClusters() { // 데이터 포인트를 가장 가까운 클러스터에 할당하는 역할
+
+    for (Cluster cluster : clusters) {
+      cluster.clearPoints();
+    }
+
+    for (Point point : pointList) {
+
+      Cluster nearestCluster = null;
+      double minDistance = Double.MAX_VALUE;
+      for (Cluster cluster : clusters) {
+
+        double distance = harversineUtil.calculateDistance(cluster.getCentroid(), point);
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestCluster = cluster;
+        }
+      }
+      nearestCluster.addPoint(point);
+    }
+  }
+
+  private boolean updateCentroids() { // 중심점이 변경되었는지 확인
+
+    boolean centroidsChanged = false;
+    for (Cluster cluster : clusters) {
+
+      Point oldCentroid = cluster.getCentroid();
+      Point newCentroid = cluster.calculateCentroid();
+      double distance = harversineUtil.calculateDistance(oldCentroid,
+          newCentroid); // 이전 중심점과 새 중심점 간의 거리 계산
+
+      if (distance > 0.001) { // 일정한 임계값보다 거리가 크게 변했는지 확인
+
+        centroidsChanged = true;
+        cluster.setCentroid(newCentroid);
+      }
+    }
+    return centroidsChanged;
   }
 }
