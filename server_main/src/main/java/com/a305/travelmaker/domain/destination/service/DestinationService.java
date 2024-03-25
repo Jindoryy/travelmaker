@@ -7,11 +7,13 @@ import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
+import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DestinationService {
 
+  private final RestConfig restConfig;
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
   private Point prevPoint, currentPoint;
+  @Value("${bigdata.server.domain}")
+  private String bigdataServerDomain;
 
   @Transactional
   public List<DestinationDistanceResponse> findDestinationDistance(
@@ -63,27 +68,31 @@ public class DestinationService {
     return destinationDistanceResponses;
   }
 
-  public DestinationDetailResponse findDestinationDetail(Integer destinationId) {
-
-    Destination destination = destinationRepository.findById(destinationId).get();
-
-    return DestinationDetailResponse.builder()
-        .destinationId(destination.getId())
-        .destinationType(destination.getType())
-        .destinationName(destination.getName())
-        .destinationImgUrl(destination.getImgUrl())
-        .point(Point.builder()
-            .latitude(destination.getLatitude())
-            .longitude(destination.getLongitude())
-            .build())
-        .build();
-  }
-
-  public List<DestinationListResponse> findDestinationList(List<Integer> destinationsIdList) {
+  public List<DestinationListResponse> findDestinationDetail(List<Integer> destinationsIdList) {
 
     List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
 
     for (Integer id : destinationsIdList) {
+
+      Destination destination = destinationRepository.findById(id).get();
+
+      destinationListResponseList.add(DestinationListResponse.builder()
+          .destinationId(destination.getId())
+          .destinationType(destination.getType())
+          .destinationName(destination.getName())
+          .destinationImgUrl(destination.getImgUrl())
+          .build());
+    }
+
+    return destinationListResponseList;
+  }
+
+  public List<DestinationListResponse> findDestinationList() {
+
+    List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
+    List<Integer> likeCbfList = restConfig.restTemplate().getForObject(bigdataServerDomain+"/recommend/getLikeCbfList/1111", List.class);
+
+    for (Integer id : likeCbfList) {
 
       Destination destination = destinationRepository.findById(id).get();
 
