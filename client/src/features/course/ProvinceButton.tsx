@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  width: 10rem;
+  width: 40rem;
   height: 10rem;
   left: 0;
   top: 0;
