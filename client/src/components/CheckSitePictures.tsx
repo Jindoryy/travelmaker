@@ -6,91 +6,12 @@ import { yellow } from '@mui/material/colors';
 import axios from 'axios';
 import styled from 'styled-components';
 
-interface CatImg {
-  id: string;
-  catUrl: string;
+interface CheckSitePicturesProps {
+  array: number[]; // array props의 타입을 명시적으로 정의
 }
 
-export default function Cats(): JSX.Element {
-  const [pageLeft, setPageLeft] = useState<number>(0);
-  const [pageRight, setPageRight] = useState<number>(0);
-  const [isLoadingLeft, setIsLoadingLeft] = useState<boolean>(false);
-  const [isLoadingRight, setIsLoadingRight] = useState<boolean>(false);
-  const [catImgArrLeft, setCatImgArrLeft] = useState<CatImg[]>([]);
-  const [catImgArrRight, setCatImgArrRight] = useState<CatImg[]>([]);
+const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-
-  const handleObserverLeft = (entries: IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    if (target.isIntersecting && !isLoadingLeft) {
-      setPageLeft((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handleObserverRight = (entries: IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    if (target.isIntersecting && !isLoadingRight) {
-      setPageRight((prevPage) => prevPage + 1);
-    }
-  };
-
-  useEffect(() => {
-    const observerLeft = new IntersectionObserver(handleObserverLeft, {
-      threshold: 0,
-    });
-    const observerTargetLeft = document.getElementById('observerLeft');
-    if (observerTargetLeft) {
-      observerLeft.observe(observerTargetLeft);
-    }
-
-    const observerRight = new IntersectionObserver(handleObserverRight, {
-      threshold: 0,
-    });
-    const observerTargetRight = document.getElementById('observerRight');
-    if (observerTargetRight) {
-      observerRight.observe(observerTargetRight);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchDataLeft();
-  }, [pageLeft]);
-
-  useEffect(() => {
-    fetchDataRight();
-  }, [pageRight]);
-
-  const fetchDataLeft = async () => {
-    setIsLoadingLeft(true);
-    try {
-      const API_URL_LEFT = `https://api.thecatapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageLeft}&limit=5`;
-      const response = await axios.get(API_URL_LEFT);
-      const newData = response.data.map((catImg: { id: string; url: string }) => ({
-        id: catImg.id,
-        catUrl: catImg.url,
-      })) as CatImg[];
-      setCatImgArrLeft((prevData) => [...prevData, ...newData]);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsLoadingLeft(false);
-  };
-
-  const fetchDataRight = async () => {
-    setIsLoadingRight(true);
-    try {
-      const API_URL_RIGHT = `https://api.thecatapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${pageRight}&limit=5`;
-      const response = await axios.get(API_URL_RIGHT);
-      const newData = response.data.map((catImg: { id: string; url: string }) => ({
-        id: catImg.id,
-        catUrl: catImg.url,
-      })) as CatImg[];
-      setCatImgArrRight((prevData) => [...prevData, ...newData]);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsLoadingRight(false);
-  };
 
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -110,72 +31,81 @@ export default function Cats(): JSX.Element {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <CatImagesContainer>
-        <FlipContainer>
-          <StyledCheckboxs
-            {...label}
-            sx={{
-              color: yellow[600],
-              '&.Mui-checked': {
-                color: yellow[600],
-              },
-            }}
-          />
-          <Card isFlipped={isFlipped} onClick={handleCardClick}>
-            <Front isDarkened>
-              <img src="/img/강릉시.jpg" />
-            </Front>
-
-            <Back>
-              <BackText>
-                남산서울타워
-                <br />
-                <br />
-                도심 속 로맨틱 아일랜드로 입지를 굳힌 남산서울타워는 예로부터 백년해로의 길지로 널리
-                알려져있다.
-              </BackText>
-            </Back>
-          </Card>
-        </FlipContainer>
-        {catImgArrLeft.map((catImg, index) => (
-          <CatImageCard key={catImg.id} isDarkened={checkedItems.includes(catImg.id)}>
-            <StyledCheckbox
-              checked={checkedItems.includes(catImg.id)}
-              onChange={() => handleCheckboxChange(catImg.id)}
-              sx={{
-                color: yellow[600],
-                '&.Mui-checked': {
-                  color: yellow[600],
-                },
-              }}
-            />
-            <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
-          </CatImageCard>
-        ))}
-        {isLoadingLeft && <p>Loading...</p>}
-      </CatImagesContainer>
-      <CatImagesContainer>
-        {catImgArrRight.map((catImg, index) => (
-          <CatImageCard key={catImg.id} isDarkened={checkedItems.includes(catImg.id)}>
-            <StyledCheckbox
-              checked={checkedItems.includes(catImg.id)}
-              onChange={() => handleCheckboxChange(catImg.id)}
-              sx={{
-                color: yellow[600],
-                '&.Mui-checked': {
-                  color: yellow[600],
-                },
-              }}
-            />
-            <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
-          </CatImageCard>
-        ))}
-        {isLoadingRight && <p>Loading...</p>}
-      </CatImagesContainer>
+    <div>
+      {array.map((item) => (
+        <div key={item}>
+          <p>{item}</p>
+          {/* 여기에 원하는 내용을 추가하세요 */}
+        </div>
+      ))}
     </div>
+
+    // <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    //   <CatImagesContainer>
+    //     <FlipContainer>
+    //       <StyledCheckboxs
+    //         {...label}
+    //         sx={{
+    //           color: yellow[600],
+    //           '&.Mui-checked': {
+    //             color: yellow[600],
+    //           },
+    //         }}
+    //       />
+    //       <Card isFlipped={isFlipped} onClick={handleCardClick}>
+    //         <Front isDarkened>
+    //           <img src="/img/강릉시.jpg" />
+    //         </Front>
+
+    //         <Back>
+    //           <BackText>
+    //             남산서울타워
+    //             <br />
+    //             <br />
+    //             도심 속 로맨틱 아일랜드로 입지를 굳힌 남산서울타워는 예로부터 백년해로의 길지로 널리
+    //             알려져있다.
+    //           </BackText>
+    //         </Back>
+    //       </Card>
+    //     </FlipContainer>
+    //     {catImgArrLeft.map((catImg, index) => (
+    //       <CatImageCard key={catImg.id} isDarkened={checkedItems.includes(catImg.id)}>
+    //         <StyledCheckbox
+    //           checked={checkedItems.includes(catImg.id)}
+    //           onChange={() => handleCheckboxChange(catImg.id)}
+    //           sx={{
+    //             color: yellow[600],
+    //             '&.Mui-checked': {
+    //               color: yellow[600],
+    //             },
+    //           }}
+    //         />
+    //         <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
+    //       </CatImageCard>
+    //     ))}
+    //     {isLoadingLeft && <p>Loading...</p>}
+    //   </CatImagesContainer>
+    //   <CatImagesContainer>
+    //     {catImgArrRight.map((catImg, index) => (
+    //       <CatImageCard key={catImg.id} isDarkened={checkedItems.includes(catImg.id)}>
+    //         <StyledCheckbox
+    //           checked={checkedItems.includes(catImg.id)}
+    //           onChange={() => handleCheckboxChange(catImg.id)}
+    //           sx={{
+    //             color: yellow[600],
+    //             '&.Mui-checked': {
+    //               color: yellow[600],
+    //             },
+    //           }}
+    //         />
+    //         <img src={catImg.catUrl} alt={`Cat ${catImg.id}`} />
+    //       </CatImageCard>
+    //     ))}
+    //     {isLoadingRight && <p>Loading...</p>}
+    //   </CatImagesContainer>
+    // </div>
   );
-}
+};
 
 const CatImagesContainer = styled.div`
   display: flex;
@@ -282,3 +212,5 @@ const BackText = styled.p`
   white-space: pre-line;
   line-height: 1.5;
 `;
+
+export default CheckSitePictures;

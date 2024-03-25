@@ -264,7 +264,7 @@ const StyledCheckbox = styled(Checkbox)`
   position: absolute;
   top: 45px;
   right: -65px;
-  z-index: 1;
+  /* z-index: 1; */
 `;
 
 const StyledCheckboxs = styled(Checkbox)`

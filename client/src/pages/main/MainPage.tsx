@@ -11,9 +11,9 @@ const MainPage = () => {
         </LogoContainer>
       </LogoLargeContainer>
 
-      {/* <StyledProfile>
+      <StyledProfile>
         <Profile />
-      </StyledProfile> */}
+      </StyledProfile>
 
       <SitePicturesContainer>
         <SitePicturesStyle>

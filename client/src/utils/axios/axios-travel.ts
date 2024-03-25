@@ -23,6 +23,18 @@ interface DestinationResponse {
   };
 }
 
+interface DestinationArrayResponse {
+  status: string;
+  data: [
+    {
+      destinationId: number;
+      destinationType: string;
+      destinationName: string;
+      destinationImgUrl: string;
+    },
+  ];
+}
+
 interface TravelResponse {
   status: string;
   data: {
@@ -110,10 +122,11 @@ const destinationDetail = (cityId: number) => {
   });
 };
 
-const destinationDetail = (cityId: number) => {
-  return oauthInstance.get<DestinationResponse>('destination/recommend', {
+// 장소조회(장소선택 페이지)
+const destinationArray = (destinationIdList: number[]) => {
+  return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {
-      cityId: cityId,
+      destinationId: destinationIdList,
     },
   });
 };
@@ -126,4 +139,4 @@ const destinationDistance = (destinationIdList: number[]) => {
     },
   });
 };
-export { cityDetail, travelDetail, destinationDetail, destinationDistance };
+export { cityDetail, travelDetail, destinationDetail, destinationDistance, destinationArray };

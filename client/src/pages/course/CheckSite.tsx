@@ -1,19 +1,39 @@
+// CheckSite.tsx
+
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { destinationDetail } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/HeaderTabs';
 import CheckSitePictures from '../../components/CheckSitePictures';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
-interface Destination {}
+interface DestinationResponse {
+  status: string;
+  data: {
+    destinationRecommendList: {
+      sights: number[];
+      cafe: number[];
+      food: number[];
+    };
+  };
+}
 
 const CheckSite = () => {
-  const [selectedTab, setSelectedTab] = useState(1);
+  const [selectedTab, setSelectedTab] = useState<string>('명소'); // 탭을 문자열로 변경
   const location = useLocation();
-
-  const [cityId, setCityId] = useState(location.state?.cityId);
-  const [destinationList, setDestinationList] = useState<Destination[]>([]);
+  const [cityId, setCityId] = useState<number | undefined>(location.state?.cityId); // cityId를 숫자 또는 undefined로 설정
+  const [destinationList, setDestinationList] = useState<DestinationResponse>({
+    // 배열이 아닌 단일 객체로 설정
+    status: '',
+    data: {
+      destinationRecommendList: {
+        sights: [],
+        cafe: [],
+        food: [],
+      },
+    },
+  });
 
   useEffect(() => {
     if (cityId) {
@@ -22,24 +42,23 @@ const CheckSite = () => {
   }, [cityId]);
 
   const getDestinationInfo = (cityId: number) => {
-    // 추천리스트 조회
     destinationDetail(cityId)
       .then((response) => {
-        // 요청 성공 시 로직
-        console.log(response.data); // 서버 응답 확인
+        console.log(response.data);
+        const destinationResponse: DestinationResponse = {
+          status: response.data.status,
+          data: response.data.data,
+        };
+        setDestinationList(destinationResponse);
       })
       .catch((error) => {
-        // 요청 실패 시 로직
         console.error('Error:', error);
       });
   };
 
-  //   const handleClick = () => {
-  //     navigate('/course/beforeconfirm');
-  //   };
-
-  const handleTabChange = (tabNumber: number) => {
-    setSelectedTab(tabNumber);
+  const handleTabChange = (tabName: string) => {
+    // 탭 이름을 문자열로 받음
+    setSelectedTab(tabName);
   };
 
   const letters = ['명소', '식당', '카페'];
@@ -52,14 +71,20 @@ const CheckSite = () => {
           onTabChange={handleTabChange}
           size={3}
           letters={letters}
+          destinationList={destinationList} // destinationList 전달
         />
       </StyledHeaderTabs>
       <SitePicturesContainer>
         <SitePicturesStyle>
-          <CheckSitePictures />
+          {selectedTab === '명소' ? (
+            <CheckSitePictures array={destinationList.data.destinationRecommendList.sights} />
+          ) : selectedTab === '식당' ? (
+            <CheckSitePictures array={destinationList.data.destinationRecommendList.food} />
+          ) : (
+            <CheckSitePictures array={destinationList.data.destinationRecommendList.cafe} />
+          )}
         </SitePicturesStyle>
       </SitePicturesContainer>
-      <ButtonBox>{/* <ChooseButton onClick={handleClick}>선택</ChooseButton> */}</ButtonBox>
     </MainPageContainer>
   );
 };
@@ -89,32 +114,6 @@ const SitePicturesStyle = styled.div`
 const SitePicturesContainer = styled.div`
   margin-top: 20px;
   z-index: 0;
-`;
-
-const ButtonBox = styled(Box)`
-  && {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
-
-const ChooseButton = styled.button`
-  position: fixed;
-  bottom: 80px;
-  width: 90%;
-  height: 40px;
-  background-color: ${(props) => props.theme.main};
-  color: ${(props) => props.theme.subtext};
-  margin: 10px;
-  margin-top: 50px;
-  padding: 10px;
-  border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
 `;
 
 export default CheckSite;
