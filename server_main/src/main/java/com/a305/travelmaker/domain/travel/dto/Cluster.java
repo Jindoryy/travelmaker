@@ -6,13 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Cluster {
 
+  @Setter
   private Point centroid; // 기준점
   private List<Point> points;
 
@@ -38,6 +42,9 @@ public class Cluster {
     }
     double meanLatitude = totalLatitude / points.size();
     double meanLongitude = totalLongitude / points.size();
-    return new Point(meanLatitude, meanLongitude);
+    return Point.builder()
+        .latitude(meanLatitude)
+        .longitude(meanLongitude)
+        .build();
   }
 }

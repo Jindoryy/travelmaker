@@ -7,11 +7,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
@@ -29,7 +27,7 @@ public class FileUtil {
   public String uploadFile(MultipartFile file) {
 
     try {
-      String fileName = baseUrl + UUID.randomUUID() + "_" + file.getOriginalFilename();
+      String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType(file.getContentType());
       metadata.setContentLength(file.getSize());
@@ -39,7 +37,7 @@ public class FileUtil {
       );
       putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
       amazonS3Client.putObject(putObjectRequest);
-      return fileName;
+      return baseUrl + fileName;
     } catch (IOException e) {
     }
     return null;

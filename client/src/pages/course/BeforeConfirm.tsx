@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { travelDetail, destinationDistance } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
 import CourseCard from '../../components/CourseCard';
 
+import styled from 'styled-components';
 import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-// 시 이름, 날짜는 선택한거 기반으로 가져다 쓰기
-const travelInfo = {
-  city: '대구',
-  startDate: '2024.02.15',
-  endDate: '2024.02.18',
-};
+interface TravelInfo {
+  city: string;
+  startDate: string;
+  endDate: string;
+  friendTag: number;
+  transportation: string;
+  destinationIdList: number[];
+}
 
-// 스팟별 거리 (대중교통에 따라 계산해서 표시해 주어야합니다.)
-const spotToSpot = [[14, 23], [30], [42]];
+const travelInfo = {
+  city: '강릉',
+  startDate: '2024-03-20',
+  endDate: '2024-03-22',
+  friendTag: 0,
+  transportation: 'WALK',
+  destinationIdList: [1000981, 1003205, 1004281, 1005548, 1005620, 1007868, 1008362],
+};
 
 //코스 정보 한번에 받아오기(아래는 예시 데이터)
 //받아올 때 마커이미지 url도 박아주자!!!
@@ -25,30 +35,27 @@ const courseInfo = [
   [
     {
       destinationId: 1,
-      destinationCategory: '명소',
+      destinationType: '명소',
       destinationName: '수성못',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-강릉.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-강릉.jpg'),
       lat: 37.503325874722,
       lng: 127.04403462366,
       markerImage: '',
     },
     {
       destinationId: 2,
-      destinationCategory: '식당',
+      destinationType: '식당',
       destinationName: '맛있다',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-속초.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-속초.jpg'),
       lat: 37.49676829082603,
       lng: 127.0343494916394,
       markerImage: '',
     },
     {
       destinationId: 9,
-      destinationCategory: '카페',
+      destinationType: '카페',
       destinationName: '카페다',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-평창.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-평창.jpg'),
       lat: 37.48815415066257,
       lng: 127.03606423768073,
       markerImage: '',
@@ -57,20 +64,18 @@ const courseInfo = [
   [
     {
       destinationId: 3,
-      destinationCategory: '명소',
+      destinationType: '명소',
       destinationName: '식당이라고',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-강릉.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-강릉.jpg'),
       lat: 37.506513372885955,
       lng: 127.07959372848626,
       markerImage: '',
     },
     {
       destinationId: 4,
-      destinationCategory: '카페',
+      destinationType: '카페',
       destinationName: '맛있다니까',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-삼척.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-삼척.jpg'),
       lat: 37.501911481748635,
       lng: 127.03933357219438,
       markerImage: '',
@@ -79,20 +84,18 @@ const courseInfo = [
   [
     {
       destinationId: 5,
-      destinationCategory: '카페',
+      destinationType: '카페',
       destinationName: '카페카페라고',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-영월.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-영월.jpg'),
       lat: 37.50082377853314,
       lng: 127.03087380542581,
       markerImage: '',
     },
     {
       destinationId: 6,
-      destinationCategory: '식당',
+      destinationType: '식당',
       destinationName: '맛있디거영',
-      destinationContent: '하이루',
-      destinationPath: require('../../assets/image/kangwondo/강원-인제.jpg'),
+      destinationImgUrl: require('../../assets/image/kangwondo/강원-인제.jpg'),
       lat: 37.48877081046816,
       lng: 127.01901317288296,
       markerImage: '',
@@ -105,8 +108,8 @@ const markerSet = courseInfo.forEach((el: any) => {
   let number = 1;
   el.forEach((ele: any) => {
     let color = '';
-    if (ele.destinationCategory == '명소') color = 'orange';
-    else if (ele.destinationCategory == '식당') color = 'pink';
+    if (ele.destinationType == '명소') color = 'orange';
+    else if (ele.destinationType == '식당') color = 'pink';
     else color = 'red';
     ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
     number++;
@@ -125,6 +128,33 @@ const thirdDate = courseInfo.length >= 3 ? [...courseInfo[2]] : null;
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const BeforeConfirm = () => {
   const [selectedTab, setSelectedTab] = useState(1);
+  const location = useLocation();
+  // 스팟별 거리 (대중교통에 따라 계산해서 표시해 주어야합니다.)
+  const spotToSpot = [[14, 23], [30], [42]];
+  // const [spotToSpot, setSpotToSpot] = useState<number[]>([]);
+  // [{ point: { destinationId: number; latitude: number; longitude: number; }; nextDestinationDistance: number; }]
+
+  useEffect(() => {
+    if (travelInfo) {
+      getTravel(travelInfo);
+    }
+  }, [travelInfo.destinationIdList]);
+
+  const getTravel = (travelInfo: TravelInfo) => {
+    travelDetail(
+      travelInfo.startDate,
+      travelInfo.endDate,
+      travelInfo.friendTag,
+      travelInfo.transportation,
+      travelInfo.destinationIdList,
+    )
+      .then((response) => {
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+      });
+  };
 
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
@@ -173,7 +203,6 @@ const BoxContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-bottom: 100px;
 `;
 
 const CourseMap = styled.div`

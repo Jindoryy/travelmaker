@@ -10,8 +10,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Point {
 
+  private Integer destinationId;
   private double latitude;
   private double longitude;
 }
