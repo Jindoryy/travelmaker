@@ -30,14 +30,14 @@ const KakaoMap = ({ dateCourse }: any) => {
       new kakao.maps.Marker({
         map: map,
         title: el.destinationName,
-        position: new kakao.maps.LatLng(el.lat, el.lng),
+        position: new kakao.maps.LatLng(el.latitude, el.longitude),
         image: new kakao.maps.MarkerImage(el.markerImage, new kakao.maps.Size(30, 30)),
       });
     });
 
     //선 그리기
     dateCourse.forEach((el: any) => {
-      polyline.push(new kakao.maps.LatLng(el.lat, el.lng));
+      polyline.push(new kakao.maps.LatLng(el.latitude, el.longitude));
     });
 
     const linePath = new kakao.maps.Polyline({
