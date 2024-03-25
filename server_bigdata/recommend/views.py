@@ -2,16 +2,56 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from recommend.models import User,Destination,Likes
+from recommend.serializers import UserSerializer,DestinationSerializer,LikeSerializer
+
 import random
 import pandas as pd
 import numpy as np
 from collections import Counter
 from collections import defaultdict
+from datetime import datetime, timedelta
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
+from surprise import Dataset, Reader, KNNBasic, KNNWithMeans
+from surprise.model_selection import train_test_split
 
-from recommend.models import Destination,Likes
-from recommend.serializers import DestinationSerializer,LikeSerializer
+
+
+######################################## 성별, 나이 기반(4) + 좋아요(96) ########################################
+# 또래추천 4개 => 기존에 붙여서 출력 => 반환값 다시 생각. {또래추천: {}, 기본: {}} 이런 느낌으로 가자
+@api_view(['GET'])
+def getMainList(request, user_id):
+    # 요청으로부터 사용자 정보 가져오기
+    user = User.objects.get(USER_ID=user_id)
+    
+    # 사용자의 성별과 나이 정보 가져오기
+    user_gender = user.GENDER
+    user_age = user.calculate_age()  # calculate_age 함수는 생년월일로부터 나이를 계산하는 것으로 가정
+    
+    # 모든 사용자의 좋아요 정보 가져오기
+    all_users_likes = Likes.objects.filter(FLAG=True).values('USER_ID', 'DESTINATION_ID')
+
+    # 좋아요 데이터프레임 생성
+    likes_df = pd.DataFrame(list(all_users_likes))
+
+    # 사용자의 성별과 나이 정보를 기반으로 한 사용자 필터링
+    similar_users = User.objects.filter(GENDER=user_gender).exclude(USER_ID=user_id)
+    similar_users = similar_users.filter(BIRTH__gte=user.BIRTH - timedelta(days=365*5), BIRTH__lte=user.BIRTH + timedelta(days=365*5))
+
+
+    # 유사한 사용자들이 좋아요를 누른 장소들의 빈도수를 계산
+    similar_likes = likes_df[likes_df['USER_ID'].isin([u.USER_ID for u in similar_users])]
+    similar_likes_count = similar_likes.groupby('DESTINATION_ID').size().reset_index(name='count')
+
+    # 유사한 사용자들이 가장 많이 누른 장소 추출
+    top_destinations = similar_likes_count.sort_values(by='count', ascending=False).head(4)
+    print(top_destinations)
+    
+    top_destination_ids = top_destinations['DESTINATION_ID'].tolist()
+    
+    return Response(top_destination_ids)
+
 
 
 ######################################## 시 내의 사용자 추천 장소 리스트 ########################################
