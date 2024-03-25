@@ -6,8 +6,10 @@ import com.a305.travelmaker.domain.diary.dto.DiaryListResponse;
 import com.a305.travelmaker.domain.diary.dto.DiaryUpdateRequest;
 import com.a305.travelmaker.domain.diary.service.DiaryService;
 import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Diary", description = "일기 API")
 public class DiaryController {
 
+  private final TokenProvider tokenProvider;
   private final DiaryService diaryService;
 
   @Operation(summary = "일기 조회", description = "일기를 조회한다.")
@@ -39,19 +42,26 @@ public class DiaryController {
 
   @Operation(summary = "일기 리스트 조회", description = "일기 리스트를 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<List<DiaryListResponse>> getDiaryList() {
+  public SuccessResponse<List<DiaryListResponse>> getDiaryList(
+      HttpServletRequest request) {
 
-    List<DiaryListResponse> a = new ArrayList<>();
-    return new SuccessResponse<>(a);
+    String token = request.getHeader("Authorization").substring(7);
+    Long userId = tokenProvider.getUserIdFromToken(token);
+
+    return new SuccessResponse<>(diaryService.findDiaryList(userId));
   }
 
   @Operation(summary = "일기 작성", description = "일기를 작성한다.")
   @PostMapping
   public void addDiary(
       @RequestPart List<MultipartFile> files,
-      @RequestPart DiaryAddRequest diaryAddRequest) {
+      @RequestPart DiaryAddRequest diaryAddRequest,
+      HttpServletRequest request) {
 
-    diaryService.saveDiary(files, diaryAddRequest);
+    String token = request.getHeader("Authorization").substring(7);
+    Long userId = tokenProvider.getUserIdFromToken(token);
+
+    diaryService.saveDiary(userId, files, diaryAddRequest);
   }
 
   @Operation(summary = "일기 수정", description = "일기를 수정한다.")

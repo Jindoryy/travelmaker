@@ -6,8 +6,11 @@ import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
 import com.a305.travelmaker.domain.travel.service.TravelService;
 import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TravelController {
 
   private final TravelService travelService;
+  private final TokenProvider tokenProvider;
 
   @Operation(summary = "여행 저장", description = "여행 정보를 받아 저장한다.")
   @PostMapping
@@ -41,9 +45,14 @@ public class TravelController {
 
   @Operation(summary = "여행 리스트 조회", description = "여행 리스트를 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<TravelListResponse> getTravelList() {
+  public SuccessResponse<List<TravelListResponse>> getTravelList(
+      HttpServletRequest request
+  ) {
 
-    return new SuccessResponse<>(travelService.findTravelList());
+    String token = request.getHeader("Authorization").substring(7);
+    Long userId = tokenProvider.getUserIdFromToken(token);
+
+    return new SuccessResponse<>(travelService.findTravelList(userId));
   }
 
   @Operation(summary = "여행 삭제", description = "여행을 삭제한다.")

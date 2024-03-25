@@ -14,7 +14,7 @@ public class TravelRequest {
 
   private LocalDate startDate;
   private LocalDate endDate;
-  private int friendTag;
+  private List<Integer> friendTag;
   private Transportation transportation;
   private List<Integer> destinationIdList;
 

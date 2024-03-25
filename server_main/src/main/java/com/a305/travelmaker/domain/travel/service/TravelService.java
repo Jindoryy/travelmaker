@@ -8,6 +8,7 @@ import com.a305.travelmaker.domain.destination.service.DestinationService;
 import com.a305.travelmaker.domain.diary.entity.Diary;
 import com.a305.travelmaker.domain.diary.entity.File;
 import com.a305.travelmaker.domain.memo.entity.Memo;
+import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
@@ -20,6 +21,7 @@ import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,7 @@ public class TravelService {
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
   private final CityRepository cityRepository;
+  private final MemoRepository memoRepository;
 
   @Value("${cloud.aws.s3.base-url}")
   private String baseUrl;
@@ -243,29 +246,40 @@ public class TravelService {
   public TravelBeforeResponse findTravelBeforeDetail(Integer id) {
 
     Travel travel = travelRepository.findById(id).get();
-    List<Memo> memoList = travel.getMemoList();
-
-    // 이 부분부터 회원 ID와 같은 메모ID를 반환하는 로직 필요
-    Integer memoId = 1;
-//    for (Memo memo : memoList) {
-//      if
-//    }
-
+    Memo memo = memoRepository.findByTravelId(travel.getId());
     City city = cityRepository.findByName(travel.getCityName());
 
     return TravelBeforeResponse.builder()
         .travelId(travel.getId())
         .cityName(travel.getCityName())
         .imgUrl(city.getImgUrl())
-        .memoId(memoId)
+        .memoId(memo.getId())
         .build();
   }
 
-  public TravelListResponse findTravelList() {
+  public List<TravelListResponse> findTravelList(Long userId) {
 
-    TravelListResponse travelListResponse = new TravelListResponse();
+    List<TravelListResponse> travelListResponse = new ArrayList<>();
 
-    // 여행id, 여정명, 시작일, 종료일, 동행자 리스트, 시 사진, 현재 여행 상태(여행전, 일기전, 일기후)
+    List<Travel> travelList = travelRepository.findByUserId(userId);
+
+    for (Travel travel : travelList) {
+
+      City city = cityRepository.findByName(travel.getCityName());
+      String friends = travel.getFriends();
+      String[] friendsArray = friends.split(",");
+      List<String> friendsList = Arrays.asList(friendsArray);
+
+      travelListResponse.add(TravelListResponse.builder()
+          .travelId(travel.getId())
+          .cityName(travel.getCityName())
+          .startDate(travel.getStartDate())
+          .endDate(travel.getEndDate())
+          .friendNameList(friendsList)
+          .imgUrl(city.getImgUrl())
+          .status(travel.getStatus())
+          .build());
+    }
 
     return travelListResponse;
   }
