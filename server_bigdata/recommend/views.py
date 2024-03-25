@@ -20,13 +20,12 @@ def getCityList(request):
     # 요청에서 데이터 추출
     user_id = request.data.get("userId")
     city_id = request.data.get("cityId")
-    province_id = request.data.get("provinceId")
 
     # 결과를 저장할 딕셔너리 초기화
     result = defaultdict(list)
 
     # cityId와 provinceId에 맞는 모든 장소 가져오기
-    similar_destinations = Destination.objects.filter(CITY_ID=city_id, PROVINCE_ID=province_id)
+    similar_destinations = Destination.objects.filter(CITY_ID=city_id)
 
     # 중복 제거
     similar_destinations = list(set(similar_destinations))
@@ -57,7 +56,7 @@ def getCityList(request):
     feature_tfidf = dict(zip(feature_names, tfidf_matrix.sum(axis=0).tolist()[0]))
 
     # 각 타입별로 장소 분류
-    type_mapping = {'SIGHTS': 'sights', 'FOOD': 'food', 'CAFE': 'cafe'}
+    type_mapping = {'sights': 'sights', 'food': 'food', 'cafe': 'cafe'}
     for destination in similar_destinations:
         destination_type = destination.TYPE
         if destination_type in type_mapping:
