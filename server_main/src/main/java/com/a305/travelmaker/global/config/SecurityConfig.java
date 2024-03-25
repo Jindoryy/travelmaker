@@ -25,7 +25,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.exceptionHandling(authEntryPoint -> authEntryPoint
-//            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler));
         http.sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -34,8 +34,11 @@ public class SecurityConfig {
                         "/login/oauth2/code/kakao",
                         "/login/oauth/token",
                         "/swagger-ui/**",
-                        "api-docs/**"
-
+                        "api-docs/**",
+                        "/city/**",
+                        "/province/**",
+                        "/travel",
+                        "/destination/**"
                 )
                 .permitAll());
         http.logout((logout) -> logout
