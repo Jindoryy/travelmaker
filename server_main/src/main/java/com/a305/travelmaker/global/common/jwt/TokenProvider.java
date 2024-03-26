@@ -35,6 +35,8 @@ public class TokenProvider {
     private static final int ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
     private static final int REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     private static final String ISS = "http://kauth.kakao.com";
+
+    private static final String AUD = "https://j10a305.p.ssafy.io/";
     private Key key;
 
     @Autowired
@@ -56,6 +58,7 @@ public class TokenProvider {
             .claim(AUTHORITIES_KEY, user.getRoles())
             .signWith(key, SignatureAlgorithm.HS512)
             .setIssuer(ISS)
+            .setAudience(AUD)
             .setSubject(String.valueOf(user.getId()))
             .setIssuedAt(Timestamp.valueOf(now()))
             .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
@@ -64,6 +67,7 @@ public class TokenProvider {
         String refreshToken = Jwts.builder()
             .signWith(key, SignatureAlgorithm.HS512)
             .setIssuer(ISS)
+            .setAudience(AUD)
             .setSubject(String.valueOf(user.getId()))
             .setIssuedAt(Timestamp.valueOf(now()))
             .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
