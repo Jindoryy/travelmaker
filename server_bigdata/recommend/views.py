@@ -266,7 +266,7 @@ def getTravelList(request):
         all_destination_ids.append(destination_ids[:6])
 
     # 최종 결과를 형식에 맞춰 변환
-    result = {"cluster_ids": all_destination_ids}
+    result = {str(i): dest_ids for i, dest_ids in enumerate(all_destination_ids, start=1)}
 
     return Response(result, status=status.HTTP_200_OK)
 
