@@ -30,14 +30,19 @@ public class SecurityConfig {
         http.sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             http.authorizeHttpRequests(request -> request
-//                .requestMatchers(
-//                        "/login/oauth2/code/kakao",
-//                        "/login/oauth/token",
-//                        "/city/**",
-//                         "/province"
-//                )
-//                .permitAll()
-                .anyRequest().permitAll());
+                .requestMatchers(
+                        "/login/oauth2/code/kakao",
+                        "/login/oauth/token",
+                        "/swagger-ui/**",
+                        "api-docs/**"
+                )
+                .permitAll()
+                .requestMatchers(
+                    "/city/**",
+                    "/province/**",
+                    "/travel",
+                    "/destination/**")
+                .authenticated());
         http.logout((logout) -> logout
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .logoutSuccessUrl("/")
