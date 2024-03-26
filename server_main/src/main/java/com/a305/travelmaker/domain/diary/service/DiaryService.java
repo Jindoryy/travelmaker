@@ -2,6 +2,7 @@ package com.a305.travelmaker.domain.diary.service;
 
 import com.a305.travelmaker.domain.diary.dto.DiaryAddRequest;
 import com.a305.travelmaker.domain.diary.dto.DiaryDetailResponse;
+import com.a305.travelmaker.domain.diary.dto.DiaryListResponse;
 import com.a305.travelmaker.domain.diary.dto.DiaryUpdateRequest;
 import com.a305.travelmaker.domain.diary.entity.Diary;
 import com.a305.travelmaker.domain.diary.entity.File;
@@ -9,7 +10,10 @@ import com.a305.travelmaker.domain.diary.repository.DiaryRepository;
 import com.a305.travelmaker.domain.diary.repository.FileRepository;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
+import com.a305.travelmaker.domain.user.entity.User;
+import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.util.FileUtil;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ public class DiaryService {
   private final DiaryRepository diaryRepository;
   private final TravelRepository travelRepository;
   private final FileRepository fileRepository;
+  private final UserRepository userRepository;
 
   public DiaryDetailResponse findDiaryDetail(Integer id) {
 
@@ -39,20 +44,35 @@ public class DiaryService {
         .build();
   }
 
-//  public List<DiaryListResponse> findDiaryList() {
-//
-//    return diaryRepository.findAll();
-//  }
+  public List<DiaryListResponse> findDiaryList(Long userId) {
+
+    List<DiaryListResponse> diaryListResponses = new ArrayList<>();
+    List<Diary> diaryList = diaryRepository.findByUserId(userId);
+
+    for (Diary diary : diaryList) {
+
+      diaryListResponses.add(DiaryListResponse.builder()
+          .diaryId(diary.getId())
+          .name(diary.getTravel().getCityName())
+          .startDate(diary.getTravel().getStartDate())
+          .endDate(diary.getTravel().getEndDate())
+          .imgUrls(diary.getFileList().get(0).getImgUrl())
+          .build());
+    }
+
+    return diaryListResponses;
+  }
 
   @Transactional
-  public void saveDiary(List<MultipartFile> files, DiaryAddRequest diaryAddRequest) {
+  public void saveDiary(Long userId, List<MultipartFile> files, DiaryAddRequest diaryAddRequest) {
 
     // travelId로 여행 정보를 불러온 다음, 관련 엔티티(User, Travel)랑 같이 저장, 그리고 파일 저장
     Travel travel = travelRepository.findById(diaryAddRequest.getTravelId()).get();
+    User user = userRepository.findById(userId).get();
 
     Diary diary = diaryRepository.save(
         Diary.builder()
-            .user(null)
+            .user(user)
             .travel(travel)
             .text(diaryAddRequest.getText())
             .build()
