@@ -17,11 +17,20 @@ from surprise import Dataset, Reader, KNNBasic, KNNWithMeans
 from surprise.model_selection import train_test_split
 
 
-
-######################################## 성별, 나이 기반(4) + 좋아요(96) ########################################
-# 또래추천 4개 => 기존에 붙여서 출력 => 반환값 다시 생각. {또래추천: {}, 기본: {}} 이런 느낌으로 가자
+######################################## 성별, 나이 기반 추천 + 기본 추천 ########################################
 @api_view(['GET'])
 def getMainList(request, user_id):
+    gender_age_response = getGenderAgeRecommend(user_id)
+    basic_cbf_list_response = getBasicCbfRecommend(user_id)
+
+    combined_response = {
+        "popular": gender_age_response.data,
+        "basic": basic_cbf_list_response.data
+    }
+
+    return Response(combined_response, status=status.HTTP_200_OK)
+
+def getGenderAgeRecommend(user_id):
     # 요청으로부터 사용자 정보 가져오기
     user = User.objects.get(USER_ID=user_id)
     
@@ -51,6 +60,67 @@ def getMainList(request, user_id):
     top_destination_ids = top_destinations['DESTINATION_ID'].tolist()
     
     return Response(top_destination_ids)
+
+# TF-IDF를 사용하여 특성 텍스트를 벡터화하고, 사용자의 특성을 기반으로 코사인 유사도를 계산하여 유사한 장소를 추천합니다.
+# 그나마 비슷한 애들로 추천 + 목록 골고루 섞기
+def getBasicCbfRecommend(user_id):
+    # 사용자가 좋아요를 누른 장소의 특성을 가져오기
+    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+    user_features = []
+    for like in user_likes:
+        destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
+        if destination:
+            user_features.extend(destination.FEATURE.split(','))
+
+    # 각 특성의 빈도 계산
+    feature_counter = Counter(user_features)
+
+    # 가장 많이 등장한 특성 추출 (최대 10개까지)
+    top_features = [feature for feature, _ in feature_counter.most_common(10)]
+
+    # 가장 많이 등장한 특성들을 가지고 있는 장소 찾기
+    similar_destinations = []
+    for feature in top_features:
+        destinations_with_feature = Destination.objects.filter(FEATURE__contains=feature)
+        similar_destinations.extend(destinations_with_feature)
+
+    # 중복 제거
+    similar_destinations = list(set(similar_destinations))
+
+    # 유사한 장소 중 사용자가 이미 좋아요를 누른 장소 제외
+    user_liked_destination_ids = [like.DESTINATION_ID for like in user_likes]
+    similar_destinations = [destination for destination in similar_destinations if destination.DESTINATION_ID not in user_liked_destination_ids]
+
+    # 최대한 비슷한 장소로 30개를 채워주기
+    if len(similar_destinations) < 100:
+        remaining_recommendations = 100 - len(similar_destinations)
+        # 비슷한 장소를 추가로 찾아서 추천 목록에 추가
+        more_similar_destinations = Destination.objects.exclude(DESTINATION_ID__in=user_liked_destination_ids).exclude(pk__in=[d.pk for d in similar_destinations])[:remaining_recommendations]
+        similar_destinations.extend(more_similar_destinations)
+    
+    # TF-IDF 벡터화
+    tfidf_vectorizer = TfidfVectorizer()
+    feature_texts = [' '.join(destination.FEATURE.split(',')) for destination in similar_destinations]
+    tfidf_matrix = tfidf_vectorizer.fit_transform(feature_texts)
+
+    # 코사인 유사도 계산
+    user_feature_text = ' '.join(user_features)
+    user_tfidf = tfidf_vectorizer.transform([user_feature_text])
+    similarities = cosine_similarity(user_tfidf, tfidf_matrix).flatten()
+    
+    # 유사도에 따라 장소 정렬
+    similar_destinations = [similar_destinations[i] for i in similarities.argsort()[::-1]]
+
+    # 목록을 무작위로 섞기
+    random.shuffle(similar_destinations)
+
+    # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
+    destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
+
+    # 100개의 장소로 제한
+    destination_ids = destination_ids[:100]
+
+    return Response(destination_ids, status=status.HTTP_200_OK)
 
 
 
@@ -199,71 +269,8 @@ def getTravelList(request):
 
 
 
-########################################## 좋아요 기반 추천 ##########################################
-# TF-IDF를 사용하여 특성 텍스트를 벡터화하고, 사용자의 특성을 기반으로 코사인 유사도를 계산하여 유사한 장소를 추천합니다.
-# 그나마 비슷한 애들로 추천 + 목록 골고루 섞기
-@api_view(['GET'])
-def getLikeCbfList(request, user_id):
-    # 사용자가 좋아요를 누른 장소의 특성을 가져오기
-    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
-    user_features = []
-    for like in user_likes:
-        destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
-        if destination:
-            user_features.extend(destination.FEATURE.split(','))
 
-    # 각 특성의 빈도 계산
-    feature_counter = Counter(user_features)
-
-    # 가장 많이 등장한 특성 추출 (최대 10개까지)
-    top_features = [feature for feature, _ in feature_counter.most_common(10)]
-
-    # 가장 많이 등장한 특성들을 가지고 있는 장소 찾기
-    similar_destinations = []
-    for feature in top_features:
-        destinations_with_feature = Destination.objects.filter(FEATURE__contains=feature)
-        similar_destinations.extend(destinations_with_feature)
-
-    # 중복 제거
-    similar_destinations = list(set(similar_destinations))
-
-    # 유사한 장소 중 사용자가 이미 좋아요를 누른 장소 제외
-    user_liked_destination_ids = [like.DESTINATION_ID for like in user_likes]
-    similar_destinations = [destination for destination in similar_destinations if destination.DESTINATION_ID not in user_liked_destination_ids]
-
-    # 최대한 비슷한 장소로 30개를 채워주기
-    if len(similar_destinations) < 100:
-        remaining_recommendations = 100 - len(similar_destinations)
-        # 비슷한 장소를 추가로 찾아서 추천 목록에 추가
-        more_similar_destinations = Destination.objects.exclude(DESTINATION_ID__in=user_liked_destination_ids).exclude(pk__in=[d.pk for d in similar_destinations])[:remaining_recommendations]
-        similar_destinations.extend(more_similar_destinations)
-    
-    # TF-IDF 벡터화
-    tfidf_vectorizer = TfidfVectorizer()
-    feature_texts = [' '.join(destination.FEATURE.split(',')) for destination in similar_destinations]
-    tfidf_matrix = tfidf_vectorizer.fit_transform(feature_texts)
-
-    # 코사인 유사도 계산
-    user_feature_text = ' '.join(user_features)
-    user_tfidf = tfidf_vectorizer.transform([user_feature_text])
-    similarities = cosine_similarity(user_tfidf, tfidf_matrix).flatten()
-    
-    # 유사도에 따라 장소 정렬
-    similar_destinations = [similar_destinations[i] for i in similarities.argsort()[::-1]]
-
-    # 목록을 무작위로 섞기
-    random.shuffle(similar_destinations)
-
-    # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
-    destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
-
-    # 100개의 장소로 제한
-    destination_ids = destination_ids[:100]
-
-    return Response(destination_ids, status=status.HTTP_200_OK)
-
-
-
+########################################## 데이터 확인 ##########################################
 # 그나마 비슷한 애들로 추천 + 목록 골고루 섞기
 @api_view(['GET'])
 def getLikeCbfDetail(request, user_id):
@@ -322,10 +329,6 @@ def getLikeCbfDetail(request, user_id):
     serializer = DestinationSerializer(similar_destinations[:100], many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-########################################## 데이터 확인 ##########################################
 
 @api_view(['GET'])
 def getLike(request, user_id):
