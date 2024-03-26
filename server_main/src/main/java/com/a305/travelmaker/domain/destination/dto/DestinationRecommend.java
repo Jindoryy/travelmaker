@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DestinationRecommendRequest {
+public class DestinationRecommend {
 
   private Long userId;
   private Integer cityId;

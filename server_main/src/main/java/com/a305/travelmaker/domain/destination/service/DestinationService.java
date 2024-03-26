@@ -1,8 +1,7 @@
 package com.a305.travelmaker.domain.destination.service;
 
-import com.a305.travelmaker.domain.destination.dto.DestinationDetailResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
-import com.a305.travelmaker.domain.destination.dto.DestinationRecommendRequest;
+import com.a305.travelmaker.domain.destination.dto.DestinationRecommend;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
@@ -92,7 +91,8 @@ public class DestinationService {
   public List<DestinationListResponse> findDestinationList(Long userId) {
 
     List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
-    List<Integer> likeCbfList = restConfig.restTemplate().getForObject(bigdataServerDomain+"/recommend/getLikeCbfList/" + userId, List.class);
+    List<Integer> likeCbfList = restConfig.restTemplate()
+        .getForObject(bigdataServerDomain + "/recommend/main-list" + userId, List.class);
 
     for (Integer id : likeCbfList) {
 
@@ -114,13 +114,15 @@ public class DestinationService {
       int cityId,
       List<Integer> friendTag) {
 
-    DestinationRecommendRequest destinationRecommendRequest = DestinationRecommendRequest.builder()
+    DestinationRecommend destinationRecommend = DestinationRecommend.builder()
         .userId(userId)
         .cityId(cityId)
         .build();
 
     // 친구가 있는 경우에 대한 친구 ID를 담아서 장고 서버로 보내는 로직 필요 - 장고 서버에서 오는 데이터 그대로 반환
-    Map<String, List<Integer>> destinationRecommendResponse = restConfig.restTemplate().postForObject(bigdataServerDomain+"/recommend/getCityList/", destinationRecommendRequest, HashMap.class);
+    Map<String, List<Integer>> destinationRecommendResponse = restConfig.restTemplate()
+        .postForObject(bigdataServerDomain + "/recommend/city-list", destinationRecommend,
+            HashMap.class);
 
     return DestinationRecommendResponse.builder()
         .DestinationRecommendList(destinationRecommendResponse)

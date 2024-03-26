@@ -13,19 +13,27 @@ import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelRecommendCluster;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
+import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TravelService {
 
+  private final RestConfig restConfig;
   private final FileUtil fileUtil;
   private final DestinationService destinationService;
   private final TravelRepository travelRepository;
@@ -43,6 +52,8 @@ public class TravelService {
 
   @Value("${cloud.aws.s3.base-url}")
   private String baseUrl;
+  @Value("${bigdata.server.domain}")
+  private String bigdataServerDomain;
 
   private List<Point> pointList = new ArrayList<>(); // 장소의 경도, 위도를 담고 있는 리스트
   private List<Cluster> clusters = new ArrayList<>();
@@ -108,8 +119,42 @@ public class TravelService {
     }
 
     /*
-      2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
+      2. 빅데이터 서버에 군집별로 (중심점의 위도, 경도, R(가장 먼 장소의 거리), 장소 ID리스트, 유저ID)를 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소) 받기
      */
+
+    Map<String, TravelRecommendCluster> travelRecommendClusterList = new HashMap<>();
+    TravelRecommendCluster travelRecommendCluster = TravelRecommendCluster.builder()
+        .centerLatitude(126.6579998144)
+        .centerLongitude(37.3828032236)
+        .r(101.48207701148297)
+        .placeIds(Arrays.asList(1, 2, 3, 4, 5))
+        .userId(1111L)
+        .build();
+    travelRecommendClusterList.put(String.valueOf(1), travelRecommendCluster);
+
+    // Gson을 사용하여 JSON 문자열로 변환
+    Gson gson = new Gson();
+    String json = gson.toJson(travelRecommendClusterList);
+
+    // HTTP 요청 설정
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<String> requestEntity = new HttpEntity<>(json, headers);
+
+    System.out.println(travelRecommendClusterList);
+
+    Map<String, List<Integer>> travelDaysIdList = restConfig.restTemplate()
+        .postForObject(bigdataServerDomain + "/recommend/travel-list",
+            requestEntity,
+            HashMap.class);
+
+    for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) {
+      String day = entry.getKey();
+      List<Integer> placeIds = entry.getValue();
+      System.out.println("Day: " + day);
+      System.out.println("Place IDs: " + placeIds);
+    }
+    System.out.println(travelDaysIdList);
 
     /*
       3. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
