@@ -74,9 +74,9 @@ public class TravelService {
 
     /*
       0. 데이터 세팅
-        0-0. 이전 클러스터, 장소 리스트 초기화
-        0-1. 장소 id의 경도, 위도를 pointList에 담기
-        0-2. 여행일 수 확인
+        0-1. 이전 클러스터, 장소 리스트 초기화
+        0-2. 장소 id의 경도, 위도를 pointList에 담기
+        0-3. 여행일 수 확인
     */
     pointList.clear();
     clusters.clear();
@@ -120,17 +120,44 @@ public class TravelService {
 
     /*
       2. 빅데이터 서버에 군집별로 (중심점의 위도, 경도, R(가장 먼 장소의 거리), 장소 ID리스트, 유저ID)를 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소) 받기
+        2-1. 빅데이터 서버에 데이터를 보낼 수 있도록 군집별로 데이터를 담기
      */
 
     Map<String, TravelRecommendCluster> travelRecommendClusterList = new HashMap<>();
-    TravelRecommendCluster travelRecommendCluster = TravelRecommendCluster.builder()
-        .centerLatitude(126.6579998144)
-        .centerLongitude(37.3828032236)
-        .r(101.48207701148297)
-        .placeIds(Arrays.asList(1, 2, 3, 4, 5))
-        .userId(1111L)
-        .build();
-    travelRecommendClusterList.put(String.valueOf(1), travelRecommendCluster);
+
+    // 군집별로 중심점의 위도, 경도, 중심점과 가장 먼 장소와의 거리, 장소 ID 리스트 추출
+    for (int i = 0; i < clusters.size(); i++) {
+
+      Cluster cluster = clusters.get(i);
+      double centerLatitude = cluster.getCentroid().getLatitude();
+      double centerLongitude = cluster.getCentroid().getLongitude();
+
+      List<Integer> placeIds = new ArrayList<>(); // 장소 ID 리스트
+      List<Point> points = cluster.getPoints();
+      for (int j = 0; j < points.size(); j++) {
+
+        placeIds.add(points.get(j).getDestinationId());
+      }
+
+      Point centroid = cluster.getCentroid(); // 중심점
+      double r = Double.MIN_VALUE;
+      for (int j = 0; j < points.size(); j++) {
+
+        Point point = points.get(j); // 장소
+        double distance = harversineUtil.calculateDistance(centroid, point); // 중심점과 장소와의 거리 계산
+        r = Math.max(r, distance); // 가장 먼 거리 초기화
+      }
+
+      TravelRecommendCluster travelRecommendCluster = TravelRecommendCluster.builder()
+          .centerLatitude(centerLatitude)
+          .centerLongitude(cluster.getCentroid().getLongitude())
+          .r(r)
+          .placeIds(placeIds)
+          .userId(1111L)
+          .build();
+
+      travelRecommendClusterList.put(String.valueOf(i+1), travelRecommendCluster);
+    }
 
     // Gson을 사용하여 JSON 문자열로 변환
     Gson gson = new Gson();
@@ -154,6 +181,7 @@ public class TravelService {
       System.out.println("Day: " + day);
       System.out.println("Place IDs: " + placeIds);
     }
+
     System.out.println(travelDaysIdList);
 
     /*
