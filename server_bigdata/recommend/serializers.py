@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from recommend.models import Destination, Likes
+from recommend.models import User, Destination, Likes
+    
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
 class DestinationSerializer(serializers.ModelSerializer):
     class Meta:
