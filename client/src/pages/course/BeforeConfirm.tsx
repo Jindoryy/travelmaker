@@ -102,13 +102,13 @@ interface CourseInfoType {
 }
 
 //날짜별 정보
-interface CourseDateInfo {
+interface CourseDateInfoType {
   courseDate: CourseInfoType[];
 }
 
 //여행 정보
 interface TravelInfoType {
-  travelInfo: CourseDateInfo[];
+  travelInfo: CourseDateInfoType[];
 }
 
 //장소 디테일 요청 id 리스트
@@ -139,17 +139,46 @@ const BeforeConfirm = () => {
   const { setTravelInfo, travelInfo } = useTravelInfo();
   const { setTravelCity, travelCity } = useTravelCity();
   const [selectedTab, setSelectedTab] = useState(1);
-  const [travelResponse, setTravelResponse] = useState<Destination[][]>();
-  const [firstDate, setFirstDate] = useState<DestinationDetailResponse[]>();
-  const [secondDate, setSecondDate] = useState<DestinationDetailResponse[]>();
-  const [thirdDate, setThirdDate] = useState<DestinationDetailResponse[]>();
+  const [travelResponse, setTravelResponse] = useState<Destination[][]>([]);
+  const [firstDate, setFirstDate] = useState<DestinationDetailResponse[]>([]);
+  const [secondDate, setSecondDate] = useState<DestinationDetailResponse[]>([]);
+  const [thirdDate, setThirdDate] = useState<DestinationDetailResponse[]>([]);
   const [spotToSpot, setSpotToSpot] = useState<number[][]>([]);
   const [idList, setIdList] = useState<number[][]>([]);
-  const [courseInfo, setCourseInfo] = useState<TravelInfoType[] | undefined>([]);
+  const [lati, setLati] = useState<number[][]>([]);
+  const [longi, setLongi] = useState<number[][]>([]);
+  const [markerImage, setMarkerImage] = useState<string[][]>([]);
+  const [courseDetail, setCourseDetail] = useState<CourseInfoType>({
+    destinationId: 1,
+    destinationType: 'sights',
+    destinationName: '바다',
+    destinationImgUrl: '',
+    latitude: 0,
+    longitude: 0,
+    markerImage: '',
+  });
+  const [courseDateInfo, setCourseDateInfo] = useState<CourseDateInfoType>({
+    courseDate: [courseDetail],
+  });
+
+  const [courseInfo, setCourseInfo] = useState<TravelInfoType>({
+    travelInfo: [courseDateInfo],
+  });
 
   useEffect(() => {
+    console.log('11');
     getTravel(travelInfo);
   }, []);
+
+  useEffect(() => {
+    console.log('22');
+    getDestination();
+  }, [travelResponse]);
+
+  useEffect(() => {
+    console.log('33');
+    getCourseInfo();
+  }, [firstDate, secondDate, thirdDate]);
 
   const getTravel = (travelInfo: any) => {
     travelDetail(travelInfo)
@@ -159,7 +188,6 @@ const BeforeConfirm = () => {
         if (responseList) {
           setTravelResponse(responseList);
           getIdandDistance(responseList);
-          console.log(travelResponse);
         }
       })
       .catch((error) => {
@@ -168,38 +196,52 @@ const BeforeConfirm = () => {
   };
 
   // idList를 변경하고자 할 때 호출하는 함수
-  const updateIdListandDistance = (newIdList: number[][], newDistanceList: number[][]) => {
+  const updateIdListandDistance = (
+    newIdList: number[][],
+    newDistanceList: number[][],
+    newLatiList: number[][],
+    newLongiList: number[][],
+  ) => {
     setIdList(newIdList);
     setSpotToSpot(newDistanceList);
+    setLati(newLatiList);
+    setLongi(newLongiList);
   };
 
   const getIdandDistance = (travelList: Destination[][]) => {
-    // spottospot거리 담아주기
+    // spottospot거리, idlist, latlist, longilist 담아주기
     if (travelList) {
       const idArray = [];
       const distanceArray = [];
+      const latiArray = [];
+      const longiArray = [];
       for (let j = 0; j < travelList.length; j++) {
         const innerArray = [];
         const innerArrayforId = [];
+        const innerArrayforLat = [];
+        const innerArrayforLong = [];
         for (let i = 0; i < travelList[j].length; i++) {
           innerArray.push(travelList[j][i].nextDestinationDistance);
           innerArrayforId.push(travelList[j][i].point.destinationId);
+          innerArrayforLat.push(travelList[j][i].point.latitude);
+          innerArrayforLong.push(travelList[j][i].point.longitude);
         }
         idArray.push(innerArrayforId);
         distanceArray.push(innerArray);
+        latiArray.push(innerArrayforLat);
+        longiArray.push(innerArrayforLong);
       }
-      updateIdListandDistance(idArray, distanceArray);
+      console.log(latiArray[0].length);
+      updateIdListandDistance(idArray, distanceArray, latiArray, longiArray);
     }
   };
 
-  useEffect(() => {
-    getDestination();
-  }, []);
-
   // idDetail를 변경하고자 할 때 호출하는 함수
   const updateIdDetail = (newIdDetail: DestinationDetailResponse[], date: number) => {
-    if (date == 0) setFirstDate(newIdDetail);
-    else if (date == 1) setSecondDate(newIdDetail);
+    if (date == 0) {
+      setFirstDate(newIdDetail);
+      console.log(firstDate);
+    } else if (date == 1) setSecondDate(newIdDetail);
     else if (date == 2) setThirdDate(newIdDetail);
     console.log(firstDate);
     console.log(travelResponse);
@@ -210,11 +252,13 @@ const BeforeConfirm = () => {
     for (let i = 0; i < idList.length; i++) {
       //날짜별로 담아와야함
       const destinations = destinationDetail(idList[i]);
+      console.log(destinations);
       if (destinations) {
         destinations
           .then((response) => {
             const newArray: any = [];
             newArray.push(response.data.data);
+            console.log(newArray);
             updateIdDetail(newArray, i);
           })
           .catch((err) => {
@@ -224,33 +268,41 @@ const BeforeConfirm = () => {
     }
   };
 
-  // const updateCourseInfo = () => {};
-  // useEffect(() => {
-  //   updateCourseInfo();
-  //   if (courseInfo.length > 0) {
-  //     setFirstDate([...courseInfo[0]]);
-  //     if (courseInfo.length >= 2) setSecondDate([...courseInfo[1]]);
-  //     if (courseInfo.length >= 3) setThirdDate([...courseInfo[2]]);
-  //   }
-  //   console.log(courseInfo);
-  //   const markerSet = () => {
-  //     let number = 1;
-  //     const updatedCourseInfo = { ...courseInfo };
-  //     for (const key in updatedCourseInfo) {
-  //       if (Object.prototype.hasOwnProperty.call(updatedCourseInfo, key)) {
-  //         updatedCourseInfo[key].forEach((element: any) => {
-  //           let color = '';
-  //           if (element.destinationType === '명소') color = 'orange';
-  //           else if (element.destinationType === '식당') color = 'pink';
-  //           else color = 'red';
-  //           element.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
-  //           number++;
-  //         });
-  //       }
-  //     }
-  //     setCourseInfo(updatedCourseInfo);
-  //   };
-  // }, [courseInfo, firstDate, secondDate, thirdDate]);
+  const [newMarker, setNewMarker] = useState<string[]>([]);
+  const getCourseInfo = () => {
+    let number = 1;
+    for (let i = 0; i < firstDate.length; i++) {
+      let color: string = '';
+      if (firstDate[i].destinationType == 'sights') color = 'orange';
+      else if (firstDate[i].destinationType == 'food') color = 'pink';
+      else color = 'red';
+      newMarker.push(require(`../../assets/image/marker/${color}marker${number}.png`));
+      number++;
+    }
+    markerImage.push(newMarker);
+    setNewMarker([]);
+    number = 1;
+    for (let i = 0; i < secondDate.length; i++) {
+      let color: string = '';
+      if (secondDate[i].destinationType == 'sights') color = 'orange';
+      else if (secondDate[i].destinationType == 'food') color = 'pink';
+      else color = 'red';
+      newMarker.push(require(`../../assets/image/marker/${color}marker${number}.png`));
+      number++;
+    }
+    markerImage.push(newMarker);
+    setNewMarker([]);
+    number = 1;
+    for (let i = 0; i < thirdDate.length; i++) {
+      let color: string = '';
+      if (thirdDate[i].destinationType == 'sights') color = 'orange';
+      else if (thirdDate[i].destinationType == 'food') color = 'pink';
+      else color = 'red';
+      newMarker.push(require(`../../assets/image/marker/${color}marker${number}.png`));
+      number++;
+    }
+    markerImage.push(newMarker);
+  };
 
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
@@ -273,9 +325,13 @@ const BeforeConfirm = () => {
               {travelInfo.startDate} ~ {travelInfo.endDate}
             </HeaderDate>
           </TravelHeader>
-          {/* <TravelMap id="map">
-            <KakaoMap dateCourse={courseInfo[selectedTab - 1]} />
-          </TravelMap> */}
+          <TravelMap id="map">
+            <KakaoMap
+              lat={lati[selectedTab - 1]}
+              lng={longi[selectedTab - 1]}
+              image={markerImage[selectedTab - 1]}
+            />
+          </TravelMap>
         </CourseMap>
         <EditBody>
           <EditButton disableRipple>편집</EditButton>
