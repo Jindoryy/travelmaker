@@ -35,15 +35,12 @@ public class SecurityConfig {
                         "/login/oauth/token",
                         "/swagger-ui/**",
                         "api-docs/**",
-                    "/city/**",
-                    "/province/**",
-                    "/travel/**",
-                    "/destination/**"
+                        "/city/**",
+                        "/province/**",
+                        "/travel",
+                        "/destination/**"
                 )
                 .permitAll());
-//                .requestMatchers(
-//                 )
-//                .authenticated());
         http.logout((logout) -> logout
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .logoutSuccessUrl("/")
