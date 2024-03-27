@@ -1,8 +1,7 @@
 package com.a305.travelmaker.domain.destination.service;
 
-import com.a305.travelmaker.domain.destination.dto.DestinationDetailResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
-import com.a305.travelmaker.domain.destination.dto.DestinationRecommendRequest;
+import com.a305.travelmaker.domain.destination.dto.DestinationRecommend;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
@@ -10,12 +9,16 @@ import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.HarversineUtil;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,7 +95,8 @@ public class DestinationService {
   public List<DestinationListResponse> findDestinationList(Long userId) {
 
     List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
-    List<Integer> likeCbfList = restConfig.restTemplate().getForObject(bigdataServerDomain+"/recommend/getLikeCbfList/" + userId, List.class);
+    List<Integer> likeCbfList = restConfig.restTemplate()
+        .getForObject(bigdataServerDomain + "/recommend/main-list" + userId, List.class);
 
     for (Integer id : likeCbfList) {
 
@@ -112,20 +116,38 @@ public class DestinationService {
   public DestinationRecommendResponse findDestinationRecommend(
       Long userId,
       int cityId,
-      List<Integer> friendTag) {
+      List<Long> friendIdList) {
 
-    DestinationRecommendRequest destinationRecommendRequest = DestinationRecommendRequest.builder()
-        .userId(userId)
+    List<Long> userIdList = new ArrayList<>();
+    userIdList.add(userId);
+    if (friendIdList != null && !friendIdList.isEmpty()) {
+      for (int i = 0; i < friendIdList.size(); i++) {
+
+        userIdList.add(friendIdList.get(i));
+      }
+    }
+
+    DestinationRecommend destinationRecommend = DestinationRecommend.builder()
+        .userId(userIdList)
         .cityId(cityId)
         .build();
 
-    // 친구가 있는 경우에 대한 친구 ID를 담아서 장고 서버로 보내는 로직 필요 - 장고 서버에서 오는 데이터 그대로 반환
-    Map<String, List<Integer>> destinationRecommendResponse = restConfig.restTemplate().postForObject(bigdataServerDomain+"/recommend/getCityList/", destinationRecommendRequest, HashMap.class);
+    // Gson을 사용하여 JSON 문자열로 변환
+    Gson gson = new Gson();
+    String json = gson.toJson(destinationRecommend);
+
+    // HTTP 요청 설정
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<String> requestEntity = new HttpEntity<>(json, headers);
+
+    Map<String, List<Integer>> destinationRecommendResponse = restConfig.restTemplate()
+        .postForObject(bigdataServerDomain + "/recommend/city-list",
+            requestEntity,
+            HashMap.class);
 
     return DestinationRecommendResponse.builder()
         .DestinationRecommendList(destinationRecommendResponse)
         .build();
   }
-
-
 }

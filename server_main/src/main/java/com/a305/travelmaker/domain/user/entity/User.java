@@ -54,10 +54,12 @@ public class User extends BaseEntity {
 
     @Column
     private LocalDate birth;
+
     @Enumerated(EnumType.STRING)
 
+    @Builder.Default
     @Column(nullable = false)
-    private UserRole role = UserRole.ROLE_ADMIN;
+    private UserRole role = UserRole.ROLE_USER;
 
     public Collection<String> getRoles() {
         Collection<String> roles = new ArrayList<>();

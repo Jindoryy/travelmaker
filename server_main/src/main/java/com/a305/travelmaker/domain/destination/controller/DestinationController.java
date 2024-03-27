@@ -9,6 +9,7 @@ import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,12 +58,12 @@ public class DestinationController {
   @GetMapping("/recommend")
   public SuccessResponse<DestinationRecommendResponse> getDestinationRecommend(
       @RequestParam int cityId,
-      @RequestParam(required = false) List<Integer> friendTags,
+      @RequestParam(required = false) List<Long> friendIdList,
       HttpServletRequest request) {
 
     String token = request.getHeader("Authorization").substring(7);
     Long userId = tokenProvider.getUserIdFromToken(token);
 
-    return new SuccessResponse<>(destinationService.findDestinationRecommend(userId, cityId, friendTags));
+    return new SuccessResponse<>(destinationService.findDestinationRecommend(userId, cityId, friendIdList));
   }
 }
