@@ -1,21 +1,31 @@
 package com.a305.travelmaker.domain.travel.service;
 
+import com.a305.travelmaker.domain.city.entity.City;
+import com.a305.travelmaker.domain.city.repository.CityRepository;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
+import com.a305.travelmaker.domain.diary.entity.Diary;
+import com.a305.travelmaker.domain.diary.entity.File;
+import com.a305.travelmaker.domain.memo.entity.Memo;
+import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
+import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
+import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
+import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,19 +33,24 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TravelService {
 
+  private final FileUtil fileUtil;
   private final DestinationService destinationService;
   private final TravelRepository travelRepository;
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
+  private final CityRepository cityRepository;
+  private final MemoRepository memoRepository;
+
+  @Value("${cloud.aws.s3.base-url}")
+  private String baseUrl;
 
   private List<Point> pointList = new ArrayList<>(); // 장소의 경도, 위도를 담고 있는 리스트
   private List<Cluster> clusters = new ArrayList<>();
   private List<Integer> destinationsIdList = new ArrayList<>(); // 군집내에 속해 있는 ID 리스트
+  private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
 
   @Transactional
   public TravelResponse saveTravel(TravelRequest travelRequest) {
-
-    Map<Integer, List<DestinationDistanceResponse>> travelList = new HashMap<>();
 
     /*
       0. 데이터 세팅
@@ -54,7 +69,7 @@ public class TravelService {
     */
     pointList.clear();
     clusters.clear();
-    destinationsIdList.clear();
+    destinationDistanceResponses.clear();
 
     for (Integer destinationId : travelRequest.getDestinationIdList()) {
 
@@ -109,21 +124,20 @@ public class TravelService {
      */
     for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
 
-      destinationsIdList = new ArrayList<>();
+      destinationsIdList.clear();
       for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
 
         Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
         destinationsIdList.add(pointId);
       }
 
-      List<DestinationDistanceResponse> destinationDistanceResponses = destinationService.findDestinationDistance(
-          destinationsIdList);
-      travelList.put(i + 1, destinationDistanceResponses);
+      destinationDistanceResponses.add(
+          destinationService.findDestinationDistance(destinationsIdList));
     }
 
-    TravelResponse travelResponse = new TravelResponse(travelList);
-
-    return travelResponse;
+    return TravelResponse.builder()
+        .travelList(destinationDistanceResponses)
+        .build();
   }
 
   // 초기 중심 무작위 선택 (K-Means ++ Algorithm)
@@ -181,6 +195,62 @@ public class TravelService {
         }
       }
     }
+  }
+
+  public TravelBeforeResponse findTravelBeforeDetail(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+    Memo memo = memoRepository.findByTravelId(travel.getId());
+    City city = cityRepository.findByName(travel.getCityName());
+
+    return TravelBeforeResponse.builder()
+        .travelId(travel.getId())
+        .cityName(travel.getCityName())
+        .imgUrl(city.getImgUrl())
+        .memoId(memo.getId())
+        .build();
+  }
+
+  public List<TravelListResponse> findTravelList(Long userId) {
+
+    List<TravelListResponse> travelListResponse = new ArrayList<>();
+
+    List<Travel> travelList = travelRepository.findByUserId(userId);
+
+    for (Travel travel : travelList) {
+
+      City city = cityRepository.findByName(travel.getCityName());
+      String friends = travel.getFriends();
+      String[] friendsArray = friends.split(",");
+      List<String> friendsList = Arrays.asList(friendsArray);
+
+      travelListResponse.add(TravelListResponse.builder()
+          .travelId(travel.getId())
+          .cityName(travel.getCityName())
+          .startDate(travel.getStartDate())
+          .endDate(travel.getEndDate())
+          .friendNameList(friendsList)
+          .imgUrl(city.getImgUrl())
+          .status(travel.getStatus())
+          .build());
+    }
+
+    return travelListResponse;
+  }
+
+  @Transactional
+  public void removeTravel(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+
+    for (Diary diary : travel.getDiaryList()) {
+      for (File file : diary.getFileList()) {
+
+        fileUtil.deleteFile(file.getImgUrl().replace(baseUrl, "")); // S3 도메인 부분 제외한 name으로 삭제
+      }
+    }
+
+    travelRepository.delete(travel);
   }
 
 

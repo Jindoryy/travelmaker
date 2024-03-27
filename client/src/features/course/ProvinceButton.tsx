@@ -32,16 +32,17 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  width: 10rem;
+  width: 40rem;
   height: 10rem;
   left: 0;
   top: 0;
+  margin: 0;
   position: absolute;
   border-radius: 0.5rem;
 `;
 
 const TextOverlay = styled.div`
-  width: 10rem;
+  width: 4rem;
   height: 2.5rem;
   left: 0;
   top: 6.675rem;
