@@ -11,6 +11,7 @@ import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
+import com.a305.travelmaker.domain.travel.dto.Spot;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRecommendCluster;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TravelService {
+
+  private static final int ALL_DESTINATION_COUNT = 6; // 빅데이터 서버로 부터 받아오는 Day 별로 장소의 개수
+  private static final double DNF = Double.MAX_VALUE;
+  private boolean[] visited;
+  private double[] dist;
+  private List<Spot>[] graph;
 
   private final RestConfig restConfig;
   private final FileUtil fileUtil;
@@ -67,8 +75,8 @@ public class TravelService {
       0. 데이터 세팅
       1. 군집화 실행 (군집 개수 ≤ 여행일 수)
       2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
-      3. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
-      4. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
+      3. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
+      4. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가)
       5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
     */
 
@@ -156,7 +164,7 @@ public class TravelService {
           .userId(1111L)
           .build();
 
-      travelRecommendClusterList.put(String.valueOf(i+1), travelRecommendCluster);
+      travelRecommendClusterList.put(String.valueOf(i + 1), travelRecommendCluster);
     }
 
     // Gson을 사용하여 JSON 문자열로 변환
@@ -175,21 +183,65 @@ public class TravelService {
             requestEntity,
             HashMap.class);
 
-    for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) {
-      String day = entry.getKey();
-      List<Integer> placeIds = entry.getValue();
-      System.out.println("Day: " + day);
-      System.out.println("Place IDs: " + placeIds);
-    }
-
     System.out.println(travelDaysIdList);
 
     /*
-      3. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
+      3. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
      */
 
+    for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) { // Day 마다 반복문 실행
+
+      graph = new ArrayList[ALL_DESTINATION_COUNT];
+      for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
+        graph[i] = new ArrayList<>();
+      }
+
+      String day = entry.getKey();
+      List<Integer> placeIds = entry.getValue(); // 장소 ID를 담는 리스트
+      List<Point> points = new ArrayList<>(); // 장소 ID, 위도, 경도를 담은 클래스를 담는 리스트
+
+      for (Integer placeId : placeIds) {
+
+        Destination destination = destinationRepository.findById(placeId).get();
+        points.add(Point.builder()
+            .destinationId(placeId)
+            .latitude(destination.getLatitude())
+            .longitude(destination.getLongitude())
+            .build());
+      }
+
+      for (int i = 0; i < placeIds.size()-1; i++) {
+        for (int j = 0; j < placeIds.size(); j++) {
+
+          if (i != j) {
+
+//            Integer i = placeIds.get(i);
+//            Integer nextV = placeIds.get(j);
+            double distance = harversineUtil.calculateDistance(points.get(i), points.get(j));
+
+            graph[i].add(Spot.builder()
+                .v(j)
+                .distance(distance)
+                .build());
+            graph[j].add(Spot.builder()
+                .v(i)
+                .distance(distance)
+                .build());
+          }
+        }
+      }
+
+      System.out.println(Arrays.toString(graph));
+
+      visited = new boolean[ALL_DESTINATION_COUNT];
+      dist = new double[ALL_DESTINATION_COUNT];
+
+      Dijkstra(0);
+      System.out.println(Arrays.toString(dist));
+    }
+
     /*
-      4. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
+      4. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
      */
 
     /*
@@ -211,6 +263,31 @@ public class TravelService {
     return TravelResponse.builder()
         .travelList(destinationDistanceResponses)
         .build();
+  }
+
+  private void Dijkstra(int start) {
+
+    Arrays.fill(dist, DNF);
+    dist[start] = 0L;
+
+    PriorityQueue<Spot> pq = new PriorityQueue<>();
+    pq.add(new Spot(start, 0L));
+
+    while (!pq.isEmpty()) {
+
+      Spot now = pq.poll();
+
+      if (visited[now.getV()]) continue;
+      visited[now.getV()] = true;
+
+      for (Spot next : graph[now.getV()]) {
+        if (dist[next.getV()] > dist[now.getV()] + next.getDistance()) {
+
+          dist[next.getV()] = dist[now.getV()] + next.getDistance();
+          pq.add(new Spot(next.getV(), dist[next.getV()]));
+        }
+      }
+    }
   }
 
   // 초기 중심 무작위 선택 (K-Means ++ Algorithm)
