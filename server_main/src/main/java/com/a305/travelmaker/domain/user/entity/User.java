@@ -54,6 +54,7 @@ public class User extends BaseEntity {
 
     @Column
     private LocalDate birth;
+
     @Enumerated(EnumType.STRING)
 
     @Builder.Default

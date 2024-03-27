@@ -14,12 +14,12 @@ const CourseCard = ({ course, spotToSpot }: any) => {
       <CardBox>
         <CardDetail>
           <DetailDesc>
-            <DetailCategory>{course.destinationCategory}</DetailCategory>
+            <DetailCategory>{course.destinationType}</DetailCategory>
             <DetailTitle>{course.destinationName}</DetailTitle>
           </DetailDesc>
           {spotToSpot ? <DetailTime>예상추정시간: 약 {spotToSpot}분</DetailTime> : <></>}
         </CardDetail>
-        <CardImage src={course.destinationPath}></CardImage>
+        <CardImage src={course.destinationImgUrl}></CardImage>
       </CardBox>
     </CardContainer>
   );

@@ -2,16 +2,20 @@ package com.a305.travelmaker.domain.destination.service;
 
 import com.a305.travelmaker.domain.destination.dto.DestinationDetailResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
+import com.a305.travelmaker.domain.destination.dto.DestinationRecommendRequest;
+import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
+import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DestinationService {
 
-  private static final int PAGE_DESTINATION_COUNT = 10;
+  private final RestConfig restConfig;
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
   private Point prevPoint, currentPoint;
+  @Value("${bigdata.server.domain}")
+  private String bigdataServerDomain;
 
   @Transactional
-  public List<DestinationDistanceResponse> findDestinationDistance(List<Integer> destinationsIdList) {
+  public List<DestinationDistanceResponse> findDestinationDistance(
+      List<Integer> destinationsIdList) {
 
     // 장소 ID 리스트를 0 ~ N-1까지 반복문을 돌면서 하버사인 공식을 이용하여 거리 계산 후 DTO에 담아 반환
     List<DestinationDistanceResponse> destinationDistanceResponses = new ArrayList<>();
@@ -34,7 +41,9 @@ public class DestinationService {
     for (Integer destinationId : destinationsIdList) {
 
       Destination destination = destinationRepository.findById(destinationId).orElse(null);
-      if (destination == null) continue;
+      if (destination == null) {
+        continue;
+      }
 
       currentPoint = Point.builder()
           .destinationId(destination.getId())
@@ -61,32 +70,62 @@ public class DestinationService {
     return destinationDistanceResponses;
   }
 
-  public DestinationDetailResponse findDestinationDetail(Integer destinationId) {
+  public List<DestinationListResponse> findDestinationDetail(List<Integer> destinationsIdList) {
 
-    Destination destination = destinationRepository.findById(destinationId).get();
+    List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
 
-    return DestinationDetailResponse.builder()
-        .destinationId(destination.getId())
-        .destinationType(destination.getType())
-        .destinationName(destination.getName())
-        .destinationImgUrl(destination.getImgUrl())
-        .point(Point.builder()
-            .latitude(destination.getLatitude())
-            .longitude(destination.getLongitude())
-            .build())
+    for (Integer id : destinationsIdList) {
+
+      Destination destination = destinationRepository.findById(id).get();
+
+      destinationListResponseList.add(DestinationListResponse.builder()
+          .destinationId(destination.getId())
+          .destinationType(destination.getType())
+          .destinationName(destination.getName())
+          .destinationImgUrl(destination.getImgUrl())
+          .build());
+    }
+
+    return destinationListResponseList;
+  }
+
+  public List<DestinationListResponse> findDestinationList(Long userId) {
+
+    List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
+    List<Integer> likeCbfList = restConfig.restTemplate().getForObject(bigdataServerDomain+"/recommend/getLikeCbfList/" + userId, List.class);
+
+    for (Integer id : likeCbfList) {
+
+      Destination destination = destinationRepository.findById(id).get();
+
+      destinationListResponseList.add(DestinationListResponse.builder()
+          .destinationId(destination.getId())
+          .destinationType(destination.getType())
+          .destinationName(destination.getName())
+          .destinationImgUrl(destination.getImgUrl())
+          .build());
+    }
+
+    return destinationListResponseList;
+  }
+
+  public DestinationRecommendResponse findDestinationRecommend(
+      Long userId,
+      int cityId,
+      List<Integer> friendTag) {
+
+    DestinationRecommendRequest destinationRecommendRequest = DestinationRecommendRequest.builder()
+        .userId(userId)
+        .cityId(cityId)
+        .build();
+
+    // 친구가 있는 경우에 대한 친구 ID를 담아서 장고 서버로 보내는 로직 필요 - 장고 서버에서 오는 데이터 그대로 반환
+    Map<String, List<Integer>> destinationRecommendResponse = restConfig.restTemplate().postForObject(bigdataServerDomain+"/recommend/getCityList/", destinationRecommendRequest, HashMap.class);
+
+    return DestinationRecommendResponse.builder()
+        .DestinationRecommendList(destinationRecommendResponse)
         .build();
   }
 
-  public Page<DestinationListResponse> findDestinationList(Integer page) {
 
-    PageRequest pageRequest = PageRequest.of(page, PAGE_DESTINATION_COUNT);
-
-    return destinationRepository.findAll(pageRequest)
-        .map(destination -> DestinationListResponse.builder()
-            .destinationId(destination.getId())
-            .destinationName(destination.getName())
-            .destinationContent(destination.getContent())
-            .destinationImgUrl(destination.getImgUrl())
-            .build());
-  }
 }

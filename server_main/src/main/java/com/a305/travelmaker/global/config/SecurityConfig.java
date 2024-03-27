@@ -37,8 +37,9 @@ public class SecurityConfig {
                         "api-docs/**",
                         "/city/**",
                         "/province/**",
-                        "/travel",
-                        "/destination/**"
+                        "/travel/**",
+                        "/destination/**",
+                        "/like/**"
                 )
                 .permitAll());
         http.logout((logout) -> logout

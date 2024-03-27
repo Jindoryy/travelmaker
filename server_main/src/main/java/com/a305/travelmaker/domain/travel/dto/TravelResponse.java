@@ -16,5 +16,5 @@ import lombok.ToString;
 @ToString
 public class TravelResponse {
 
-  private Map<Integer, List<DestinationDistanceResponse>> travelList;
+  private List<List<DestinationDistanceResponse>> travelList;
 }
