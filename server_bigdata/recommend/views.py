@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import timedelta
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from surprise import Dataset, Reader, KNNBasic, KNNWithMeans
@@ -142,8 +142,6 @@ def getCityList(request):
             destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
             if destination:
                 all_user_features[user_id].extend(destination.FEATURE.split(','))
-    print("1+++++++++++++++++++++++++++++++++++++++++")
-    print(all_user_features)
 
     # 각 사용자 및 친구들의 특성을 가중치로 변환
     weighted_features = Counter()
@@ -151,8 +149,6 @@ def getCityList(request):
         feature_counter = Counter(features)
         total_likes = sum(feature_counter.values())
         weighted_features.update({feature: count / total_likes for feature, count in feature_counter.items()})
-    print("2+++++++++++++++++++++++++++++++++++++++++")
-    print(weighted_features)
 
     # cityId 맞는 모든 장소 가져오기
     similar_destinations = Destination.objects.filter(CITY_ID=city_id)
@@ -167,10 +163,6 @@ def getCityList(request):
     # 특성별 TF-IDF 가중치 계산
     feature_names = vectorizer.get_feature_names_out()
     feature_tfidf = dict(zip(feature_names, tfidf_matrix.sum(axis=0).tolist()[0]))
-    print("3+++++++++++++++++++++++++++++++++++++++++")
-    print(feature_names)
-    print("4+++++++++++++++++++++++++++++++++++++++++")
-    print(feature_tfidf)
 
     # 각 장소의 특성 가중치 계산
     for destination in similar_destinations:
@@ -183,7 +175,6 @@ def getCityList(request):
         result[type_id] = [item[0] for item in result[type_id][:33]]
 
     return Response(result, status=status.HTTP_200_OK)
-
 
 
 ########################################## 군집화 후 장소추천 알고리즘 ##########################################
@@ -202,7 +193,15 @@ def getTravelList(request):
         r = data.get("r")
         place_ids = data.get("placeIds")
         user_id = data.get("userId")
-        print(place_ids)
+
+        # place_ids의 id값을 가지고 destination.type 별 개수를 계산
+        type_counts = Counter(Destination.objects.filter(DESTINATION_ID__in=place_ids).values_list('TYPE', flat=True))
+
+        # 추천 받아야 하는 장소의 개수
+        sights_number = max(0, 4 - type_counts.get('sights', 0))
+        food_number = max(0, 1 - type_counts.get('food', 0))
+        cafe_number = max(0, 1 - type_counts.get('cafe', 0))
+
 
         # 사용자가 좋아요를 누른 장소의 특성을 가져오기
         user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
@@ -224,33 +223,31 @@ def getTravelList(request):
             destinations_with_feature = Destination.objects.filter(FEATURE__contains=feature)
             similar_destinations.extend(destinations_with_feature)
 
-        # 중복 제거
-        similar_destinations = list(set(similar_destinations))
-
         # 유사한 장소 중 범위 내에 있는 장소만 선택
         lat_range = (center_latitude - 0.00904371733 * r, center_latitude + 0.00904371733 * r)
         lon_range = (center_longitude - 0.01112000 * r, center_longitude + 0.01112000 * r)
-        similar_destinations = [destination for destination in similar_destinations
-                                if lat_range[0] <= destination.LATITUDE <= lat_range[1]
-                                and lon_range[0] <= destination.LONGITUDE <= lon_range[1]]
+        similar_destinations_within_range = [destination for destination in similar_destinations
+                                            if lat_range[0] <= destination.LATITUDE <= lat_range[1]
+                                            and lon_range[0] <= destination.LONGITUDE <= lon_range[1]][:30]
+        
+        # 각 타입별로 최대 30개씩 장소를 추출하여 유사한 장소 중 범위 내 장소에 추가
+        for destination_type in ['sights', 'food', 'cafe']:
+            # 범위 내의 해당 타입의 장소 추출
+            destinations_within_range = Destination.objects.filter(
+                TYPE=destination_type,
+                LATITUDE__range=(center_latitude - 0.00904371733 * r, center_latitude + 0.00904371733 * r),
+                LONGITUDE__range=(center_longitude - 0.01112000 * r, center_longitude + 0.01112000 * r)
+            )[:30]  # 최대 30개까지만 추출
 
-        # 유사한 장소 중 사용자가 이미 좋아요를 누른 장소 제외
-        user_liked_destination_ids = [like.DESTINATION_ID for like in user_likes]
-        similar_destinations = [destination for destination in similar_destinations if
-                                destination.DESTINATION_ID not in user_liked_destination_ids]
+            # 유사한 장소 중 범위 내에 있는 장소에 추가
+            similar_destinations_within_range.extend(destinations_within_range)
 
-        # 최대한 비슷한 장소로 30개를 채워주기
-        if len(similar_destinations) < 30:
-            remaining_recommendations = 30 - len(similar_destinations)
-            # 비슷한 장소를 추가로 찾아서 추천 목록에 추가
-            more_similar_destinations = Destination.objects.exclude(
-                DESTINATION_ID__in=user_liked_destination_ids).exclude(
-                pk__in=[d.pk for d in similar_destinations])[:remaining_recommendations]
-            similar_destinations.extend(more_similar_destinations)
+        # 중복 제거
+        similar_destinations_within_range = list(set(similar_destinations_within_range))
 
         # TF-IDF 벡터화
         tfidf_vectorizer = TfidfVectorizer()
-        feature_texts = [' '.join(destination.FEATURE.split(',')) for destination in similar_destinations]
+        feature_texts = [' '.join(destination.FEATURE.split(',')) for destination in similar_destinations_within_range]
         tfidf_matrix = tfidf_vectorizer.fit_transform(feature_texts)
 
         # 코사인 유사도 계산
@@ -259,19 +256,32 @@ def getTravelList(request):
         similarities = cosine_similarity(user_tfidf, tfidf_matrix).flatten()
 
         # 유사도에 따라 장소 정렬
-        similar_destinations = [similar_destinations[i] for i in similarities.argsort()[::-1]]
+        similar_destinations_within_range = [similar_destinations_within_range[i] for i in similarities.argsort()[::-1]]
 
         # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
-        destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
+        destination_ids = [destination.DESTINATION_ID for destination in similar_destinations_within_range]
 
         # 최종 목록에서 place_ids 제외
         destination_ids = [id for id in destination_ids if id not in place_ids]
 
+        # type별 개수에 맞춰서 배열 구성
+        for _ in range(sights_number+food_number+cafe_number):
+            for id in destination_ids:
+                type = Destination.objects.get(DESTINATION_ID=id).TYPE
+                if type == 'sights' and sights_number > 0:
+                        place_ids.append(id)
+                        sights_number -= 1
+                elif type == 'food' and food_number > 0:
+                        place_ids.append(id)
+                        food_number -= 1
+                elif type == 'cafe' and cafe_number > 0:
+                        place_ids.append(id)
+                        cafe_number -= 1
+
         # 결과 리스트에 추가
-        all_destination_ids[key] = destination_ids[:6]
+        all_destination_ids[key] = place_ids
 
     return Response(all_destination_ids, status=status.HTTP_200_OK)
-
 
 
 ########################################## 데이터 확인 ##########################################
@@ -350,4 +360,15 @@ def getDestination(request):
     destination_serializer = DestinationSerializer(destination, many=True)
     destination_df = pd.DataFrame(list(destination.values()))
     print(destination_df.head())
+    return Response(destination_serializer.data)
+
+@api_view(['POST'])
+def getDestinationList(request):
+    ids = request.data.get('ids', [])
+    destinations = Destination.objects.filter(DESTINATION_ID__in=ids)
+    destination_serializer = DestinationSerializer(destinations, many=True)
+        
+    destination_df = pd.DataFrame(list(destinations.values()))
+    print(destination_df.head())
+        
     return Response(destination_serializer.data)

@@ -14,6 +14,7 @@ urlpatterns = [
 
     # 확인용
     path('destination-all-list', views.getDestination),
+    path('destination-id-list', views.getDestinationList),
     path('like-user-list/<int:user_id>/', views.getLike),
     path('basic-recommend-detail/<int:user_id>/', views.getLikeCbfDetail),
 ]
