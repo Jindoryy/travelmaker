@@ -123,19 +123,19 @@ const destinationDetail = (cityId: number) => {
 };
 
 // 장소조회(장소선택 페이지)
-const destinationArray = (destinationIdList: number[]) => {
+const destinationArray = (destinationsIdList: number[]) => {
   return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {
-      destinationId: destinationIdList,
+      destinationsIdList: destinationsIdList.join(','), // 배열을 문자열로 변환하여 전달
     },
   });
 };
 
 // 코스 편집시 거리 가져오기
-const destinationDistance = (destinationIdList: number[]) => {
+const destinationDistance = (destinationsIdList: number[]) => {
   return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
     params: {
-      destinationIdList: destinationIdList,
+      destinationsIdList: destinationsIdList,
     },
   });
 };

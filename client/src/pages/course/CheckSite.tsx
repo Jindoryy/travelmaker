@@ -1,12 +1,9 @@
-// CheckSite.tsx
-
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { destinationDetail } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/HeaderTabs';
 import CheckSitePictures from '../../components/CheckSitePictures';
 import { useLocation } from 'react-router-dom';
-import Box from '@mui/material/Box';
 
 interface DestinationResponse {
   status: string;
@@ -20,11 +17,8 @@ interface DestinationResponse {
 }
 
 const CheckSite = () => {
-  const [selectedTab, setSelectedTab] = useState<string>('명소'); // 탭을 문자열로 변경
-  const location = useLocation();
-  const [cityId, setCityId] = useState<number | undefined>(location.state?.cityId); // cityId를 숫자 또는 undefined로 설정
+  const [selectedTab, setSelectedTab] = useState(1);
   const [destinationList, setDestinationList] = useState<DestinationResponse>({
-    // 배열이 아닌 단일 객체로 설정
     status: '',
     data: {
       destinationRecommendList: {
@@ -34,6 +28,8 @@ const CheckSite = () => {
       },
     },
   });
+  const location = useLocation();
+  const [cityId, setCityId] = useState<number | undefined>(location.state?.cityId);
 
   useEffect(() => {
     if (cityId) {
@@ -41,10 +37,16 @@ const CheckSite = () => {
     }
   }, [cityId]);
 
+  useEffect(() => {
+    // 페이지가 처음 렌더링될 때 기본으로 '명소' 탭의 정보 가져오기
+    if (cityId) {
+      getDestinationInfo(cityId);
+    }
+  }, []); // cityId가 변경될 때만 실행
+
   const getDestinationInfo = (cityId: number) => {
     destinationDetail(cityId)
       .then((response) => {
-        console.log(response.data);
         const destinationResponse: DestinationResponse = {
           status: response.data.status,
           data: response.data.data,
@@ -56,9 +58,8 @@ const CheckSite = () => {
       });
   };
 
-  const handleTabChange = (tabName: string) => {
-    // 탭 이름을 문자열로 받음
-    setSelectedTab(tabName);
+  const handleTabChange = (tabNumber: number) => {
+    setSelectedTab(tabNumber);
   };
 
   const letters = ['명소', '식당', '카페'];
@@ -68,21 +69,23 @@ const CheckSite = () => {
       <StyledHeaderTabs>
         <HeaderTabs
           selectedTab={selectedTab}
-          onTabChange={handleTabChange}
-          size={3}
           letters={letters}
-          destinationList={destinationList} // destinationList 전달
+          onTabChange={handleTabChange}
+          size={letters.length}
+          //   destinationList={destinationList}
         />
       </StyledHeaderTabs>
       <SitePicturesContainer>
         <SitePicturesStyle>
-          {selectedTab === '명소' ? (
-            <CheckSitePictures array={destinationList.data.destinationRecommendList.sights} />
-          ) : selectedTab === '식당' ? (
-            <CheckSitePictures array={destinationList.data.destinationRecommendList.food} />
-          ) : (
-            <CheckSitePictures array={destinationList.data.destinationRecommendList.cafe} />
-          )}
+          <CheckSitePictures
+            array={
+              selectedTab === 1
+                ? destinationList.data.destinationRecommendList.sights
+                : selectedTab === 2
+                  ? destinationList.data.destinationRecommendList.food
+                  : destinationList.data.destinationRecommendList.cafe
+            }
+          />
         </SitePicturesStyle>
       </SitePicturesContainer>
     </MainPageContainer>
