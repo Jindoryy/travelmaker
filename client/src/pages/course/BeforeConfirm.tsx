@@ -8,7 +8,7 @@ import {
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
 import CourseCard from '../../components/CourseCard';
-import useTravelInfo from '../../store/useTravelStore';
+import { useTravelInfo, useTravelCity } from '../../store/useTravelStore';
 
 import styled from 'styled-components';
 import { useTheme } from '@mui/material/styles';
@@ -137,35 +137,16 @@ interface DestinationDetailResponse {
 
 const BeforeConfirm = () => {
   const { setTravelInfo, travelInfo } = useTravelInfo();
+  const { setTravelCity, travelCity } = useTravelCity();
   const [selectedTab, setSelectedTab] = useState(1);
   const [travelResponse, setTravelResponse] = useState<Destination[][]>();
-  const [courseInfo, setCourseInfo] = useState<CourseInfoType[][]>([]);
-  const [firstDate, setFirstDate] = useState<CourseDateInfo>();
-  const [secondDate, setSecondDate] = useState<CourseDateInfo>();
-  const [thirdDate, setThirdDate] = useState<CourseDateInfo>();
-  const [destinationsIdList, setDestinationsIdList] = useState<DestinationIdList>();
-  // const [destinationDetail, SetDestinationDetail] = useState<Destination>();
+  const [firstDate, setFirstDate] = useState<DestinationDetailResponse[]>();
+  const [secondDate, setSecondDate] = useState<DestinationDetailResponse[]>();
+  const [thirdDate, setThirdDate] = useState<DestinationDetailResponse[]>();
   const [spotToSpot, setSpotToSpot] = useState<number[][]>([]);
   const [idList, setIdList] = useState<number[][]>([]);
-  const [idDetail, setIdDetail] = useState<DestinationDetailResponse[]>([]);
+  const [courseInfo, setCourseInfo] = useState<TravelInfoType[] | undefined>([]);
 
-  const response = {
-    status: 0,
-    data: {
-      travelList: [
-        [
-          {
-            point: {
-              destinationId: 0,
-              latitude: 0,
-              longitude: 0,
-            },
-            nextDestinationDistance: 0,
-          },
-        ],
-      ],
-    },
-  };
   useEffect(() => {
     getTravel(travelInfo);
   }, []);
@@ -174,10 +155,10 @@ const BeforeConfirm = () => {
     travelDetail(travelInfo)
       .then((response) => {
         const responseList = response.data.data.travelList;
-        //코스 정보 담아주기
+        //코스 정보(id, lat, lng, distance) 담아주기
         if (responseList) {
           setTravelResponse(responseList);
-          getDistance(responseList);
+          getIdandDistance(responseList);
           console.log(travelResponse);
         }
       })
@@ -186,41 +167,55 @@ const BeforeConfirm = () => {
       });
   };
 
-  const getDistance = (travelList: Destination[][]) => {
+  // idList를 변경하고자 할 때 호출하는 함수
+  const updateIdListandDistance = (newIdList: number[][], newDistanceList: number[][]) => {
+    setIdList(newIdList);
+    setSpotToSpot(newDistanceList);
+  };
+
+  const getIdandDistance = (travelList: Destination[][]) => {
     // spottospot거리 담아주기
     if (travelList) {
+      const idArray = [];
+      const distanceArray = [];
       for (let j = 0; j < travelList.length; j++) {
         const innerArray = [];
         const innerArrayforId = [];
         for (let i = 0; i < travelList[j].length; i++) {
-          innerArray.push(travelList[j][i].nextDestinationDistance); // 내부 배열에 값을 추가합니다.
+          innerArray.push(travelList[j][i].nextDestinationDistance);
           innerArrayforId.push(travelList[j][i].point.destinationId);
         }
-        spotToSpot.push(innerArray); // 완성된 내부 배열을 spotToSpot 배열에 추가합니다.
-        idList.push(innerArrayforId);
+        idArray.push(innerArrayforId);
+        distanceArray.push(innerArray);
       }
-      setSpotToSpot(spotToSpot);
-      console.log(spotToSpot);
-      setIdList(idList);
-      console.log(idList);
+      updateIdListandDistance(idArray, distanceArray);
     }
   };
 
   useEffect(() => {
     getDestination();
-  }, [travelResponse]);
+  }, []);
+
+  // idDetail를 변경하고자 할 때 호출하는 함수
+  const updateIdDetail = (newIdDetail: DestinationDetailResponse[], date: number) => {
+    if (date == 0) setFirstDate(newIdDetail);
+    else if (date == 1) setSecondDate(newIdDetail);
+    else if (date == 2) setThirdDate(newIdDetail);
+    console.log(firstDate);
+    console.log(travelResponse);
+  };
 
   const getDestination = () => {
+    console.log(idList.length);
     for (let i = 0; i < idList.length; i++) {
-      const destinationData = destinationDetail(idList[i]);
-
-      if (destinationData) {
-        const newArray: any = [];
-        destinationData
+      //날짜별로 담아와야함
+      const destinations = destinationDetail(idList[i]);
+      if (destinations) {
+        destinations
           .then((response) => {
+            const newArray: any = [];
             newArray.push(response.data.data);
-            idDetail.push(newArray);
-            setIdDetail(idDetail);
+            updateIdDetail(newArray, i);
           })
           .catch((err) => {
             console.error(err);
@@ -228,23 +223,10 @@ const BeforeConfirm = () => {
       }
     }
   };
-const courseDetail: TravelInfoType = {
-  travelInfo: [
-    {
-      courseDate: [
-        {
-          ...idDetail[0][0]
-          latitude: 0,
-          longitude: 0,
-          markerImage: '...'
-        },
-        // 다른 장소들도 추가할 수 있습니다.
-      ]
-    },
-    // 다른 날짜의 여행 정보도 추가할 수 있습니다.
-  ]
-};
+
+  // const updateCourseInfo = () => {};
   // useEffect(() => {
+  //   updateCourseInfo();
   //   if (courseInfo.length > 0) {
   //     setFirstDate([...courseInfo[0]]);
   //     if (courseInfo.length >= 2) setSecondDate([...courseInfo[1]]);
@@ -278,7 +260,7 @@ const courseDetail: TravelInfoType = {
   return (
     <StyledEngineProvider>
       <BoxContainer>
-        {/* <HeaderTabs
+        <HeaderTabs
           selectedTab={selectedTab}
           onTabChange={handleTabChange}
           size={3}
@@ -286,19 +268,19 @@ const courseDetail: TravelInfoType = {
         />
         <CourseMap>
           <TravelHeader>
-            <HeaderTitle>{travelInfo.city}</HeaderTitle>
+            <HeaderTitle>{travelCity.city}</HeaderTitle>
             <HeaderDate>
               {travelInfo.startDate} ~ {travelInfo.endDate}
             </HeaderDate>
-          </TravelHeader> */}
-        {/* <TravelMap id="map">
+          </TravelHeader>
+          {/* <TravelMap id="map">
             <KakaoMap dateCourse={courseInfo[selectedTab - 1]} />
           </TravelMap> */}
-        {/* </CourseMap> */}
-        {/* <EditBody>
+        </CourseMap>
+        <EditBody>
           <EditButton disableRipple>편집</EditButton>
         </EditBody>
-        <CourseBody>
+        {/* <CourseBody>
           {courseInfo[selectedTab - 1].map((place: any, index: number) => (
             <CourseCard
               key={index}

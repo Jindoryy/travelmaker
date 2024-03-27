@@ -99,17 +99,17 @@ const cityDetail = (provinceId: number) => {
 
 //여행 저장하기 버튼 누르면 장소들 정보 받아와짐
 const travelDetail = (travelInfo: TravelInfoType): Promise<AxiosResponse<TravelResponse>> => {
-  return instance.post<TravelResponse>('travel', travelInfo);
+  return oauthInstance.post<TravelResponse>('travel', travelInfo);
 };
 
 //추천할 코스 장소 id들 넣어서 정보 가져오기
-const destinationDetail = (destinationIdList: number[]) => {
+const destinationDetail = (destinationIdList: number[] | undefined) => {
   if (!destinationIdList) {
     console.error('Error: destinationIdList is undefined');
     return;
   }
   const queryString: string = destinationIdList.join(',');
-  return instance.get<DestinationDetailResponse>('/destination', {
+  return oauthInstance.get<DestinationDetailResponse>('/destination', {
     params: {
       destinationsIdList: queryString,
     },
