@@ -1,0 +1,19 @@
+cloud:
+  aws:
+    s3:
+      bucket: travel-maker
+      base-url: https://travel-maker.s3.ap-northeast-2.amazonaws.com/
+    credentials:
+      access-key: ${AWS_S3_ACCESSKEY}
+      secret-key: ${AWS_S3_SECRETKEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB

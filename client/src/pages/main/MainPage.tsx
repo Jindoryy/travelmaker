@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import Profile from '../../components/MainProfile';
-import ProfileSmall from '../../components/MainProfileSmall';
 import SitePictures from '../../components/SitePictures';
 
 const MainPage = () => {
@@ -11,10 +10,10 @@ const MainPage = () => {
           <Logo src="/img/horizontallogo.png" alt="Logo" />
         </LogoContainer>
       </LogoLargeContainer>
-      <FixedProfile>
+
+      <StyledProfile>
         <Profile />
-        {/* <ProfileSmall /> */}
-      </FixedProfile>
+      </StyledProfile>
 
       <SitePicturesContainer>
         <SitePicturesStyle>
@@ -30,7 +29,7 @@ const MainPageContainer = styled.div`
   background-color: #dde2fc;
 `;
 
-const FixedProfile = styled.div`
+const StyledProfile = styled.div`
   padding-top: 35px;
   position: fixed;
   top: 0;

@@ -1,50 +1,92 @@
-import * as React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { cityDetail } from '../../utils/axios/axios-travel';
 import styled from 'styled-components';
-import { useTheme } from '@mui/material/styles';
+import { Swiper as SwiperContainer, SwiperSlide } from 'swiper/react';
 
-import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
-import MobileStepper from '@mui/material/MobileStepper';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import SwipeableViews from 'react-swipeable-views';
-// import { autoPlay } from 'react-swipeable-views-utils';
 
-// 자동으로 사진이 넘어가는 함수
-// const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+import 'swiper/css';
+import 'swiper/css/effect-cube';
+import 'swiper/css/pagination';
+import { EffectCube, Pagination } from 'swiper';
 
-// 서버에서 받아오는 도시 리스트
-const cityList = [
-  {
-    label: '강릉',
-    imgPath: require('../../assets/image/강릉시.jpg'),
-  },
-  {
-    label: '속초',
-    imgPath: require('../../assets/image/속초시.jpg'),
-  },
-  {
-    label: '평창',
-    imgPath: require('../../assets/image/평창시.jpg'),
-  },
-  {
-    label: '동해',
-    imgPath: require('../../assets/image/동해시.jpg'),
-  },
-];
+interface City {
+  cityId: number;
+  cityName: string;
+  cityUrl: string;
+}
 
-const BoxContainer = styled(Box)`
-  max-width: 400px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-`;
+const CityChoice = () => {
+  const location = useLocation();
+
+  const [provinceId, setProvinceId] = useState(location.state?.provinceId);
+  const [cityList, setCityList] = useState<City[]>([]);
+
+  useEffect(() => {
+    if (provinceId) {
+      getCity(provinceId);
+    }
+  }, [provinceId]);
+
+  const getCity = (provinceId: number) => {
+    cityDetail(provinceId)
+      .then((response) => {
+        const cityData = response.data.data;
+        setCityList(cityData);
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+      });
+  };
+
+  const [activeStep, setActiveStep] = React.useState(0);
+  const handleStepChange = (step: number) => {
+    setActiveStep(step);
+  };
+
+  const navigate = useNavigate();
+  const choiceButton = (cityId: number) => {
+    //시티 선택 완료
+    navigate('/course/checksite', { state: { cityId: cityId } });
+  };
+  return (
+    <div
+      style={{
+        maxWidth: '400px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 'auto',
+      }}
+    >
+      <CityPaper>
+        <CityLine></CityLine>
+        <CityTypography>
+          {cityList.length > 0 && cityList[activeStep]
+            ? cityList[activeStep].cityName
+            : 'Loading...'}
+        </CityTypography>
+      </CityPaper>
+      <StyledSwiper
+        effect={'cube'}
+        grabCursor={true}
+        pagination={true}
+        modules={[EffectCube, Pagination]}
+        onSlideChange={(swiper) => handleStepChange(swiper.activeIndex)}
+      >
+        {cityList.map((city, index) => (
+          <SwiperSlide key={index}>
+            <SwipeImage src={city.cityUrl} alt={city.cityName} />
+          </SwiperSlide>
+        ))}
+      </StyledSwiper>
+      <ButtonBox>
+        <ChooseButton onClick={() => choiceButton(cityList[activeStep].cityId)}>선택</ChooseButton>
+      </ButtonBox>
+    </div>
+  );
+};
 
 const CityPaper = styled.div`
   width: 100%;
@@ -81,86 +123,48 @@ const CityTypography = styled.div`
   font-weight: 600;
   font-size: 25px;
 `;
-const ImageBox = styled(Box)`
-  height: 450px;
-  display: block;
-  max-width: 400px;
+
+const StyledSwiper = styled(SwiperContainer)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 98%;
+  height: 500px;
+  margin: 0px 5px;
   overflow: hidden;
 `;
 
-const RealImage = styled.img`
+const SwipeImage = styled.img`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
+  object-fit: cover;
   margin: auto;
-  border-radius: 25px;
 `;
 
-const ChooseButton = styled(Button)`
+const ButtonBox = styled(Box)`
   && {
-    width: 90%;
-    height: 40px;
-    background-color: ${(props) => props.theme.main};
-    color: ${(props) => props.theme.subtext};
-    margin: 10px;
-    margin-top: 30px;
-    padding: 10px;
-    border-radius: 8px;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 600;
-    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
-
-const CityChoice = () => {
-  const themes = useTheme();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = cityList.length;
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStepChange = (step: number) => {
-    setActiveStep(step);
-  };
-
-  const choiceButton = (city: string) => {
-    //시티 선택 완료
-    console.log(city);
-  };
-  return (
-    <StyledEngineProvider>
-      <BoxContainer>
-        <CityPaper>
-          <CityLine></CityLine>
-          <CityTypography>{cityList[activeStep].label}</CityTypography>
-        </CityPaper>
-        {/* <SwipeableViews
-          axis={themes.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={activeStep}
-          onChangeIndex={handleStepChange}
-          enableMouseEvents
-        >
-          {cityList.map((step, index) => (
-            <div key={step.label}>
-              {Math.abs(activeStep - index) <= 2 ? (
-                <ImageBox>
-                  <RealImage src={step.imgPath} alt={step.label} />
-                </ImageBox>
-              ) : null}
-            </div>
-          ))}
-        </SwipeableViews> */}
-        <ChooseButton disableRipple onClick={() => choiceButton(cityList[activeStep].label)}>
-          선택
-        </ChooseButton>
-      </BoxContainer>
-    </StyledEngineProvider>
-  );
-};
+const ChooseButton = styled.button`
+  width: 100%;
+  height: 40px;
+  background-color: ${(props) => props.theme.main};
+  color: ${(props) => props.theme.subtext};
+  margin: 10px;
+  margin-top: 50px;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+`;
 
 export default CityChoice;

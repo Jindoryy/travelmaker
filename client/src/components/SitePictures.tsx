@@ -6,6 +6,8 @@ import { pink } from '@mui/material/colors';
 import axios from 'axios';
 import styled from 'styled-components';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 interface CatImg {
   id: string;
   catUrl: string;
@@ -234,7 +236,7 @@ const Front = styled.div`
 const Back = styled.div`
   position: absolute;
   margin-top: -10px;
-  padding-bottom: 20px;
+  padding-bottom: 35px;
   border-radius: 5px;
 
   width: 100%;
@@ -260,14 +262,14 @@ const BackText = styled.p`
 
 const StyledCheckbox = styled(Checkbox)`
   position: absolute;
-  top: 40px;
-  right: -60px;
-  z-index: 1;
+  top: 45px;
+  right: -65px;
+  /* z-index: 1; */
 `;
 
 const StyledCheckboxs = styled(Checkbox)`
   position: absolute;
-  top: 30px;
-  right: -120px;
+  top: 35px;
+  right: -130px;
   z-index: 1;
 `;

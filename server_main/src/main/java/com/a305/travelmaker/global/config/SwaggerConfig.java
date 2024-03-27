@@ -16,8 +16,8 @@ public class SwaggerConfig {
         .title("TravelMaker API Document")
         .version("v1")
         .description("TravelMaker API 명세서");
-      return new OpenAPI()
-          .components(new Components())
-          .info(info);
+    return new OpenAPI()
+        .components(new Components())
+        .info(info);
   }
 }
