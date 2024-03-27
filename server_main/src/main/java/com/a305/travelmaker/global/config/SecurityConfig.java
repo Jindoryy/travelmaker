@@ -34,15 +34,14 @@ public class SecurityConfig {
                         "/login/oauth2/code/kakao",
                         "/login/oauth/token",
                         "/swagger-ui/**",
-                        "api-docs/**"
+                        "api-docs/**",
+                        "/city/**",
+                        "/province/**",
+                        "/travel/**",
+                        "/destination/**",
+                        "/like/**"
                 )
-                .permitAll()
-                .requestMatchers(
-                    "/city/**",
-                    "/province/**",
-                    "/travel",
-                    "/destination/**")
-                .authenticated());
+                .permitAll());
         http.logout((logout) -> logout
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .logoutSuccessUrl("/")
