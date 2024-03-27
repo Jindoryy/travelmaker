@@ -17,7 +17,7 @@ interface KakaoAuthResponse {
 }
 
 const kakaoauthentication = (code: string): Promise<AxiosResponse<KakaoAuthResponse>> => {
-    return instance.post<KakaoAuthResponse>('api/login/oauth2/code/kakao', { code });
+    return instance.post<KakaoAuthResponse>('login/oauth2/code/kakao', { code });
 }
 
 export { kakaoauthentication };
