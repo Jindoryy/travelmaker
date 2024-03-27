@@ -38,7 +38,8 @@ public class SecurityConfig {
                     "/city/**",
                     "/province/**",
                     "/travel/**",
-                    "/destination/**"
+                    "/destination/**",
+                    "/like/**"
                 )
                 .permitAll());
 //                .requestMatchers(
