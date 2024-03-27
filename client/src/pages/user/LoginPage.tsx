@@ -5,7 +5,7 @@ import { kakaoLocalRemoteURL, kakaoAuthRemoteURL } from '../../utils/oauth';
 const KakaoButtonComponent = ({}) => (
   <KakaoLoginButton
     onClick={() => {
-      window.location.href = kakaoLocalRemoteURL;
+      window.location.href = kakaoAuthRemoteURL;
     }}
     variant="contained"
   >
