@@ -128,31 +128,34 @@ def getBasicCbfRecommend(user_id):
 @api_view(['POST'])
 def getCityList(request):
     # 요청에서 데이터 추출
-    user_id = request.data.get("userId")
+    user_ids = request.data.get("userId", [])
     city_id = request.data.get("cityId")
 
     # 결과를 저장할 딕셔너리 초기화
     result = defaultdict(list)
 
-    # cityId와 provinceId에 맞는 모든 장소 가져오기
+    # 모든 사용자 및 친구들의 좋아요 데이터를 가져와서 사용자별로 특성을 추출하고 가중치를 계산
+    all_user_features = defaultdict(list)
+    for user_id in user_ids:
+        user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+        for like in user_likes:
+            destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
+            if destination:
+                all_user_features[user_id].extend(destination.FEATURE.split(','))
+    print("1+++++++++++++++++++++++++++++++++++++++++")
+    print(all_user_features)
+
+    # 각 사용자 및 친구들의 특성을 가중치로 변환
+    weighted_features = Counter()
+    for user_id, features in all_user_features.items():
+        feature_counter = Counter(features)
+        total_likes = sum(feature_counter.values())
+        weighted_features.update({feature: count / total_likes for feature, count in feature_counter.items()})
+    print("2+++++++++++++++++++++++++++++++++++++++++")
+    print(weighted_features)
+
+    # cityId 맞는 모든 장소 가져오기
     similar_destinations = Destination.objects.filter(CITY_ID=city_id)
-
-    # 중복 제거
-    similar_destinations = list(set(similar_destinations))
-
-    # 사용자가 좋아요를 누른 장소의 특성을 가져오기
-    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
-    user_features = []
-    for like in user_likes:
-        destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
-        if destination:
-            user_features.extend(destination.FEATURE.split(','))
-
-    # 각 특성의 빈도 계산
-    feature_counter = Counter(user_features)
-
-    # 가장 많이 등장한 특성 추출 (최대 10개까지)
-    top_features = [feature for feature, _ in feature_counter.most_common(10)]
 
     # TF-IDF를 위한 텍스트 데이터 변환
     feature_texts = [destination.FEATURE for destination in similar_destinations]
@@ -164,14 +167,15 @@ def getCityList(request):
     # 특성별 TF-IDF 가중치 계산
     feature_names = vectorizer.get_feature_names_out()
     feature_tfidf = dict(zip(feature_names, tfidf_matrix.sum(axis=0).tolist()[0]))
+    print("3+++++++++++++++++++++++++++++++++++++++++")
+    print(feature_names)
+    print("4+++++++++++++++++++++++++++++++++++++++++")
+    print(feature_tfidf)
 
-    # 각 타입별로 장소 분류
-    type_mapping = {'sights': 'sights', 'food': 'food', 'cafe': 'cafe'}
+    # 각 장소의 특성 가중치 계산
     for destination in similar_destinations:
-        destination_type = destination.TYPE
-        if destination_type in type_mapping:
-            feature_importance = sum(feature_tfidf[feature] for feature in destination.FEATURE.split(',') if feature in feature_tfidf)
-            result[type_mapping[destination_type]].append((destination.DESTINATION_ID, feature_importance))
+        feature_importance = sum(weighted_features[feature] * feature_tfidf.get(feature, 0) for feature in destination.FEATURE.split(','))
+        result[destination.TYPE].append((destination.DESTINATION_ID, feature_importance))
 
     # 각 타입별로 중요도 순으로 정렬
     for type_id in result:
@@ -189,15 +193,16 @@ def getTravelList(request):
     request_data = request.data
 
     # 결과를 저장할 리스트 초기화
-    all_destination_ids = []
+    all_destination_ids = {}
 
     # 각 요청 객체에 대해 처리
-    for data in request_data:
-        center_latitude = data.get('centerLatitude')
-        center_longitude = data.get('centerLongitude')
-        r = data.get('r')
-        place_ids = data.get('placeIds')
-        user_id = data.get('userId')
+    for key, data in request_data.items():
+        center_latitude = data.get("centerLatitude")
+        center_longitude = data.get("centerLongitude")
+        r = data.get("r")
+        place_ids = data.get("placeIds")
+        user_id = data.get("userId")
+        print(place_ids)
 
         # 사용자가 좋아요를 누른 장소의 특성을 가져오기
         user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
@@ -263,10 +268,9 @@ def getTravelList(request):
         destination_ids = [id for id in destination_ids if id not in place_ids]
 
         # 결과 리스트에 추가
-        all_destination_ids.append(destination_ids[:6])
+        all_destination_ids[key] = destination_ids[:6]
 
     return Response(all_destination_ids, status=status.HTTP_200_OK)
-
 
 
 
