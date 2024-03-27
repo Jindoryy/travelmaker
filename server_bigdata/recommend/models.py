@@ -1,85 +1,51 @@
 from django.db import models
-
-# class Destination(models.Model):
-#     DESTINATION_ID = models.AutoField(primary_key=True)
-#     CITY_ID = models.IntegerField()
-#     NAME = models.CharField(max_length=50)
-#     TYPE_CHOICES = [
-#         ('food', '음식'),
-#         ('sights', '관광지'),
-#         ('cafe', '카페'),
-#     ]
-#     TYPE = models.CharField(max_length=100, choices=TYPE_CHOICES)
-#     CONTENT = models.CharField(max_length=1000)
-#     FEATURE = models.CharField(max_length=1000)
-#     LATITUDE = models.FloatField()
-#     LONGITUDE = models.FloatField()
-#     IMG_URL = models.CharField(max_length=100, default='img')
-
-#     class Meta:
-#         db_table = 'DESTINATION'
-
-# class Like(models.Model):
-#     LIKE_ID = models.AutoField(primary_key=True)
-#     DESTINATION_ID = models.IntegerField()
-#     USER_ID = models.IntegerField()
-#     FLAG = models.BooleanField()
-#     FEATURE = models.CharField(max_length=1000)
-
-#     class Meta:
-#         db_table = 'LIKE'
+from datetime import datetime
 
 
-# # ################## test 테이블 ##################
-# class DestinationCopy(models.Model):
-#     DESTINATION_ID = models.IntegerField(primary_key=True)
-#     CITY_ID = models.IntegerField()
-#     NAME = models.CharField(max_length=50)
-#     TYPE_CHOICES = [
-#         ('food', '음식'),
-#         ('sights', '관광지'),
-#         ('cafe', '카페'),
-#     ]
-#     TYPE = models.CharField(max_length=100, choices=TYPE_CHOICES)
-#     CONTENT = models.CharField(max_length=1000, default='-')
-#     FEATURE = models.CharField(max_length=1000)
-#     LATITUDE = models.FloatField()
-#     LONGITUDE = models.FloatField()
-#     IMG_URL = models.CharField(max_length=100, default='img')
-#     CONTENT_TYPE_ID = models.IntegerField()
+class User(models.Model):
+    STATUS_CHOICES = (
+        ('BEFORE_COURSE', '코스전'),
+        ('ON_COURSE', '코스중'),
+        ('AFTER_COURSE', '코스후'),
+    )
+    GENDER_CHOICES = (
+        ('MALE', '남성'),
+        ('FEMALE', '여성'),
+    )
+    ROLE_CHOICES = (
+        ('ROLE_ADMIN', 'ROLE_ADMIN'),
+        ('ROLE_USER', 'ROLE_USER'),
+    )
 
-#     class Meta:
-#         db_table = 'DESTINATIONCOPY'
+    USER_ID = models.BigAutoField(primary_key=True)
+    TAG = models.IntegerField(default=1)
+    KAKAO_ID = models.BigIntegerField()
+    NICKNAME = models.CharField(max_length=50)
+    PROFILE_URL = models.URLField(max_length=1000, null=True, blank=True)
+    EMAIL = models.EmailField(max_length=255)
+    STATUS = models.CharField(max_length=100, choices=STATUS_CHOICES)
+    GENDER = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+    BIRTH = models.DateField(null=True, blank=True)
+    ROLE = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
-# class LikeCopy(models.Model):
-#     LIKE_ID = models.AutoField(primary_key=True)
-#     DESTINATION_ID = models.IntegerField()
-#     USER_ID = models.IntegerField()
-#     FLAG = models.BooleanField()
+    class Meta:
+        db_table = 'user'
 
-#     class Meta:
-#         db_table = 'LIKECOPY'
+    def calculate_age(self):
+        today = datetime.now().date()
+        return today.year - self.BIRTH.year - ((today.month, today.day) < (self.BIRTH.month, self.BIRTH.day))
 
-# class Category(models.Model):
-#     CATEGORY_ID = models.AutoField(primary_key=True)
-#     CATEGORY_CODE = models.CharField(max_length=50)
-#     CATEGORY_NAME = models.CharField(max_length=100)
-
-#     class Meta:
-#         db_table = 'CATEGORY'
-
-
-# ################## 원격 테이블 ##################
 class Destination(models.Model):
-    DESTINATION_ID = models.CharField(max_length=255, primary_key=True)
-    CITY_ID = models.CharField(max_length=255)
-    CONTENT = models.CharField(max_length=255, default='-')
-    CONTENT_TYPE_ID = models.CharField(max_length=255)
+    DESTINATION_ID = models.IntegerField(primary_key=True)
+    CITY_ID = models.IntegerField()
+    CONTENT_TYPE_ID = models.IntegerField()
+    PROVINCE_ID = models.IntegerField()
+    LATITUDE = models.FloatField()
+    LONGITUDE = models.FloatField()
+    CONTENT = models.CharField(max_length=255)
     NAME = models.CharField(max_length=255)
     TYPE = models.CharField(max_length=255)
     FEATURE = models.CharField(max_length=255)
-    LATITUDE = models.CharField(max_length=255)
-    LONGITUDE = models.CharField(max_length=255)
     IMG_URL = models.CharField(max_length=255)
 
     class Meta:

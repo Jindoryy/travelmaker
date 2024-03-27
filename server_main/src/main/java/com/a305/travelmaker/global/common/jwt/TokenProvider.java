@@ -25,15 +25,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+
 @Slf4j
 @Component
 public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final int ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
+    private static final int ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 14; // 14일 임시
     private static final int REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     private static final String ISS = "http://kauth.kakao.com";
+
+    private static final String AUD = "https://j10a305.p.ssafy.io/";
     private Key key;
 
     @Autowired
@@ -52,8 +55,10 @@ public class TokenProvider {
         //Access Toekn
         String accessToken = Jwts.builder()
             .claim("nickname", user.getNickname())
+            .claim(AUTHORITIES_KEY, user.getRoles())
             .signWith(key, SignatureAlgorithm.HS512)
             .setIssuer(ISS)
+            .setAudience(AUD)
             .setSubject(String.valueOf(user.getId()))
             .setIssuedAt(Timestamp.valueOf(now()))
             .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
@@ -62,6 +67,7 @@ public class TokenProvider {
         String refreshToken = Jwts.builder()
             .signWith(key, SignatureAlgorithm.HS512)
             .setIssuer(ISS)
+            .setAudience(AUD)
             .setSubject(String.valueOf(user.getId()))
             .setIssuedAt(Timestamp.valueOf(now()))
             .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
@@ -120,10 +126,10 @@ public class TokenProvider {
         Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow();
         UserDetail userDetail = UserDetail.builder()
-                                    .id(userId)
-                                    .nickname(user.getNickname())
-                                    .profileUrl(user.getProfileUrl())
-                                    .build();
+            .id(userId)
+            .nickname(user.getNickname())
+            .profileUrl(user.getProfileUrl())
+            .build();
 
 
         return new UserDetailAuthenticationToken(userDetail, authorities);
@@ -138,13 +144,13 @@ public class TokenProvider {
         User user = optionalUser.orElseThrow();
 
         UserDetail userDetail = UserDetail.builder()
-                                    .id(userId)
-                                    .nickname(user.getNickname())
-                                    .profileUrl(user.getProfileUrl())
-                                    .build();
+            .id(userId)
+            .nickname(user.getNickname())
+            .profileUrl(user.getProfileUrl())
+            .build();
         return userDetail;
     }
-    
+
     //인증 토큰에서 유저 ID 가져오는 기능
     public Long getUserIdFromToken(String token){
         Claims claims = parseClaims(token);

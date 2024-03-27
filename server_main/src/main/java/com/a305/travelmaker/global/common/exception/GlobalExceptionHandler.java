@@ -1,6 +1,6 @@
 package com.a305.travelmaker.global.common.exception;
 
-import com.a305.travelmaker.global.common.response.FailResponse;
+import com.a305.travelmaker.global.common.dto.FailResponse;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
