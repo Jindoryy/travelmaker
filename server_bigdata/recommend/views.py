@@ -60,16 +60,18 @@ def getCfList(request, user_id):
         predictions.append((destination, pred))
 
     # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
-    top_n = heapq.nlargest(100, predictions, key=lambda x: x[1])
-    print(top_n)
+    top_100 = heapq.nlargest(20000, predictions, key=lambda x: x[1])
+    random.shuffle(top_100)
+    top_100 = top_100[:100]
+    # print(top_100)
 
     # 추천된 장소들의 정보를 가져옴
-    recommended_destinations = [pred[0] for pred in top_n]
+    # recommended_destinations = [pred[0] for pred in top_100]
+    recommended_destination_ids = [pred[0].DESTINATION_ID for pred in top_100]
 
-    # 직렬화하여 JSON 응답으로 반환
-    serializer = DestinationSerializer(recommended_destinations, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
+    # serializer = DestinationSerializer(recommended_destinations, many=True)
+    # return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(recommended_destination_ids, status=status.HTTP_200_OK)
 
 def predict_destination_rating(algo, user_id, features, similarity):
     # 특징을 고려하여 장소의 예상 평점 계산
@@ -89,11 +91,60 @@ def predict_destination_rating(algo, user_id, features, similarity):
         return 0  # 특징이 없는 경우 평점을 0으로 반환
 
 
+def getBasicCfRecommend(user_id):
+    # 사용자가 좋아요를 누른 장소 데이터 가져오기
+    user_likes = Likes.objects.filter(USER_ID=user_id)
+
+    # 사용자가 좋아요를 누른 장소의 특징 가져오기
+    liked_destinations = [like.DESTINATION_ID for like in user_likes]
+    user_features = []
+    for dest_id in liked_destinations:
+        destination = Destination.objects.get(pk=dest_id)
+        user_features.extend(destination.FEATURE.split(','))
+
+    # 중복을 제거하고 리스트로 변환
+    user_features = list(set(user_features))
+
+    # Surprise 라이브러리에서 데이터 로드
+    reader = Reader(rating_scale=(0, 2))  # 평점 스케일을 0~2로 변경
+    dataset = Dataset.load_builtin('ml-100k')
+    # print(dataset.raw_ratings[:10])
+
+    # SVD 알고리즘을 사용하여 모델 학습
+    algo = SVD()
+    cross_validate(algo, dataset, measures=['RMSE', 'MAE'], cv=2, verbose=True)
+
+    # 모든 장소에 대한 예상 평점 계산
+    all_destinations = Destination.objects.all()
+    predictions = []
+    for destination in all_destinations:
+        # 각 장소의 특징을 콤마로 분리하여 리스트로 변환
+        features = destination.FEATURE.split(',')
+        # 사용자가 좋아하는 특징과 장소의 특징의 교집합 계산
+        common_features = set(user_features) & set(features)
+        # 교집합의 크기를 사용자가 좋아하는 특징의 수로 나눠서 유사도 산출
+        similarity = len(common_features) / len(user_features)
+        # 유사도를 가중치로 사용하여 장소의 예상 평점 계산
+        pred = predict_destination_rating(algo, user_id, features, similarity)
+        predictions.append((destination, pred))
+
+    # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
+    top_100 = heapq.nlargest(20000, predictions, key=lambda x: x[1])
+    random.shuffle(top_100)
+    top_100 = top_100[:100]
+
+    recommended_destination_ids = [pred[0].DESTINATION_ID for pred in top_100]
+
+    return Response(recommended_destination_ids, status=status.HTTP_200_OK)
+
+
+
 ######################################## 성별, 나이 기반 추천 + 기본 추천 ########################################
 @api_view(['GET'])
 def getMainList(request, user_id):
     gender_age_response = getGenderAgeRecommend(user_id)
     basic_cbf_list_response = getBasicCbfRecommend(user_id)
+    # basic_cbf_list_response = getBasicCfRecommend(user_id)
 
     combined_response = {
         "popular": gender_age_response.data,
@@ -268,6 +319,9 @@ def getTravelList(request):
         r = data.get("r")
         place_ids = data.get("placeIds")
         user_id = data.get("userId")
+
+        if r is not None and r <= 10:
+            r = 10      
 
         # place_ids의 id값을 가지고 destination.type 별 개수를 계산
         type_counts = Counter(Destination.objects.filter(DESTINATION_ID__in=place_ids).values_list('TYPE', flat=True))
