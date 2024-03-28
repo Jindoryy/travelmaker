@@ -70,7 +70,7 @@ public class TravelService {
   private List<Cluster> clusters = new ArrayList<>();
   private List<Integer> destinationsIdList = new ArrayList<>(); // 군집내에 속해 있는 ID 리스트
   private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
-
+  private List<DestinationDistanceResponse> destinationDistanceResponse = new ArrayList<>();
   @Transactional
   public TravelResponse saveTravel(TravelRequest travelRequest) {
 
@@ -268,6 +268,21 @@ public class TravelService {
 
       System.out.println(shortestPath);
 
+      /*
+        5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+      */
+
+      destinationDistanceResponse = new ArrayList<>();
+      destinationsIdList.clear();
+      // 각 지점의 Point, nextDestinationDistance, destinationName, destinationType, destinationImgUrl 넣기
+      for (int i = 0; i < shortestPath.size(); i++) {
+
+        destinationsIdList.add(placeIds.get(shortestPath.get(i)));
+      }
+
+      destinationDistanceResponses.add(destinationService.findDestinationDistance(
+          destinationsIdList));
+
 //      visited = new boolean[ALL_DESTINATION_COUNT];
 //      dist = new double[ALL_DESTINATION_COUNT];
 //      dijkstra(0);
@@ -282,21 +297,21 @@ public class TravelService {
 
     }
 
-    /*
-      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
-     */
-    for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
-
-      destinationsIdList.clear();
-      for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
-
-        Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
-        destinationsIdList.add(pointId);
-      }
-
-      destinationDistanceResponses.add(
-          destinationService.findDestinationDistance(destinationsIdList));
-    }
+//    /*
+//      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+//     */
+//    for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
+//
+//      destinationsIdList.clear();
+//      for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
+//
+//        Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
+//        destinationsIdList.add(pointId);
+//      }
+//
+//      destinationDistanceResponses.add(
+//          destinationService.findDestinationDistance(destinationsIdList));
+//    }
 
     return TravelResponse.builder()
         .travelList(destinationDistanceResponses)

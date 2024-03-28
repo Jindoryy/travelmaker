@@ -64,6 +64,9 @@ public class DestinationService {
       // 현재 목적지 정보를 추가
       destinationDistanceResponses.add(DestinationDistanceResponse.builder()
           .point(currentPoint)
+          .destinationName(destination.getName())
+          .destinationType(destination.getType())
+          .destinationImgUrl(destination.getImgUrl())
           .build());
 
       // 현재 목적지 정보를 이전 목적지로 업데이트
