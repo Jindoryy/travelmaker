@@ -106,12 +106,15 @@ def getGenderAgeRecommend(user_id):
     # 요청으로부터 사용자 정보 가져오기
     user = User.objects.get(USER_ID=user_id)
     
+    if not user.GENDER or not user.BIRTH:
+        return Response([])
+
     # 사용자의 성별과 나이 정보 가져오기
     user_gender = user.GENDER
-    user_age = user.calculate_age()  # calculate_age 함수는 생년월일로부터 나이를 계산하는 것으로 가정
+    user_age = user.calculate_age()
     
     # 모든 사용자의 좋아요 정보 가져오기
-    all_users_likes = Likes.objects.filter(FLAG=True).values('USER_ID', 'DESTINATION_ID')
+    all_users_likes = Likes.objects.filter(FLAG=1).values('USER_ID', 'DESTINATION_ID')
 
     # 좋아요 데이터프레임 생성
     likes_df = pd.DataFrame(list(all_users_likes))
@@ -137,7 +140,7 @@ def getGenderAgeRecommend(user_id):
 # 그나마 비슷한 애들로 추천 + 목록 골고루 섞기
 def getBasicCbfRecommend(user_id):
     # 사용자가 좋아요를 누른 장소의 특성을 가져오기
-    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
     user_features = []
     for like in user_likes:
         destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
@@ -209,7 +212,7 @@ def getCityList(request):
     # 모든 사용자 및 친구들의 좋아요 데이터를 가져와서 사용자별로 특성을 추출하고 가중치를 계산
     all_user_features = defaultdict(list)
     for user_id in user_ids:
-        user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+        user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
         for like in user_likes:
             destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
             if destination:
@@ -276,7 +279,7 @@ def getTravelList(request):
 
 
         # 사용자가 좋아요를 누른 장소의 특성을 가져오기
-        user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+        user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
         user_features = []
         for like in user_likes:
             destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
@@ -361,7 +364,7 @@ def getTravelList(request):
 @api_view(['GET'])
 def getLikeCbfDetail(request, user_id):
     # 사용자가 좋아요를 누른 장소의 특성을 가져오기
-    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
     user_features = []
     for like in user_likes:
         destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()

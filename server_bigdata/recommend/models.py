@@ -56,17 +56,17 @@ class BitBooleanField(models.BooleanField):
     def from_db_value(self, value, expression, connection):
         if value is None:
             return value
-        return bool(int.from_bytes(value, byteorder='big'))
+        return bool(value)
 
     def to_python(self, value):
         if value is None:
             return value
-        return bool(int.from_bytes(value, byteorder='big'))
+        return bool(value)
 
     def get_db_prep_value(self, value, connection, prepared=False):
         if value is None:
             return value
-        return int(value).to_bytes(1, byteorder='big')
+        return int(value)
 
 class Likes(models.Model):
     LIKE_ID = models.AutoField(primary_key=True)
