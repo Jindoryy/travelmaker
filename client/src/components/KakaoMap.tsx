@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 const KakaoMap = ({ dateCourse }: any) => {
-  const mapRef = useRef(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   // 선을 구성하는 좌표 배열
   const polyline: kakao.maps.LatLng[] = [];
   useEffect(() => {
-    if (!dateCourse) return;
+    if (!dateCourse || !dateCourse.length) return;
     mapscript();
   }, [dateCourse]);
 
@@ -18,12 +18,11 @@ const KakaoMap = ({ dateCourse }: any) => {
     const polyline: kakao.maps.LatLng[] = [];
     const container = mapRef.current;
     if (!container || !dateCourse.length) return;
-    console.log(dateCourse);
+    console.log(dateCourse[0]);
     let options = {
-      center: new kakao.maps.LatLng(dateCourse[0].latitude, dateCourse[0].longitude),
-      level: 7,
+      center: new kakao.maps.LatLng(dateCourse[0].lat, dateCourse[0].lng),
+      level: 6,
     };
-
     //map
     const map = new kakao.maps.Map(container, options);
 
@@ -32,14 +31,14 @@ const KakaoMap = ({ dateCourse }: any) => {
       new kakao.maps.Marker({
         map: map,
         title: el.destinationName,
-        position: new kakao.maps.LatLng(el.latitude, el.longitude),
+        position: new kakao.maps.LatLng(el.lat, el.lng),
         image: new kakao.maps.MarkerImage(el.markerImage, new kakao.maps.Size(30, 30)),
       });
     });
 
     //선 그리기
     dateCourse.forEach((el: any) => {
-      polyline.push(new kakao.maps.LatLng(el.latitude, el.longitude));
+      polyline.push(new kakao.maps.LatLng(el.lat, el.lng));
     });
 
     const linePath = new kakao.maps.Polyline({

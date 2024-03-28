@@ -622,9 +622,10 @@ const BeforeConfirm = () => {
     courseInfo.forEach((el: any) => {
       let number = 1;
       el.forEach((ele: any) => {
+        if (number >= 7) return;
         let color = '';
-        if (ele.destinationType == '명소') color = 'orange';
-        else if (ele.destinationType == '식당') color = 'pink';
+        if (ele.destinationType == 'sights') color = 'orange';
+        else if (ele.destinationType == 'food') color = 'pink';
         else color = 'red';
         ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
         number++;
