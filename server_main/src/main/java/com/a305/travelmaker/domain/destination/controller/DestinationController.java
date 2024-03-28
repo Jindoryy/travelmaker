@@ -3,8 +3,11 @@ package com.a305.travelmaker.domain.destination.controller;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
+import com.a305.travelmaker.domain.login.dto.UserDetail;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.exception.CustomException;
+import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,15 +47,29 @@ public class DestinationController {
     return new SuccessResponse<>(destinationService.findDestinationDetail(destinationsIdList));
   }
 
+//  @Operation(summary = "CF 장소 목록", description = "CF 장소 목록 조회한다.")
+//  @GetMapping("/list")
+//  public SuccessResponse<List<DestinationListResponse>> getDestinationList(
+//      HttpServletRequest request
+//  ) {
+//
+//    String token = request.getHeader("Authorization").substring(7);
+//    Long userId = tokenProvider.getUserIdFromToken(token);
+//
+//    return new SuccessResponse<>(destinationService.findDestinationList(userId));
+//  }
+
   @Operation(summary = "CF 장소 목록", description = "CF 장소 목록 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<List<DestinationListResponse>> getDestinationList(
-      HttpServletRequest request
-  ) {
+  public SuccessResponse<List<DestinationListResponse>> getDestinationList() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    String token = request.getHeader("Authorization").substring(7);
-    Long userId = tokenProvider.getUserIdFromToken(token);
+    if (authentication == null || !(authentication.getPrincipal() instanceof UserDetail)) {
+      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+    }
 
+    UserDetail userDetail = (UserDetail) authentication.getPrincipal();
+    Long userId = userDetail.getId();
     return new SuccessResponse<>(destinationService.findDestinationList(userId));
   }
 

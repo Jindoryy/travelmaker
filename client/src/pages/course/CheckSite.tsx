@@ -1,38 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { destinationDetail } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/HeaderTabs';
 import CheckSitePictures from '../../components/CheckSitePictures';
+import { useLocation } from 'react-router-dom';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+interface DestinationResponse {
+  status: string;
+  data: {
+    destinationRecommendList: {
+      sights: number[];
+      cafe: number[];
+      food: number[];
+    };
+  };
+}
 
 const CheckSite = () => {
   const [selectedTab, setSelectedTab] = useState(1);
+  const [destinationList, setDestinationList] = useState<DestinationResponse>({
+    status: '',
+    data: {
+      destinationRecommendList: {
+        sights: [],
+        cafe: [],
+        food: [],
+      },
+    },
+  });
+  const location = useLocation();
+  const [cityId, setCityId] = useState<number | undefined>(location.state?.cityId);
+
+  useEffect(() => {
+    if (cityId) {
+      getDestinationInfo(cityId);
+    }
+  }, [cityId]);
+
+  useEffect(() => {
+    // 페이지가 처음 렌더링될 때 기본으로 '명소' 탭의 정보 가져오기
+    if (cityId) {
+      getDestinationInfo(cityId);
+    }
+  }, []); // cityId가 변경될 때만 실행
+
+  const getDestinationInfo = (cityId: number) => {
+    destinationDetail(cityId)
+      .then((response) => {
+        const destinationResponse: DestinationResponse = {
+          status: response.data.status,
+          data: response.data.data,
+        };
+        setDestinationList(destinationResponse);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
   };
 
   const letters = ['명소', '식당', '카페'];
+
   return (
     <MainPageContainer>
-      <StyledHederTabs>
+      <StyledHeaderTabs>
         <HeaderTabs
           selectedTab={selectedTab}
-          onTabChange={handleTabChange}
-          size={3}
           letters={letters}
+          onTabChange={handleTabChange}
+          size={letters.length}
+          //   destinationList={destinationList}
         />
-      </StyledHederTabs>
+      </StyledHeaderTabs>
       <SitePicturesContainer>
         <SitePicturesStyle>
-          <CheckSitePictures />
+          <CheckSitePictures
+            array={
+              selectedTab === 1
+                ? destinationList.data.destinationRecommendList.sights
+                : selectedTab === 2
+                  ? destinationList.data.destinationRecommendList.food
+                  : destinationList.data.destinationRecommendList.cafe
+            }
+          />
         </SitePicturesStyle>
       </SitePicturesContainer>
     </MainPageContainer>
   );
 };
 
-const StyledHederTabs = styled.div`
+const StyledHeaderTabs = styled.div`
   position: fixed;
   top: 0;
   z-index: 1;
@@ -56,8 +116,6 @@ const SitePicturesStyle = styled.div`
 
 const SitePicturesContainer = styled.div`
   margin-top: 20px;
-  /* padding-top: 35px; */
-  /* background-color: #dde2fc; */
   z-index: 0;
 `;
 
