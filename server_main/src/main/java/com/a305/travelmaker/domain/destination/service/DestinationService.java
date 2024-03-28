@@ -1,5 +1,6 @@
 package com.a305.travelmaker.domain.destination.service;
 
+import com.a305.travelmaker.domain.destination.dto.DestinationCfListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommend;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
@@ -87,6 +88,7 @@ public class DestinationService {
       destinationListResponseList.add(DestinationListResponse.builder()
           .destinationId(destination.getId())
           .destinationType(destination.getType())
+          .destinationContent(destination.getContent())
           .destinationName(destination.getName())
           .destinationImgUrl(destination.getImgUrl())
           .build());
@@ -95,25 +97,39 @@ public class DestinationService {
     return destinationListResponseList;
   }
 
-  public List<DestinationListResponse> findDestinationList(Long userId) {
+  public DestinationCfListResponse findDestinationList(Long userId) {
 
-    List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
-    List<Integer> likeCbfList = restConfig.restTemplate()
-        .getForObject(bigdataServerDomain + "/recommend/main-list" + userId, List.class);
+    Map<String, List<DestinationListResponse>> destinationListResponseMap = new HashMap<>();
 
-    for (Integer id : likeCbfList) {
+    Map<String, List<Integer>> likeCbfList = restConfig.restTemplate()
+        .getForObject(bigdataServerDomain + "/recommend/main-list/" + userId, HashMap.class);
 
-      Destination destination = destinationRepository.findById(id).get();
+    for (Map.Entry<String, List<Integer>> entry : likeCbfList.entrySet()) {
 
-      destinationListResponseList.add(DestinationListResponse.builder()
-          .destinationId(destination.getId())
-          .destinationType(destination.getType())
-          .destinationName(destination.getName())
-          .destinationImgUrl(destination.getImgUrl())
-          .build());
+      String type = entry.getKey();
+      List<Integer> destinationIdList = entry.getValue(); // 장소 ID를 담는 리스트
+      List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
+
+      for (Integer id : destinationIdList) {
+
+        Destination destination = destinationRepository.findById(id).get();
+
+        DestinationListResponse destinationListResponse = DestinationListResponse.builder()
+            .destinationId(destination.getId())
+            .destinationName(destination.getName())
+            .destinationContent(destination.getContent())
+            .destinationImgUrl(destination.getImgUrl())
+            .build();
+
+        destinationListResponseList.add(destinationListResponse);
+      }
+
+      destinationListResponseMap.put(type, destinationListResponseList);
     }
 
-    return destinationListResponseList;
+    return DestinationCfListResponse.builder()
+        .destinationListResponseMap(destinationListResponseMap)
+        .build();
   }
 
   public DestinationRecommendResponse findDestinationRecommend(
