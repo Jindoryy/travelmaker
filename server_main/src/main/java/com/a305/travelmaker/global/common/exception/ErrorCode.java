@@ -16,6 +16,8 @@ public enum ErrorCode {
 
     USER_NOT_FOUND_ERROR(404, "존재하지 않는 사용자입니다."),
 
+    NO_AUTHENTICATED_USER_FOUND(404, "인증되지 않은 사용자입니다."),
+
     KAKAO_AUTHORIZATION_CODE_ERROR(403, "잘못된 code입니다."),
 
     FORBIDDEN_ERROR(403, "접근 권한이 없습니다."),
