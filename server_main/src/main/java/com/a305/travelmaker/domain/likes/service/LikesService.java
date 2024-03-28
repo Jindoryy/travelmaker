@@ -21,8 +21,7 @@ public class LikesService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
 
-    public boolean tokenCheck(Long userId, String token) {
-        Long tokenUserId = tokenProvider.getUserIdFromToken(token);
+    public boolean tokenCheck(Long userId, Long tokenUserId) {
         return userId.equals(tokenUserId);
     }
 
