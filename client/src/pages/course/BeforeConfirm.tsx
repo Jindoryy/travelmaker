@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   travelDetail,
   destinationDistance,
-  destinationDetail,
+  destinationsListDetail,
 } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
@@ -251,7 +251,7 @@ const BeforeConfirm = () => {
     console.log(idList.length);
     for (let i = 0; i < idList.length; i++) {
       //날짜별로 담아와야함
-      const destinations = destinationDetail(idList[i]);
+      const destinations = destinationsListDetail(idList[i]);
       console.log(destinations);
       if (destinations) {
         destinations

@@ -127,7 +127,7 @@ const travelDetail = (travelInfo: TravelInfoType): Promise<AxiosResponse<TravelR
 };
 
 //추천할 코스 장소 id들 넣어서 정보 가져오기
-const destinationDetail = (destinationIdList: number[] | undefined) => {
+const destinationsListDetail = (destinationIdList: number[] | undefined) => {
   if (!destinationIdList) {
     console.error('Error: destinationIdList is undefined');
     return;
@@ -140,6 +140,7 @@ const destinationDetail = (destinationIdList: number[] | undefined) => {
   });
 };
 
+//시 선택 완료
 const destinationDetail = (cityId: number) => {
   return oauthInstance.get<DestinationResponse>('destination/recommend', {
     params: {
@@ -165,4 +166,11 @@ const destinationDistance = (destinationsIdList: number[]) => {
     },
   });
 };
-export { cityDetail, travelDetail, destinationDetail, destinationDistance, destinationArray };
+export {
+  cityDetail,
+  travelDetail,
+  destinationDetail,
+  destinationDistance,
+  destinationArray,
+  destinationsListDetail,
+};
