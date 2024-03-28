@@ -47,11 +47,11 @@ const useTravelCity = create<TravelCityState & TravelCityActions>((set) => ({
 }));
 
 const defaultState = {
-  startDate: '2024-03-25',
-  endDate: '2024-03-27',
+  startDate: '2024-03-20',
+  endDate: '2024-03-22',
   friendTag: [1, 2, 3],
   transportation: 'WALK',
-  destinationIdList: [1000981, 1003205, 1004281, 1005548, 1005620, 1007868, 1008362],
+  destinationIdList: [125417, 125617, 125636, 133494, 132775],
 };
 
 const useTravelInfo = create<TravelInfoState & TravelInfoActions>((set) => ({

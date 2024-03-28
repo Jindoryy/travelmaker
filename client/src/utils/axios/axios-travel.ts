@@ -13,7 +13,6 @@ interface CityResponse {
 }
 
 //추천 장소 경도, 위도, 아이디, 다음 장소까지의 거리 받아오기
-
 interface DestinationResponse {
   status: string;
   data: {
@@ -30,8 +29,8 @@ interface DestinationArrayResponse {
   data: [
     {
       destinationId: number;
-      destinationType: string;
       destinationName: string;
+      destinationType: string;
       destinationImgUrl: string;
     },
   ];
@@ -49,6 +48,9 @@ interface TravelResponse {
             longitude: number;
           };
           nextDestinationDistance: number;
+          destinationName: string;
+          destinationType: string;
+          destinationImgUrl: string;
         },
       ],
       [
@@ -59,6 +61,9 @@ interface TravelResponse {
             longitude: number;
           };
           nextDestinationDistance: number;
+          destinationName: string;
+          destinationType: string;
+          destinationImgUrl: string;
         },
       ],
       [
@@ -69,6 +74,9 @@ interface TravelResponse {
             longitude: number;
           };
           nextDestinationDistance: number;
+          destinationName: string;
+          destinationType: string;
+          destinationImgUrl: string;
         },
       ],
     ];
@@ -81,8 +89,8 @@ interface DestinationDetailResponse {
   data: [
     {
       destinationId: number;
-      destinationType: string;
       destinationName: string;
+      destinationType: string;
       destinationImgUrl: string;
     },
   ];
@@ -99,6 +107,9 @@ interface DestinationDistanceResponse {
         longitude: number;
       };
       nextDestinationDistance: number;
+      destinationName: string;
+      destinationType: string;
+      destinationImgUrl: string;
     },
   ];
 }
