@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +47,10 @@ public class TravelService {
   private boolean[] visited;
   private double[] dist;
   private List<Spot>[] graph;
+  //  private int[][] graph;
+//  private double[][] dist;
+  private List<Integer> shortestPath;
+  private double minDistance;
 
   private final RestConfig restConfig;
   private final FileUtil fileUtil;
@@ -67,7 +70,7 @@ public class TravelService {
   private List<Cluster> clusters = new ArrayList<>();
   private List<Integer> destinationsIdList = new ArrayList<>(); // 군집내에 속해 있는 ID 리스트
   private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
-
+  private List<DestinationDistanceResponse> destinationDistanceResponse = new ArrayList<>();
   @Transactional
   public TravelResponse saveTravel(TravelRequest travelRequest) {
 
@@ -75,9 +78,9 @@ public class TravelService {
       0. 데이터 세팅
       1. 군집화 실행 (군집 개수 ≤ 여행일 수)
       2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
-      3. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
-      4. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가)
-      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+      - 빅데이터 서버에서 카테고리 안 겹치게 데이터 반환 해줌.
+      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+      4. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
     */
 
     /*
@@ -158,7 +161,7 @@ public class TravelService {
 
       TravelRecommendCluster travelRecommendCluster = TravelRecommendCluster.builder()
           .centerLatitude(centerLatitude)
-          .centerLongitude(cluster.getCentroid().getLongitude())
+          .centerLongitude(centerLongitude)
           .r(r)
           .placeIds(placeIds)
           .userId(1111L)
@@ -186,10 +189,13 @@ public class TravelService {
     System.out.println(travelDaysIdList);
 
     /*
-      3. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
+      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
      */
 
     for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) { // Day 마다 반복문 실행
+
+//      graph = new int[ALL_DESTINATION_COUNT][ALL_DESTINATION_COUNT];
+//      dist = new double[ALL_DESTINATION_COUNT][ALL_DESTINATION_COUNT];
 
       graph = new ArrayList[ALL_DESTINATION_COUNT];
       for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
@@ -210,13 +216,25 @@ public class TravelService {
             .build());
       }
 
-      for (int i = 0; i < placeIds.size()-1; i++) {
-        for (int j = 0; j < placeIds.size(); j++) {
+//      for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
+//        for (int j = 0; j < ALL_DESTINATION_COUNT; j++) {
+//
+//          if (i == j) {
+//
+//            dist[i][j] = 0;
+//            continue;
+//          }
+//
+//          double distance = harversineUtil.calculateDistance(points.get(i), points.get(j));
+//          dist[i][j] = distance;
+//        }
+//      }
+
+      for (int i = 0; i < placeIds.size() - 1; i++) {
+        for (int j = i + 1; j < placeIds.size(); j++) {
 
           if (i != j) {
 
-//            Integer i = placeIds.get(i);
-//            Integer nextV = placeIds.get(j);
             double distance = harversineUtil.calculateDistance(points.get(i), points.get(j));
 
             graph[i].add(Spot.builder()
@@ -231,64 +249,123 @@ public class TravelService {
         }
       }
 
-      System.out.println(Arrays.toString(graph));
-
-      visited = new boolean[ALL_DESTINATION_COUNT];
-      dist = new double[ALL_DESTINATION_COUNT];
-
-      Dijkstra(0);
-      System.out.println(Arrays.toString(dist));
-    }
-
-    /*
-      4. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
-     */
-
-    /*
-      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
-     */
-    for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
-
-      destinationsIdList.clear();
-      for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
-
-        Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
-        destinationsIdList.add(pointId);
+      for (int i = 0; i < graph.length; i++) {
+        System.out.println(graph[i]);
       }
 
-      destinationDistanceResponses.add(
-          destinationService.findDestinationDistance(destinationsIdList));
+      minDistance = Double.MAX_VALUE;
+      shortestPath = new ArrayList<>();
+
+      for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
+
+        List<Integer> path = new ArrayList<>();
+        path.add(i);
+        visited = new boolean[ALL_DESTINATION_COUNT];
+        visited[i] = true;
+        dfs(0, i, 0, path);
+        visited[i] = false;
+      }
+
+      System.out.println(shortestPath);
+
+      /*
+        5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+      */
+
+      destinationDistanceResponse = new ArrayList<>();
+      destinationsIdList.clear();
+      // 각 지점의 Point, nextDestinationDistance, destinationName, destinationType, destinationImgUrl 넣기
+      for (int i = 0; i < shortestPath.size(); i++) {
+
+        destinationsIdList.add(placeIds.get(shortestPath.get(i)));
+      }
+
+      destinationDistanceResponses.add(destinationService.findDestinationDistance(
+          destinationsIdList));
+
+//      visited = new boolean[ALL_DESTINATION_COUNT];
+//      dist = new double[ALL_DESTINATION_COUNT];
+//      dijkstra(0);
+//
+//      for (int i = 0; i < ALL_DESTINATION_COUNT ; i++) {
+//        if(dist[i] == Double.MAX_VALUE){
+//          System.out.println("INF");
+//        }else{
+//          System.out.println(dist[i]);
+//        }
+//      }
+
     }
+
+//    /*
+//      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+//     */
+//    for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
+//
+//      destinationsIdList.clear();
+//      for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
+//
+//        Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
+//        destinationsIdList.add(pointId);
+//      }
+//
+//      destinationDistanceResponses.add(
+//          destinationService.findDestinationDistance(destinationsIdList));
+//    }
 
     return TravelResponse.builder()
         .travelList(destinationDistanceResponses)
         .build();
   }
 
-  private void Dijkstra(int start) {
+  private void dfs(int depth, int current, double allDistance, List<Integer> path) {
 
-    Arrays.fill(dist, DNF);
-    dist[start] = 0L;
+    if (depth == ALL_DESTINATION_COUNT - 1) {
+      // 최대 깊이에 도달하면 최단 경로 업데이트
+      if (allDistance < minDistance) {
+//        System.out.println(path);
+        minDistance = allDistance;
+        shortestPath = new ArrayList<>(path);
+      }
+      return;
+    }
 
-    PriorityQueue<Spot> pq = new PriorityQueue<>();
-    pq.add(new Spot(start, 0L));
+    for (Spot neighbor : graph[current]) {
+      if (!visited[neighbor.getV()]) { // 아직 방문하지 않은 정점만 탐색
 
-    while (!pq.isEmpty()) {
-
-      Spot now = pq.poll();
-
-      if (visited[now.getV()]) continue;
-      visited[now.getV()] = true;
-
-      for (Spot next : graph[now.getV()]) {
-        if (dist[next.getV()] > dist[now.getV()] + next.getDistance()) {
-
-          dist[next.getV()] = dist[now.getV()] + next.getDistance();
-          pq.add(new Spot(next.getV(), dist[next.getV()]));
-        }
+        visited[neighbor.getV()] = true; // 현재 정점을 방문했음을 표시
+        path.add(neighbor.getV());
+        dfs(depth + 1, neighbor.getV(), allDistance + neighbor.getDistance(), path);
+        visited[neighbor.getV()] = false; // 탐색을 마치고 현재 정점을 다시 방문하지 않은 상태로 표시
+        path.remove(path.size() - 1);
       }
     }
   }
+
+//  private void dijkstra(int start) {
+//
+//    Arrays.fill(dist, DNF);
+//    dist[start] = 0L;
+//
+//    PriorityQueue<Spot> pq = new PriorityQueue<>();
+//    pq.add(new Spot(start, 0L));
+//
+//    while (!pq.isEmpty()) {
+//
+//      Spot now = pq.poll();
+//
+//      if (visited[now.getV()]) continue;
+//      visited[now.getV()] = true;
+//
+//      for (Spot next : graph[now.getV()]) {
+//        if (dist[next.getV()] > dist[now.getV()] + next.getDistance()) {
+//
+//          dist[next.getV()] = dist[now.getV()] + next.getDistance();
+//          pq.add(new Spot(next.getV(), dist[next.getV()]));
+//        }
+//      }
+//    }
+//  }
 
   // 초기 중심 무작위 선택 (K-Means ++ Algorithm)
   private void initializeClusters(long travelDays) {

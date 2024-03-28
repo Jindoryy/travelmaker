@@ -1,5 +1,6 @@
 package com.a305.travelmaker.domain.destination.controller;
 
+import com.a305.travelmaker.domain.destination.dto.DestinationCfListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
@@ -50,12 +51,13 @@ public class DestinationController {
 
   @Operation(summary = "CF 장소 목록", description = "CF 장소 목록 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<List<DestinationListResponse>> getDestinationList(@AuthenticationPrincipal UserDetail userDetail) {
-    if (userDetail == null) {
-      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
-    }
-    Long userId = userDetail.getId();
-    return new SuccessResponse<>(destinationService.findDestinationList(userId));
+  public SuccessResponse<DestinationCfListResponse> getDestinationList(
+  ) {
+
+//    String token = request.getHeader("Authorization").substring(7);
+//    Long userId = tokenProvider.getUserIdFromToken(token);
+
+    return new SuccessResponse<>(destinationService.findDestinationList(126L));
   }
 
   @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")
