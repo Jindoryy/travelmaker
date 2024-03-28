@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
@@ -8,6 +8,8 @@ import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 // 시 이름, 날짜는 선택한거 기반으로 가져다 쓰기
 const travelInfo = {
@@ -100,37 +102,65 @@ const courseInfo = [
   ],
 ];
 
-//데이터에 따라 마커 이미지 설정해주는 함수
-const markerSet = courseInfo.forEach((el: any) => {
-  let number = 1;
-  el.forEach((ele: any) => {
-    let color = '';
-    if (ele.destinationCategory == '명소') color = 'orange';
-    else if (ele.destinationCategory == '식당') color = 'pink';
-    else color = 'red';
-    ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
-    number++;
-  });
-});
-
-//1일차 정보
-const firstDate = [...courseInfo[0]];
-
-//2일차 정보
-const secondDate = courseInfo.length >= 2 ? [...courseInfo[1]] : null;
-
-//3일차 정보
-const thirdDate = courseInfo.length >= 3 ? [...courseInfo[2]] : null;
-
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
-const BeforeConfirm = () => {
+const EditCoursePage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(1);
+  const [courseList, setCourseList] = useState<any[]>(courseInfo);
+  const [firstDate, setFirstDate] = useState<any[]>([...courseInfo[0]]);
+  const [secondDate, setSecondDate] = useState<any[]>([...courseInfo[1]]);
+  const [thirdDate, setThirdDate] = useState<any[]>([...courseInfo[2]]);
+
+  useEffect(() => {
+    markerSet();
+  }, [courseInfo]);
 
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
   };
   const letters = ['1일차', '2일차', '3일차'];
 
+  const [items, setItems] = useState<number[]>([1, 2, 3]);
+  const handleDragEnd = (result: DropResult) => {
+    console.log(result.destination);
+    if (!result.destination) {
+      return;
+    }
+
+    const reorderedItems = Array.from(courseList[selectedTab - 1]);
+    console.log(reorderedItems);
+    const [removed] = reorderedItems.splice(result.source.index, 1);
+    reorderedItems.splice(result.destination.index, 0, removed);
+
+    const updatedCourseList = [...courseList];
+    updatedCourseList[selectedTab - 1] = reorderedItems;
+    changeCourseList(updatedCourseList);
+    return;
+  };
+  const changeCourseList = (newCourseList: any[]) => {
+    setCourseList(newCourseList);
+  };
+
+  useEffect(() => {
+    markerSet();
+    setFirstDate({ ...courseList[0] });
+    setSecondDate({ ...courseList[1] });
+    setThirdDate({ ...courseList[2] });
+  }, [courseList]);
+
+  //데이터에 따라 마커 이미지 설정해주는 함수
+  const markerSet = () => {
+    courseList.forEach((el: any) => {
+      let number = 1;
+      el.forEach((ele: any) => {
+        let color = '';
+        if (ele.destinationCategory == '명소') color = 'orange';
+        else if (ele.destinationCategory == '식당') color = 'pink';
+        else color = 'red';
+        ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
+        number++;
+      });
+    });
+  };
   return (
     <StyledEngineProvider>
       <BoxContainer>
@@ -148,17 +178,39 @@ const BeforeConfirm = () => {
             </HeaderDate>
           </TravelHeader>
           <TravelMap id="map">
-            <KakaoMap dateCourse={courseInfo[selectedTab - 1]} />
+            <KakaoMap key={`kakao-map-${selectedTab}`} dateCourse={courseList[selectedTab - 1]} />
           </TravelMap>
         </CourseMap>
         <EditBody>
-          {courseInfo[selectedTab - 1].map((place: any, index: number) => (
-            <CourseEditCard
-              key={index}
-              course={courseInfo[`${selectedTab - 1}`][index]}
-              spotToSpot={spotToSpot[`${selectedTab - 1}`][index - 1]}
-            />
-          ))}
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable
+              droppableId={`course-edit-droppable-${selectedTab}`}
+              key={`course-edit-droppable-${selectedTab}`}
+            >
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {courseList[selectedTab - 1].map((place: any, index: number) => (
+                    <Draggable
+                      key={place.destinationId.toString()}
+                      draggableId={place.destinationId.toString()}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <CourseEditCard
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          course={courseList[selectedTab - 1][index]}
+                          spotToSpot={spotToSpot[selectedTab - 1][index - 1]}
+                          provided={provided}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </EditBody>
       </BoxContainer>
     </StyledEngineProvider>
@@ -223,4 +275,4 @@ const EditBody = styled.div`
   border-radius: 10px;
 `;
 
-export default BeforeConfirm;
+export default EditCoursePage;

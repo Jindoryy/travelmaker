@@ -18,7 +18,7 @@ const KakaoMap = ({ dateCourse }: any) => {
     const container = mapRef.current;
     if (!container) return;
     let options = {
-      center: new kakao.maps.LatLng(37.503325874722, 127.04403462366),
+      center: new kakao.maps.LatLng(dateCourse[0].lat, dateCourse[0].lng),
       level: 7,
     };
 

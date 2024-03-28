@@ -5,10 +5,19 @@ import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 
-const CourseCard = ({ course, spotToSpot }: any) => {
+import { DraggableProvided } from 'react-beautiful-dnd';
+
+interface CourseEditCardProps {
+  course: any;
+  spotToSpot: number;
+  provided: DraggableProvided;
+}
+
+const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, provided }) => {
+  // props에 provided 추가
   useEffect(() => {}, [course]);
   return (
-    <CardContainer>
+    <CardContainer ref={provided.innerRef}>
       <NumberCircle>
         <CircleImage src={course.markerImage} />
       </NumberCircle>
@@ -19,7 +28,7 @@ const CourseCard = ({ course, spotToSpot }: any) => {
           <DetailTitle>{course.destinationName}</DetailTitle>
         </CardDetail>
       </CardBox>
-      <MoveCard>
+      <MoveCard {...provided.draggableProps} {...provided.dragHandleProps}>
         <DehazeIcon></DehazeIcon>
       </MoveCard>
     </CardContainer>
@@ -115,4 +124,4 @@ const MoveCard = styled(Box)`
   margin: 5px;
   padding: 5px;
 `;
-export default CourseCard;
+export default CourseEditCard;
