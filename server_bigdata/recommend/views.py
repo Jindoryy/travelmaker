@@ -13,8 +13,80 @@ from collections import defaultdict
 from datetime import timedelta
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
-from surprise import Dataset, Reader, KNNBasic, KNNWithMeans
+from surprise import Dataset, Reader, KNNBasic, SVD
 from surprise.model_selection import train_test_split
+from surprise.model_selection import cross_validate
+import heapq
+
+
+######################################################################### 100개로 자르지 말고 섞고 잘라야 할듯
+##### 하이브리드 섞는 방법 재고 
+@api_view(['GET'])
+def getCfList(request, user_id):
+    # 사용자가 좋아요를 누른 장소 데이터 가져오기
+    user_likes = Likes.objects.filter(USER_ID=user_id)
+
+    # 사용자가 좋아요를 누른 장소의 특징 가져오기
+    liked_destinations = [like.DESTINATION_ID for like in user_likes]
+    user_features = []
+    for dest_id in liked_destinations:
+        destination = Destination.objects.get(pk=dest_id)
+        user_features.extend(destination.FEATURE.split(','))
+
+    # 중복을 제거하고 리스트로 변환
+    user_features = list(set(user_features))
+
+    # Surprise 라이브러리에서 데이터 로드
+    reader = Reader(rating_scale=(0, 2))  # 평점 스케일을 0~2로 변경
+    dataset = Dataset.load_builtin('ml-100k')
+    # print(dataset.raw_ratings[:10])
+
+    # SVD 알고리즘을 사용하여 모델 학습
+    algo = SVD()
+    cross_validate(algo, dataset, measures=['RMSE', 'MAE'], cv=2, verbose=True)
+
+    # 모든 장소에 대한 예상 평점 계산
+    all_destinations = Destination.objects.all()
+    predictions = []
+    for destination in all_destinations:
+        # 각 장소의 특징을 콤마로 분리하여 리스트로 변환
+        features = destination.FEATURE.split(',')
+        # 사용자가 좋아하는 특징과 장소의 특징의 교집합 계산
+        common_features = set(user_features) & set(features)
+        # 교집합의 크기를 사용자가 좋아하는 특징의 수로 나눠서 유사도 산출
+        similarity = len(common_features) / len(user_features)
+        # 유사도를 가중치로 사용하여 장소의 예상 평점 계산
+        pred = predict_destination_rating(algo, user_id, features, similarity)
+        predictions.append((destination, pred))
+
+    # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
+    top_n = heapq.nlargest(100, predictions, key=lambda x: x[1])
+    print(top_n)
+
+    # 추천된 장소들의 정보를 가져옴
+    recommended_destinations = [pred[0] for pred in top_n]
+
+    # 직렬화하여 JSON 응답으로 반환
+    serializer = DestinationSerializer(recommended_destinations, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def predict_destination_rating(algo, user_id, features, similarity):
+    # 특징을 고려하여 장소의 예상 평점 계산
+    rating_sum = 0
+    total_weight = 0
+    for feature in features:
+        # 각 특징에 대한 예상 평점 계산
+        pred = algo.predict(user_id, feature)
+        # 유사도를 가중치로 사용하여 평점에 반영
+        rating_sum += pred.est * similarity
+        total_weight += similarity
+
+    # 가중평균 평점 계산
+    if total_weight > 0:
+        return rating_sum / total_weight
+    else:
+        return 0  # 특징이 없는 경우 평점을 0으로 반환
 
 
 ######################################## 성별, 나이 기반 추천 + 기본 추천 ########################################
@@ -346,11 +418,7 @@ def getLikeCbfDetail(request, user_id):
 
 @api_view(['GET'])
 def getLike(request, user_id):
-    if not Likes.objects.filter(USER_ID=user_id).exists():
-        return Response({"message": "아이디없음"})
-    
-    # 유저가 like를 누른 목록을 가져옵니다.
-    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=True)
+    user_likes = Likes.objects.filter(USER_ID=user_id)
     like_serializer = LikeSerializer(user_likes, many=True)
     return Response(like_serializer.data)
 

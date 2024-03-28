@@ -51,11 +51,28 @@ class Destination(models.Model):
     class Meta:
         db_table = 'destination'
 
+# likes의 flag가 bit로 들어오고 있어서 변환 작업이 필요함
+class BitBooleanField(models.BooleanField):
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return value
+        return bool(int.from_bytes(value, byteorder='big'))
+
+    def to_python(self, value):
+        if value is None:
+            return value
+        return bool(int.from_bytes(value, byteorder='big'))
+
+    def get_db_prep_value(self, value, connection, prepared=False):
+        if value is None:
+            return value
+        return int(value).to_bytes(1, byteorder='big')
+
 class Likes(models.Model):
     LIKE_ID = models.AutoField(primary_key=True)
     DESTINATION_ID = models.IntegerField()
     USER_ID = models.IntegerField()
-    FLAG = models.BooleanField()
+    FLAG = BitBooleanField(default=False)
 
     class Meta:
         db_table = 'likes'
