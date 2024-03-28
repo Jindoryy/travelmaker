@@ -10,7 +10,7 @@ class DestinationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Destination
         fields = '__all__'
-
+        
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Likes

@@ -11,21 +11,30 @@ import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
+import com.a305.travelmaker.domain.travel.dto.Spot;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelRecommendCluster;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
+import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +42,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TravelService {
 
+  private static final int ALL_DESTINATION_COUNT = 6; // 빅데이터 서버로 부터 받아오는 Day 별로 장소의 개수
+  private static final double DNF = Double.MAX_VALUE;
+  private boolean[] visited;
+  private double[] dist;
+  private List<Spot>[] graph;
+  //  private int[][] graph;
+//  private double[][] dist;
+  private List<Integer> shortestPath;
+  private double minDistance;
+
+  private final RestConfig restConfig;
   private final FileUtil fileUtil;
   private final DestinationService destinationService;
   private final TravelRepository travelRepository;
@@ -43,12 +63,14 @@ public class TravelService {
 
   @Value("${cloud.aws.s3.base-url}")
   private String baseUrl;
+  @Value("${bigdata.server.domain}")
+  private String bigdataServerDomain;
 
   private List<Point> pointList = new ArrayList<>(); // 장소의 경도, 위도를 담고 있는 리스트
   private List<Cluster> clusters = new ArrayList<>();
   private List<Integer> destinationsIdList = new ArrayList<>(); // 군집내에 속해 있는 ID 리스트
   private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
-
+  private List<DestinationDistanceResponse> destinationDistanceResponse = new ArrayList<>();
   @Transactional
   public TravelResponse saveTravel(TravelRequest travelRequest) {
 
@@ -56,16 +78,16 @@ public class TravelService {
       0. 데이터 세팅
       1. 군집화 실행 (군집 개수 ≤ 여행일 수)
       2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
-      3. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
-      4. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
-      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+      - 빅데이터 서버에서 카테고리 안 겹치게 데이터 반환 해줌.
+      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+      4. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
     */
 
     /*
       0. 데이터 세팅
-        0-0. 이전 클러스터, 장소 리스트 초기화
-        0-1. 장소 id의 경도, 위도를 pointList에 담기
-        0-2. 여행일 수 확인
+        0-1. 이전 클러스터, 장소 리스트 초기화
+        0-2. 장소 id의 경도, 위도를 pointList에 담기
+        0-3. 여행일 수 확인
     */
     pointList.clear();
     clusters.clear();
@@ -108,37 +130,242 @@ public class TravelService {
     }
 
     /*
-      2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
+      2. 빅데이터 서버에 군집별로 (중심점의 위도, 경도, R(가장 먼 장소의 거리), 장소 ID리스트, 유저ID)를 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소) 받기
+        2-1. 빅데이터 서버에 데이터를 보낼 수 있도록 군집별로 데이터를 담기
      */
 
-    /*
-      3. 카테고리 겹치지 않게 로직 구성 (식당1, 카페1, 관광지1 무조건 들어가게 하고, 다 포함되지 않는 군집에는 근처 반경에서 장소 추가
-     */
+    Map<String, TravelRecommendCluster> travelRecommendClusterList = new HashMap<>();
 
-    /*
-      4. 모든 장소에 대한 최적 거리 탐색 (모든 출발지에 대한 다익스트라 실행)
-     */
+    // 군집별로 중심점의 위도, 경도, 중심점과 가장 먼 장소와의 거리, 장소 ID 리스트 추출
+    for (int i = 0; i < clusters.size(); i++) {
 
-    /*
-      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
-     */
-    for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
+      Cluster cluster = clusters.get(i);
+      double centerLatitude = cluster.getCentroid().getLatitude();
+      double centerLongitude = cluster.getCentroid().getLongitude();
 
-      destinationsIdList.clear();
-      for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
+      List<Integer> placeIds = new ArrayList<>(); // 장소 ID 리스트
+      List<Point> points = cluster.getPoints();
+      for (int j = 0; j < points.size(); j++) {
 
-        Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
-        destinationsIdList.add(pointId);
+        placeIds.add(points.get(j).getDestinationId());
       }
 
-      destinationDistanceResponses.add(
-          destinationService.findDestinationDistance(destinationsIdList));
+      Point centroid = cluster.getCentroid(); // 중심점
+      double r = Double.MIN_VALUE;
+      for (int j = 0; j < points.size(); j++) {
+
+        Point point = points.get(j); // 장소
+        double distance = harversineUtil.calculateDistance(centroid, point); // 중심점과 장소와의 거리 계산
+        r = Math.max(r, distance); // 가장 먼 거리 초기화
+      }
+
+      TravelRecommendCluster travelRecommendCluster = TravelRecommendCluster.builder()
+          .centerLatitude(centerLatitude)
+          .centerLongitude(centerLongitude)
+          .r(r)
+          .placeIds(placeIds)
+          .userId(1111L)
+          .build();
+
+      travelRecommendClusterList.put(String.valueOf(i + 1), travelRecommendCluster);
     }
+
+    // Gson을 사용하여 JSON 문자열로 변환
+    Gson gson = new Gson();
+    String json = gson.toJson(travelRecommendClusterList);
+
+    // HTTP 요청 설정
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<String> requestEntity = new HttpEntity<>(json, headers);
+
+    System.out.println(travelRecommendClusterList);
+
+    Map<String, List<Integer>> travelDaysIdList = restConfig.restTemplate()
+        .postForObject(bigdataServerDomain + "/recommend/travel-list",
+            requestEntity,
+            HashMap.class);
+
+    System.out.println(travelDaysIdList);
+
+    /*
+      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+     */
+
+    for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) { // Day 마다 반복문 실행
+
+//      graph = new int[ALL_DESTINATION_COUNT][ALL_DESTINATION_COUNT];
+//      dist = new double[ALL_DESTINATION_COUNT][ALL_DESTINATION_COUNT];
+
+      graph = new ArrayList[ALL_DESTINATION_COUNT];
+      for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
+        graph[i] = new ArrayList<>();
+      }
+
+      String day = entry.getKey();
+      List<Integer> placeIds = entry.getValue(); // 장소 ID를 담는 리스트
+      List<Point> points = new ArrayList<>(); // 장소 ID, 위도, 경도를 담은 클래스를 담는 리스트
+
+      for (Integer placeId : placeIds) {
+
+        Destination destination = destinationRepository.findById(placeId).get();
+        points.add(Point.builder()
+            .destinationId(placeId)
+            .latitude(destination.getLatitude())
+            .longitude(destination.getLongitude())
+            .build());
+      }
+
+//      for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
+//        for (int j = 0; j < ALL_DESTINATION_COUNT; j++) {
+//
+//          if (i == j) {
+//
+//            dist[i][j] = 0;
+//            continue;
+//          }
+//
+//          double distance = harversineUtil.calculateDistance(points.get(i), points.get(j));
+//          dist[i][j] = distance;
+//        }
+//      }
+
+      for (int i = 0; i < placeIds.size() - 1; i++) {
+        for (int j = i + 1; j < placeIds.size(); j++) {
+
+          if (i != j) {
+
+            double distance = harversineUtil.calculateDistance(points.get(i), points.get(j));
+
+            graph[i].add(Spot.builder()
+                .v(j)
+                .distance(distance)
+                .build());
+            graph[j].add(Spot.builder()
+                .v(i)
+                .distance(distance)
+                .build());
+          }
+        }
+      }
+
+      for (int i = 0; i < graph.length; i++) {
+        System.out.println(graph[i]);
+      }
+
+      minDistance = Double.MAX_VALUE;
+      shortestPath = new ArrayList<>();
+
+      for (int i = 0; i < ALL_DESTINATION_COUNT; i++) {
+
+        List<Integer> path = new ArrayList<>();
+        path.add(i);
+        visited = new boolean[ALL_DESTINATION_COUNT];
+        visited[i] = true;
+        dfs(0, i, 0, path);
+        visited[i] = false;
+      }
+
+      System.out.println(shortestPath);
+
+      /*
+        5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+      */
+
+      destinationDistanceResponse = new ArrayList<>();
+      destinationsIdList.clear();
+      // 각 지점의 Point, nextDestinationDistance, destinationName, destinationType, destinationImgUrl 넣기
+      for (int i = 0; i < shortestPath.size(); i++) {
+
+        destinationsIdList.add(placeIds.get(shortestPath.get(i)));
+      }
+
+      destinationDistanceResponses.add(destinationService.findDestinationDistance(
+          destinationsIdList));
+
+//      visited = new boolean[ALL_DESTINATION_COUNT];
+//      dist = new double[ALL_DESTINATION_COUNT];
+//      dijkstra(0);
+//
+//      for (int i = 0; i < ALL_DESTINATION_COUNT ; i++) {
+//        if(dist[i] == Double.MAX_VALUE){
+//          System.out.println("INF");
+//        }else{
+//          System.out.println(dist[i]);
+//        }
+//      }
+
+    }
+
+//    /*
+//      5. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
+//     */
+//    for (int i = 0; i < travelDays; i++) { // 각 군집별로 장소 ID 확인
+//
+//      destinationsIdList.clear();
+//      for (int j = 0; j < clusters.get(i).getPoints().size(); j++) {
+//
+//        Integer pointId = clusters.get(i).getPoints().get(j).getDestinationId();
+//        destinationsIdList.add(pointId);
+//      }
+//
+//      destinationDistanceResponses.add(
+//          destinationService.findDestinationDistance(destinationsIdList));
+//    }
 
     return TravelResponse.builder()
         .travelList(destinationDistanceResponses)
         .build();
   }
+
+  private void dfs(int depth, int current, double allDistance, List<Integer> path) {
+
+    if (depth == ALL_DESTINATION_COUNT - 1) {
+      // 최대 깊이에 도달하면 최단 경로 업데이트
+      if (allDistance < minDistance) {
+//        System.out.println(path);
+        minDistance = allDistance;
+        shortestPath = new ArrayList<>(path);
+      }
+      return;
+    }
+
+    for (Spot neighbor : graph[current]) {
+      if (!visited[neighbor.getV()]) { // 아직 방문하지 않은 정점만 탐색
+
+        visited[neighbor.getV()] = true; // 현재 정점을 방문했음을 표시
+        path.add(neighbor.getV());
+        dfs(depth + 1, neighbor.getV(), allDistance + neighbor.getDistance(), path);
+        visited[neighbor.getV()] = false; // 탐색을 마치고 현재 정점을 다시 방문하지 않은 상태로 표시
+        path.remove(path.size() - 1);
+      }
+    }
+  }
+
+//  private void dijkstra(int start) {
+//
+//    Arrays.fill(dist, DNF);
+//    dist[start] = 0L;
+//
+//    PriorityQueue<Spot> pq = new PriorityQueue<>();
+//    pq.add(new Spot(start, 0L));
+//
+//    while (!pq.isEmpty()) {
+//
+//      Spot now = pq.poll();
+//
+//      if (visited[now.getV()]) continue;
+//      visited[now.getV()] = true;
+//
+//      for (Spot next : graph[now.getV()]) {
+//        if (dist[next.getV()] > dist[now.getV()] + next.getDistance()) {
+//
+//          dist[next.getV()] = dist[now.getV()] + next.getDistance();
+//          pq.add(new Spot(next.getV(), dist[next.getV()]));
+//        }
+//      }
+//    }
+//  }
 
   // 초기 중심 무작위 선택 (K-Means ++ Algorithm)
   private void initializeClusters(long travelDays) {

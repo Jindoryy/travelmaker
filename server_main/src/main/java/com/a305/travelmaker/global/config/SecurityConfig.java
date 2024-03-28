@@ -31,15 +31,16 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             http.authorizeHttpRequests(request -> request
                 .requestMatchers(
-                        "/login/oauth2/code/kakao",
-                        "/login/oauth/token",
-                        "/swagger-ui/**",
-                        "api-docs/**",
-                        "/city/**",
-                        "/province/**",
-                        "/travel/**",
-                        "/destination/**",
-                        "/like/**"
+                    "/**"
+//                        "/login/oauth2/code/kakao",
+//                        "/login/oauth/token",
+//                        "/swagger-ui/**",
+//                        "api-docs/**",
+//                        "/city/**",
+//                        "/province/**",
+//                        "/travel/**",
+//                        "/destination/**",
+//                        "/like/**"
                 )
                 .permitAll());
         http.logout((logout) -> logout

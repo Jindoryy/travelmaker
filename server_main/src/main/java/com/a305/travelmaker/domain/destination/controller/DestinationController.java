@@ -1,16 +1,24 @@
 package com.a305.travelmaker.domain.destination.controller;
 
+import com.a305.travelmaker.domain.destination.dto.DestinationCfListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationListResponse;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
+import com.a305.travelmaker.domain.login.dto.UserDetail;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.exception.CustomException;
+import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,26 +51,23 @@ public class DestinationController {
 
   @Operation(summary = "CF 장소 목록", description = "CF 장소 목록 조회한다.")
   @GetMapping("/list")
-  public SuccessResponse<List<DestinationListResponse>> getDestinationList(
-      HttpServletRequest request
+  public SuccessResponse<DestinationCfListResponse> getDestinationList(
   ) {
 
-    String token = request.getHeader("Authorization").substring(7);
-    Long userId = tokenProvider.getUserIdFromToken(token);
+//    String token = request.getHeader("Authorization").substring(7);
+//    Long userId = tokenProvider.getUserIdFromToken(token);
 
-    return new SuccessResponse<>(destinationService.findDestinationList(userId));
+    return new SuccessResponse<>(destinationService.findDestinationList(126L));
   }
 
   @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")
   @GetMapping("/recommend")
-  public SuccessResponse<DestinationRecommendResponse> getDestinationRecommend(
-      @RequestParam int cityId,
-      @RequestParam(required = false) List<Integer> friendTags,
-      HttpServletRequest request) {
+  public SuccessResponse<DestinationRecommendResponse> getDestinationRecommend(@RequestParam int cityId, @RequestParam(required = false) List<Long> friendIdList, @AuthenticationPrincipal UserDetail userDetail) {
+    if (userDetail == null) {
+      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+    }
+    Long userId = userDetail.getId();
 
-    String token = request.getHeader("Authorization").substring(7);
-    Long userId = tokenProvider.getUserIdFromToken(token);
-
-    return new SuccessResponse<>(destinationService.findDestinationRecommend(userId, cityId, friendTags));
+    return new SuccessResponse<>(destinationService.findDestinationRecommend(userId, cityId, friendIdList));
   }
 }

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL;
+// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = "https://j10a305.p.ssafy.io/api/";
 
 const instance = axios.create({
     baseURL:API_URL,

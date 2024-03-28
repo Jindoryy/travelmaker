@@ -13,6 +13,30 @@ interface CityResponse {
 }
 
 //추천 장소 경도, 위도, 아이디, 다음 장소까지의 거리 받아오기
+
+interface DestinationResponse {
+  status: string;
+  data: {
+    destinationRecommendList: {
+      sights: number[];
+      cafe: number[];
+      food: number[];
+    };
+  };
+}
+
+interface DestinationArrayResponse {
+  status: string;
+  data: [
+    {
+      destinationId: number;
+      destinationType: string;
+      destinationName: string;
+      destinationImgUrl: string;
+    },
+  ];
+}
+
 interface TravelResponse {
   status: string;
   data: {
@@ -116,12 +140,29 @@ const destinationDetail = (destinationIdList: number[] | undefined) => {
   });
 };
 
-// 코스 편집시 거리 가져오기
-const destinationDistance = (destinationIdList: number[]) => {
-  return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
+const destinationDetail = (cityId: number) => {
+  return oauthInstance.get<DestinationResponse>('destination/recommend', {
     params: {
-      destinationIdList: destinationIdList,
+      cityId: cityId,
     },
   });
 };
-export { cityDetail, travelDetail, destinationDetail, destinationDistance };
+
+// 장소조회(장소선택 페이지)
+const destinationArray = (destinationsIdList: number[]) => {
+  return oauthInstance.get<DestinationArrayResponse>('destination', {
+    params: {
+      destinationsIdList: destinationsIdList.join(','), // 배열을 문자열로 변환하여 전달
+    },
+  });
+};
+
+// 코스 편집시 거리 가져오기
+const destinationDistance = (destinationsIdList: number[]) => {
+  return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
+    params: {
+      destinationsIdList: destinationsIdList,
+    },
+  });
+};
+export { cityDetail, travelDetail, destinationDetail, destinationDistance, destinationArray };

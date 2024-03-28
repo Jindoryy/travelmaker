@@ -37,7 +37,7 @@ public class LoginService {
     @Value("${oauth2.provider.kakao.client-secret}")
     private String CLIENT_SECRET;
 
-    private final String REDIRECT_URI = "http://localhost:3000/login/oauth2/code/kakao";
+    private final String REDIRECT_URI = "https://j10a305.p.ssafy.io/login/oauth2/code/kakao";
 
     private final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
 

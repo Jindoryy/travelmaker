@@ -7,9 +7,9 @@ const ProvinceHeader = () => {
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
   // useEffect(() => {
-  //   if (!userInfo || userInfo.userId === -1) {
-  //     navigate('/login');
-  //   }
+  // if (!userInfo || userInfo.userId === -1) {
+  //   navigate('/login');
+  // }
   // }, [userInfo, navigate]);
   const { nickName } = userInfo;
 
