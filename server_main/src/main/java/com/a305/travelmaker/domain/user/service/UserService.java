@@ -14,6 +14,12 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+
+    public String getUserStatus(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getStatus().toString();
+    }
+
     public void updateUserStatusAfterCourse(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setStatus(UserStatus.AFTER_COURSE);
