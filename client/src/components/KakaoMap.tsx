@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 const KakaoMap = ({ dateCourse }: any) => {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef(null);
   // 선을 구성하는 좌표 배열
   const polyline: kakao.maps.LatLng[] = [];
   useEffect(() => {
@@ -18,12 +18,14 @@ const KakaoMap = ({ dateCourse }: any) => {
     const polyline: kakao.maps.LatLng[] = [];
     const container = mapRef.current;
     if (!container || !dateCourse.length) return;
-    console.log(dateCourse[0]);
+
     let options = {
       center: new kakao.maps.LatLng(dateCourse[0].lat, dateCourse[0].lng),
-      level: 6,
+      level: 8,
     };
     //map
+
+    if (!container || !dateCourse.length) return;
     const map = new kakao.maps.Map(container, options);
 
     //마커가 표시 될 위치
@@ -37,9 +39,11 @@ const KakaoMap = ({ dateCourse }: any) => {
     });
 
     //선 그리기
-    dateCourse.forEach((el: any) => {
-      polyline.push(new kakao.maps.LatLng(el.lat, el.lng));
-    });
+    if (polyline.length == 0) {
+      dateCourse.forEach((el: any) => {
+        polyline.push(new kakao.maps.LatLng(el.lat, el.lng));
+      });
+    }
 
     const linePath = new kakao.maps.Polyline({
       path: polyline, // 선을 구성하는 좌표배열

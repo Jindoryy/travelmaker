@@ -50,7 +50,7 @@ const defaultState = {
   startDate: '2024-03-20',
   endDate: '2024-03-22',
   friendTag: [1, 2, 3],
-  transportation: 'WALK',
+  transportation: 'CAR',
   destinationIdList: [125417, 125617, 125636, 133494, 132775],
 };
 
