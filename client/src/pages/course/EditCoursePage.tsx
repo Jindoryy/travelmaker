@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTravelInfo, useTravelCity } from '../../store/useTravelStore';
 import styled from 'styled-components';
-import HeaderTabs from '../../components/HeaderTabs';
-import KakaoMap from '../../components/KakaoMap';
-import CourseEditCard from '../../components/CourseEditCard';
+import HeaderTabs from '../../components/common/HeaderTabs';
+import KakaoMap from '../../components/course/KakaoMap';
+import CourseEditCard from '../../components/course/CourseEditCard';
 
 import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -109,7 +109,7 @@ const EditCoursePage: React.FC = () => {
               droppableId={`course-edit-droppable-${selectedTab}`}
               key={`course-edit-droppable-${selectedTab}`}
             >
-              {(provided) => (
+              {(provided: any) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {courseList[selectedTab - 1].map((place: any, index: number) => (
                     <Draggable
@@ -117,7 +117,7 @@ const EditCoursePage: React.FC = () => {
                       draggableId={place.destinationId.toString()}
                       index={index}
                     >
-                      {(provided) => (
+                      {(provided: any) => (
                         <CourseEditCard
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
