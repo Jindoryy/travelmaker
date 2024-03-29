@@ -102,6 +102,8 @@ const StyledHeaderTabs = styled.div`
 const MainPageContainer = styled.div`
   margin-top: 15px;
   display: flex;
+  max-width: 412px;
+  width: 100vw;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;

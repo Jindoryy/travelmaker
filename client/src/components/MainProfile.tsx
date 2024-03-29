@@ -118,8 +118,9 @@ const StyledProfileContainer = styled.div<ProfileProps>`
   color: #000;
   padding: 10px;
   margin: 10px;
+  max-width: 375px;
+  width: 100%;
   text-align: center;
-  align-items: center;
   border-radius: 15px;
   transition: height 0.1s;
   height: ${({ scrolled, scrollHeight }) => {
