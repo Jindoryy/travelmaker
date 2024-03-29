@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import type { SVGProps } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 const Footer = (props: SVGProps<SVGSVGElement>) => {
   const [activeButton, setActiveButton] = useState(2);
+  const navigate = useNavigate();
+
   return (
     <FooterBox>
       <OneButton
         disableRipple
         className={activeButton === 1 ? 'active' : undefined}
-        onClick={() => setActiveButton(1)}
+        onClick={() => {
+          setActiveButton(1);
+          navigate('/course/province');
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +37,10 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       <OneButton
         disableRipple
         className={activeButton === 2 ? 'active' : undefined}
-        onClick={() => setActiveButton(2)}
+        onClick={() => {
+          setActiveButton(2);
+          navigate('/');
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +64,10 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       <OneButton
         disableRipple
         className={activeButton === 3 ? 'active' : undefined}
-        onClick={() => setActiveButton(3)}
+        onClick={() => {
+          setActiveButton(3);
+          // navigate('/my');
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

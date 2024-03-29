@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { siteListDetail, likeDestination } from '../utils/axios/axios-travel';
+import { siteListDetail, likeDestination } from '../../utils/axios/axios-travel';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useUserInfo from '../store/useUserStore';
+import useUserInfo from '../../store/useUserStore';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Profile from '../../components/MainProfile';
-import SitePictures from '../../components/SitePictures';
+import Profile from '../../components/common/MainProfile';
+import SitePictures from '../../components/common/SitePictures';
 
 const MainPage = () => {
   return (
@@ -25,6 +25,7 @@ const MainPage = () => {
 };
 
 const MainPageContainer = styled.div`
+  max-width: 412px;
   position: relative;
   justify-content: center;
   background-color: #dde2fc;

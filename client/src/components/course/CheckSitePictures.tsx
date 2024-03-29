@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { destinationArray } from '../utils/axios/axios-travel';
+import { destinationArray } from '../../utils/axios/axios-travel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Checkbox from '@mui/material/Checkbox';
 
