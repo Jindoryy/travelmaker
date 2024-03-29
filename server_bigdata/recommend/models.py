@@ -68,11 +68,22 @@ class BitBooleanField(models.BooleanField):
             return value
         return int(value)
 
+
 class Likes(models.Model):
     LIKE_ID = models.AutoField(primary_key=True)
-    DESTINATION_ID = models.IntegerField()
-    USER_ID = models.IntegerField()
+    DESTINATION = models.ForeignKey(Destination, on_delete=models.CASCADE)
+    USER = models.ForeignKey(User, on_delete=models.CASCADE)
     FLAG = BitBooleanField(default=False)
 
     class Meta:
         db_table = 'likes'
+
+
+# class Likes(models.Model):
+#     LIKE_ID = models.AutoField(primary_key=True)
+#     DESTINATION_ID = models.IntegerField()
+#     USER_ID = models.IntegerField()
+#     FLAG = BitBooleanField(default=False)
+
+#     class Meta:
+#         db_table = 'likes'
