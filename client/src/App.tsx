@@ -21,39 +21,39 @@ function App() {
       element: <Layout />,
       errorElement: <ErrorPage />,
       children: [
-        // {
-        //   path: '/',
-        //   element: 메인페이지,
-        //   errorElement: <ErrorPage />,
-        // },
         {
-          path: '/course/city',
-          element: <CityChoice />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: '/main',
+          path: '/',
           element: <MainPage />,
           errorElement: <ErrorPage />,
         },
         {
-          path: '/course/checksite',
-          element: <CheckStie />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: '/course/province',
-          element: <ProvinceChoicePage />,
-          errorElement: <ErrorPage />,
+          path: 'course',
+          children: [
+            {
+              path: 'city',
+              element: <CityChoice />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'checksite',
+              element: <CheckStie />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'province',
+              element: <ProvinceChoicePage />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'beforeconfirm',
+              element: <BeforeConfirm />,
+              errorElement: <ErrorPage />,
+            },
+          ],
         },
         {
           path: '/login',
           element: <LoginPage />,
-          errorElement: <ErrorPage />,
-        },
-        {
-          path: '/course/beforeconfirm',
-          element: <BeforeConfirm />,
           errorElement: <ErrorPage />,
         },
         {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { travelDetail, destinationDistance } from '../../utils/axios/axios-travel';
-import HeaderTabs from '../../components/HeaderTabs';
-import KakaoMap from '../../components/KakaoMap';
-import CourseCard from '../../components/CourseCard';
+import HeaderTabs from '../../components/common/HeaderTabs';
+import KakaoMap from '../../components/course/KakaoMap';
+import CourseCard from '../../components/course/CourseCard';
 import { useTravelInfo, useTravelCity } from '../../store/useTravelStore';
 
 import styled from 'styled-components';

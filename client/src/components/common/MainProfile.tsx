@@ -62,11 +62,11 @@ const Profile = () => {
   const getProfileImage = () => {
     switch (userState) {
       case 'beforeTravel':
-        return require('../assets/image/KissingCat.png');
+        return require('../../assets/image/KissingCat.png');
       case 'beforeCourse':
-        return require('../assets/image/WorldMap.png');
+        return require('../../assets/image/WorldMap.png');
       default:
-        return require('../assets/image/AirplaneDeparture.png');
+        return require('../../assets/image/AirplaneDeparture.png');
     }
   };
 
@@ -118,8 +118,9 @@ const StyledProfileContainer = styled.div<ProfileProps>`
   color: #000;
   padding: 10px;
   margin: 10px;
+  max-width: 375px;
+  width: 100%;
   text-align: center;
-  align-items: center;
   border-radius: 15px;
   transition: height 0.1s;
   height: ${({ scrolled, scrollHeight }) => {

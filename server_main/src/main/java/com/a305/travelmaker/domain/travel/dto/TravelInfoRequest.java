@@ -10,12 +10,14 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class TravelRequest {
+public class TravelInfoRequest {
 
+  private String cityName;
   private LocalDate startDate;
   private LocalDate endDate;
+  private List<Integer> friendIdList;
   private Transportation transportation;
-  private List<Integer> destinationIdList;
+  private List<List<Integer>> courseList;
 
   public long calculateTravelDays() {
     long travelDays = ChronoUnit.DAYS.between(startDate, endDate);
