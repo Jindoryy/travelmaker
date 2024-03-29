@@ -5,7 +5,10 @@ import com.a305.travelmaker.domain.diary.dto.DiaryDetailResponse;
 import com.a305.travelmaker.domain.diary.dto.DiaryListResponse;
 import com.a305.travelmaker.domain.diary.dto.DiaryUpdateRequest;
 import com.a305.travelmaker.domain.diary.service.DiaryService;
+import com.a305.travelmaker.domain.login.dto.UserDetail;
 import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.exception.CustomException;
+import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,10 +47,11 @@ public class DiaryController {
   @Operation(summary = "일기 리스트 조회", description = "일기 리스트를 조회한다.")
   @GetMapping("/list")
   public SuccessResponse<List<DiaryListResponse>> getDiaryList(
-      HttpServletRequest request) {
-
-    String token = request.getHeader("Authorization").substring(7);
-    Long userId = tokenProvider.getUserIdFromToken(token);
+      @AuthenticationPrincipal UserDetail userDetail) {
+    if (userDetail == null) {
+      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+    }
+    Long userId = userDetail.getId();
 
     return new SuccessResponse<>(diaryService.findDiaryList(userId));
   }
@@ -56,10 +61,11 @@ public class DiaryController {
   public void addDiary(
       @RequestPart List<MultipartFile> files,
       @RequestPart DiaryAddRequest diaryAddRequest,
-      HttpServletRequest request) {
-
-    String token = request.getHeader("Authorization").substring(7);
-    Long userId = tokenProvider.getUserIdFromToken(token);
+      @AuthenticationPrincipal UserDetail userDetail) {
+    if (userDetail == null) {
+      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+    }
+    Long userId = userDetail.getId();
 
     diaryService.saveDiary(userId, files, diaryAddRequest);
   }

@@ -12,6 +12,7 @@ interface CityResponse {
   ];
 }
 
+//추천 장소 경도, 위도, 아이디, 다음 장소까지의 거리 받아오기
 interface DestinationResponse {
   status: string;
   data: {
@@ -29,8 +30,8 @@ interface DestinationArrayResponse {
   data: [
     {
       destinationId: number;
-      destinationType: string;
       destinationName: string;
+      destinationType: string;
       destinationImgUrl: string;
     },
   ];
@@ -72,8 +73,8 @@ interface LikeResponse {
 interface TravelResponse {
   status: string;
   data: {
-    travelList: {
-      1: [
+    travelList: [
+      [
         {
           point: {
             destinationId: number;
@@ -81,9 +82,12 @@ interface TravelResponse {
             longitude: number;
           };
           nextDestinationDistance: number;
+          destinationName: string;
+          destinationType: string;
+          destinationImgUrl: string;
         },
-      ];
-      2: [
+      ],
+      [
         {
           point: {
             destinationId: number;
@@ -91,9 +95,12 @@ interface TravelResponse {
             longitude: number;
           };
           nextDestinationDistance: number;
+          destinationName: string;
+          destinationType: string;
+          destinationImgUrl: string;
         },
-      ];
-      3: [
+      ],
+      [
         {
           point: {
             destinationId: number;
@@ -101,10 +108,26 @@ interface TravelResponse {
             longitude: number;
           };
           nextDestinationDistance: number;
+          destinationName: string;
+          destinationType: string;
+          destinationImgUrl: string;
         },
-      ];
-    };
+      ],
+    ];
   };
+}
+
+//추천 장소 디테일 받아오기
+interface DestinationDetailResponse {
+  status: string;
+  data: [
+    {
+      destinationId: number;
+      destinationName: string;
+      destinationType: string;
+      destinationImgUrl: string;
+    },
+  ];
 }
 
 //코스 편집시 거리 가져오기
@@ -118,8 +141,20 @@ interface DestinationDistanceResponse {
         longitude: number;
       };
       nextDestinationDistance: number;
+      destinationName: string;
+      destinationType: string;
+      destinationImgUrl: string;
     },
   ];
+}
+
+//여행 저장시 필요한 여행 타입
+interface TravelInfoType {
+  startDate: string;
+  endDate: string;
+  friendTag: number[];
+  transportation: string;
+  destinationIdList: number[];
 }
 
 //시티 리스트 가져오기
@@ -131,23 +166,26 @@ const cityDetail = (provinceId: number) => {
   });
 };
 
-//여행 저장하기
-const travelDetail = (
-  startDate: string,
-  endDate: string,
-  friendTag: number,
-  transportation: string,
-  destinationIdList: number[],
-): Promise<AxiosResponse<TravelResponse>> => {
-  return instance.post<TravelResponse>('travel', {
-    startDate,
-    endDate,
-    friendTag,
-    transportation,
-    destinationIdList,
+//여행 저장하기 버튼 누르면 장소들 정보 받아와짐
+const travelDetail = (travelInfo: TravelInfoType): Promise<AxiosResponse<TravelResponse>> => {
+  return oauthInstance.post<TravelResponse>('travel', travelInfo);
+};
+
+//추천할 코스 장소 id들 넣어서 정보 가져오기
+const destinationsListDetail = (destinationIdList: number[] | undefined) => {
+  if (!destinationIdList) {
+    console.error('Error: destinationIdList is undefined');
+    return;
+  }
+  const queryString: string = destinationIdList.join(',');
+  return oauthInstance.get<DestinationDetailResponse>('/destination', {
+    params: {
+      destinationsIdList: queryString,
+    },
   });
 };
 
+//시 선택 완료
 const destinationDetail = (cityId: number) => {
   return oauthInstance.get<DestinationResponse>('destination/recommend', {
     params: {
@@ -194,7 +232,9 @@ export {
   travelDetail,
   destinationDetail,
   siteListDetail,
-  destinationDistance,
   likeDestination,
+  destinationDistance,
   destinationArray,
+  destinationsListDetail,
+
 };

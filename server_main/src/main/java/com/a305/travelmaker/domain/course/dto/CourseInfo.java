@@ -1,4 +1,4 @@
-package com.a305.travelmaker.domain.destination.dto;
+package com.a305.travelmaker.domain.course.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DestinationListResponse {
+public class CourseInfo {
 
-  private Integer destinationId;
-  private DestinationType destinationType;
-  private String destinationContent;
   private String destinationName;
   private String destinationImgUrl;
 }

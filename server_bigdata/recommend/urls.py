@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import views, tests
 
 urlpatterns = [
     # 메인페이지 알고리즘(성별, 나이 기반 + 기본 추천)
@@ -13,8 +13,9 @@ urlpatterns = [
     path('city-list', views.getCityList),
 
     # 확인용
-    path('destination-all-list', views.getDestination),
-    path('like-user-list/<int:user_id>/', views.getLike),
-    path('basic-recommend-detail/<int:user_id>/', views.getLikeCbfDetail),
+    path('destination-all-list', tests.getDestination),
+    path('destination-id-list', tests.getDestinationList),
+    path('like-user-list/<int:user_id>/', tests.getLike),
+    path('basic-recommend-detail/<int:user_id>/', tests.getLikeCbfDetail),
 ]
 

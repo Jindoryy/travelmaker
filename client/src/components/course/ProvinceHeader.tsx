@@ -1,9 +1,11 @@
 import { styled } from 'styled-components';
 import useUserInfo from '../../store/useUserStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Skeleton } from '@mui/material';
 
 const ProvinceHeader = () => {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
   // useEffect(() => {
@@ -14,43 +16,52 @@ const ProvinceHeader = () => {
   const { nickName } = userInfo;
 
   const getProfileImage = () => {
-    return require('../../assets/image/KissingCat.png');
+    return require('../../assets/image/DesertIsland.png');
   };
 
   return (
     <>
       <ProfileContainer>
+        <TextContainer>
+          <ProfileHighLightText>
+            안녕하세요 {nickName}님<br />
+          </ProfileHighLightText>
+          <ProfileText>어디로 떠나 볼까요?...</ProfileText>
+        </TextContainer>
         <ProfileImage src={getProfileImage()} alt="Profile" />
-        <ProfileText>{nickName}님, 어디로 떠나 볼까요?...</ProfileText>
       </ProfileContainer>
     </>
   );
 };
 
 const ProfileContainer = styled.div`
-  border-radius: 20px;
-  background-color: #fff;
   display: flex;
-  height: 80px;
+  height: 130px;
   gap: 6px;
   font-size: 20px;
   color: #000;
   font-weight: 200;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
 `;
 
+const TextContainer = styled.div`
+  width: 70%;
+  padding: 40px 0 0 20px;
+  display: flex;
+  flex-direction: column;
+`;
 const ProfileImage = styled.img`
-  height: 100%;
-  width: auto;
-  object-fit: cover;
+  flex-basis: 1;
+  max-width: 100px;
+  object-fit: contain;
 `;
-
 const ProfileText = styled.div`
   font-family: 'Black Han Sans', sans-serif;
-  flex-grow: 1;
-  flex-basis: auto;
-  margin: auto 0;
+  font-size: larger;
+`;
+
+const ProfileHighLightText = styled(ProfileText)`
+  font-size: xx-large;
+  margin-bottom: 10px;
 `;
 
 export default ProvinceHeader;
