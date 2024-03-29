@@ -11,20 +11,32 @@ interface CourseEditCardProps {
   course: any;
   spotToSpot: number;
   provided: DraggableProvided;
+  image: any;
 }
 
-const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, provided }) => {
-  // props에 provided 추가
-  useEffect(() => {}, [course]);
+const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, provided, image }) => {
+  const [markerImage, setMarkerImage] = useState(image);
+
+  useEffect(() => {
+    setMarkerImage(image);
+  }, [image]);
+
   return (
     <CardContainer ref={provided.innerRef} {...provided.draggableProps}>
       <NumberCircle>
-        <CircleImage src={course.markerImage} />
+        <CircleImage src={markerImage} />
       </NumberCircle>
       <CardBox>
-        <CardImage src={course.destinationPath}></CardImage>
+        <CardImage src={course.destinationImgUrl}></CardImage>
         <CardDetail>
-          <DetailCategory>{course.destinationCategory}</DetailCategory>
+          <DetailCategory>
+            {' '}
+            {course.destinationType == 'sights'
+              ? '명소'
+              : course.destinationType == 'food'
+                ? '식당'
+                : '카페'}
+          </DetailCategory>
           <DetailTitle>{course.destinationName}</DetailTitle>
         </CardDetail>
       </CardBox>
@@ -44,7 +56,6 @@ const CardContainer = styled.div`
   padding: 5px;
   margin: 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 2.4px 2.4px 3.2px;
-  margin-bottom: 5px;
   border-radius: 10px;
   background-color: white;
 `;
@@ -108,7 +119,7 @@ const DetailTitle = styled(Box)`
   && {
     width: 90%;
     font-family: 'Pretendard';
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
     padding: 5px;

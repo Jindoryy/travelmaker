@@ -57,6 +57,7 @@ const BeforeConfirm = () => {
     // courseInfo가 변경될 때마다 key를 업데이트
     setKey((prevKey) => prevKey + 1);
   }, [courseInfo, spottoSpot]);
+
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
       .then((response) => {
