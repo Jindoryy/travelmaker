@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { destinationDetail } from '../../utils/axios/axios-travel';
-import HeaderTabs from '../../components/HeaderTabs';
-import CheckSitePictures from '../../components/CheckSitePictures';
+import HeaderTabs from '../../components/common/HeaderTabs';
+import CheckSitePictures from '../../components/course/CheckSitePictures';
 import { useLocation } from 'react-router-dom';
 
 interface DestinationResponse {
@@ -102,6 +102,8 @@ const StyledHeaderTabs = styled.div`
 const MainPageContainer = styled.div`
   margin-top: 15px;
   display: flex;
+  max-width: 412px;
+  width: 100vw;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
