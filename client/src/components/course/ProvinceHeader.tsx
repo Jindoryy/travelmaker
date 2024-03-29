@@ -44,7 +44,7 @@ const ProfileContainer = styled.div`
 `;
 
 const TextContainer = styled.div`
-  width: 60%;
+  width: 70%;
   padding: 40px 0 0 20px;
   display: flex;
   flex-direction: column;

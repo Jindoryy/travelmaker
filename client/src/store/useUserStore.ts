@@ -1,26 +1,32 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-interface userInfoType {
-    userId : number
-    profileUrl: string
-    nickName: string
+interface UserInfo {
+    userId: number;
+    profileUrl: string;
+    nickName: string;
 }
 
 interface UserInfoState {
-    userInfo: userInfoType
+    userInfo: UserInfo;
+    setUserInfo: (userInfo: UserInfo) => void;
+    clearUserInfo: () => void;
 }
 
-interface UserInfoActions {
-    setUserInfo: (userinfo: userInfoType) => void
-    deleteUserInfo: () => void
-}
+const initialState = { userId: -1, profileUrl: '', nickName: '' }
 
-const defaultState = { userId: -1, profileUrl: '', nickName: '' }
-
-const useUserInfo  = create<UserInfoState & UserInfoActions>((set) => ({
-    userInfo: defaultState,
-    setUserInfo: (userInfo: userInfoType) => {set({ userInfo })},
-    deleteUserInfo: () => {set({userInfo: defaultState})}
-}))
+const useUserInfo  = create(
+    persist<UserInfoState>(
+    (set) => ({
+        userInfo: initialState,
+        setUserInfo: (userInfo) => set({ userInfo }),
+        clearUserInfo: () => set({ userInfo: initialState}),
+    }),
+    {
+        name: "userInfo",
+        getStorage: () => localStorage,
+    }
+    )
+)
 
 export default useUserInfo
