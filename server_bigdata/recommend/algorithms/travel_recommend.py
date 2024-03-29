@@ -38,7 +38,6 @@ def travelRecommend(request):
         food_number = max(0, 1 - type_counts.get('food', 0))
         cafe_number = max(0, 1 - type_counts.get('cafe', 0))
 
-
         # 사용자가 좋아요를 누른 장소의 특성을 가져오기
         user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
         user_features = []
@@ -100,19 +99,20 @@ def travelRecommend(request):
         # 최종 목록에서 place_ids 제외
         destination_ids = [id for id in destination_ids if id not in place_ids]
 
-        # type별 개수에 맞춰서 배열 구성
-        for _ in range(sights_number+food_number+cafe_number):
-            for id in destination_ids:
-                type = Destination.objects.get(DESTINATION_ID=id).TYPE
-                if type == 'sights' and sights_number > 0:
-                        place_ids.append(id)
-                        sights_number -= 1
-                elif type == 'food' and food_number > 0:
-                        place_ids.append(id)
-                        food_number -= 1
-                elif type == 'cafe' and cafe_number > 0:
-                        place_ids.append(id)
-                        cafe_number -= 1
+        # 필요한 데이터를 한 번에 가져오기
+        destinations = Destination.objects.filter(DESTINATION_ID__in=destination_ids).order_by('TYPE')
+
+        # 타입별로 목적지를 분류하고 개수에 맞게 배열 구성
+        for dest in destinations:
+            if dest.TYPE == 'sights' and sights_number > 0:
+                place_ids.append(dest.DESTINATION_ID)
+                sights_number -= 1
+            elif dest.TYPE == 'food' and food_number > 0:
+                place_ids.append(dest.DESTINATION_ID)
+                food_number -= 1
+            elif dest.TYPE == 'cafe' and cafe_number > 0:
+                place_ids.append(dest.DESTINATION_ID)
+                cafe_number -= 1
 
         # 결과 리스트에 추가
         all_destination_ids[key] = place_ids
