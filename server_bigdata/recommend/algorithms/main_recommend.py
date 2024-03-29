@@ -43,6 +43,14 @@ def genderAgeRecommend(user_id, num_result):
     return top_destination_ids
 
 
+
+def getRandomDestinations(limit=60):
+    # 완전 랜덤 장소 목록 생성
+    random_destinations = Destination.objects.order_by('?')[:limit]
+    random_destination_ids = [destination.DESTINATION_ID for destination in random_destinations]
+    return random_destination_ids
+
+
 # TF-IDF를 사용하여 특성 텍스트를 벡터화하고, 사용자의 특성을 기반으로 코사인 유사도를 계산하여 유사한 장소를 추천합니다.
 def basicCbfRecommend(user_id):
     # 사용자가 좋아요를 누른 장소의 특성을 가져오기
@@ -97,27 +105,23 @@ def basicCbfRecommend(user_id):
 
     # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
     destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
-
-    # 100개의 장소로 제한
-    destination_ids = destination_ids[:100]
+    destination_ids = destination_ids[:40] + getRandomDestinations(60)
+    random.shuffle(destination_ids)
 
     return destination_ids
 
 
-def predict_destination_rating(algo, user_id, features, similarity):
-    # 특징을 고려하여 장소의 예상 평점 계산
-    rating_sum = 0
-    total_weight = 0
-    for feature in features:
-        # 각 특징에 대한 예상 평점 계산
-        pred = algo.predict(user_id, feature)
-        # 유사도를 가중치로 사용하여 평점에 반영
-        rating_sum += pred.est * similarity
-        total_weight += similarity
 
-    # 가중평균 평점 계산
+def predict_destination_rating(algo, user_id, features, similarity):
+    # 사용자가 좋아하는 특징에 대한 예상 평점 계산
+    predictions = [algo.predict(user_id, feature).est for feature in features]
+
+    # 가중 평균 평점 계산
+    total_weighted_rating = sum(pred * similarity for pred in predictions)
+    total_weight = sum(similarity for _ in predictions)
+
     if total_weight > 0:
-        return rating_sum / total_weight
+        return total_weighted_rating / total_weight
     else:
         return 0  # 특징이 없는 경우 평점을 0으로 반환
 

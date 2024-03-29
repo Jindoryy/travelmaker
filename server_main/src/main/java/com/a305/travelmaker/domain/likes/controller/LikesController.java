@@ -39,8 +39,12 @@ public class LikesController {
         boolean isIdCheck = likesService.tokenCheck(likesRequset.getUserId(), userId);
         if (isIdCheck) {
             try {
-                likesService.addLike(likesRequset);
-                return ResponseEntity.ok(new SuccessResponse<>("like success"));
+                boolean isAdded = likesService.addLike(likesRequset);
+                if (isAdded) {
+                    return ResponseEntity.ok(new SuccessResponse<>("add"));
+                } else {
+                    return ResponseEntity.ok(new SuccessResponse<>("cancel"));
+                }
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new FailResponse<>("like fail"));
             }
