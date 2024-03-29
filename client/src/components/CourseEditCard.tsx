@@ -17,7 +17,7 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, pro
   // props에 provided 추가
   useEffect(() => {}, [course]);
   return (
-    <CardContainer ref={provided.innerRef}>
+    <CardContainer ref={provided.innerRef} {...provided.draggableProps}>
       <NumberCircle>
         <CircleImage src={course.markerImage} />
       </NumberCircle>
@@ -28,7 +28,7 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, pro
           <DetailTitle>{course.destinationName}</DetailTitle>
         </CardDetail>
       </CardBox>
-      <MoveCard {...provided.draggableProps} {...provided.dragHandleProps}>
+      <MoveCard {...provided.dragHandleProps}>
         <DehazeIcon></DehazeIcon>
       </MoveCard>
     </CardContainer>

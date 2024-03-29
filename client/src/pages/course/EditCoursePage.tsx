@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
@@ -104,12 +105,13 @@ const courseInfo = [
 
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const EditCoursePage: React.FC = () => {
+  const location = useLocation();
   const [selectedTab, setSelectedTab] = useState(1);
   const [courseList, setCourseList] = useState<any[]>(courseInfo);
   const [firstDate, setFirstDate] = useState<any[]>([...courseInfo[0]]);
   const [secondDate, setSecondDate] = useState<any[]>([...courseInfo[1]]);
   const [thirdDate, setThirdDate] = useState<any[]>([...courseInfo[2]]);
-
+  const [courseInfo, setCourseInfo] = useState(location.state?.courseInfo);
   useEffect(() => {
     markerSet();
   }, [courseInfo]);
