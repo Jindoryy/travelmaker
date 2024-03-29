@@ -23,6 +23,7 @@ interface DestinationResponse {
   };
 }
 
+// 장소조회(장소선택 페이지)
 interface DestinationArrayResponse {
   status: string;
   data: [
@@ -33,6 +34,39 @@ interface DestinationArrayResponse {
       destinationImgUrl: string;
     },
   ];
+}
+
+//CF 장소 목록 (메인 페이지 - 코스전)
+interface SiteListResponse {
+  status: string;
+  data: {
+    destinationListResponseMap: {
+      basic: [
+        {
+          destinationId: number;
+          destinationType: string;
+          destinationContent: string;
+          destinationName: string;
+          destinationImgUrl: string;
+        },
+      ];
+      popular: [
+        {
+          destinationId: number;
+          destinationType: string;
+          destinationContent: string;
+          destinationName: string;
+          destinationImgUrl: string;
+        },
+      ];
+    };
+  };
+}
+
+//장소 좋아요
+interface LikeResponse {
+  status: string;
+  data: string;
 }
 
 interface TravelResponse {
@@ -122,12 +156,28 @@ const destinationDetail = (cityId: number) => {
   });
 };
 
+//CF 장소 목록 (메인 페이지 - 코스전)
+const siteListDetail = () => {
+  return oauthInstance.get<SiteListResponse>('destination/list', {});
+};
+
 // 장소조회(장소선택 페이지)
 const destinationArray = (destinationsIdList: number[]) => {
   return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {
       destinationsIdList: destinationsIdList.join(','), // 배열을 문자열로 변환하여 전달
     },
+  });
+};
+
+//장소 좋아요
+const likeDestination = (
+  userId: number,
+  destinationId: number,
+): Promise<AxiosResponse<LikeResponse>> => {
+  return instance.post<LikeResponse>('like', {
+    userId,
+    destinationId,
   });
 };
 
@@ -139,4 +189,12 @@ const destinationDistance = (destinationsIdList: number[]) => {
     },
   });
 };
-export { cityDetail, travelDetail, destinationDetail, destinationDistance, destinationArray };
+export {
+  cityDetail,
+  travelDetail,
+  destinationDetail,
+  siteListDetail,
+  destinationDistance,
+  likeDestination,
+  destinationArray,
+};

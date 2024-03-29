@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Checkbox from '@mui/material/Checkbox';
+import styled from 'styled-components';
+import axios from 'axios';
 import { destinationArray } from '../utils/axios/axios-travel';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import styled from 'styled-components';
+import Checkbox from '@mui/material/Checkbox';
 
 interface CheckSitePicturesProps {
   array: number[]; // array props의 타입을 명시적으로 정의
@@ -56,14 +56,10 @@ const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
 
   return (
     <StyledDiv>
-      {/* siteInfo의 data 배열을 map으로 순회하여 각 사이트의 정보를 표시 */}
       {siteInfo.data.map((site, index) => (
-        <div key={index}>
-          <p>Destination ID: {site.destinationId}</p>
-          <p>Destination Type: {site.destinationType}</p>
-          <p>Destination Name: {site.destinationName}</p>
-          <img src={site.destinationImgUrl} alt={site.destinationName} />
-        </div>
+        <SiteContainer key={index}>
+          <SiteImage src={site.destinationImgUrl} alt={site.destinationName} />
+        </SiteContainer>
       ))}
     </StyledDiv>
   );
@@ -71,9 +67,25 @@ const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
 
 const StyledDiv = styled.div`
   margin-top: 100px;
-  background-color: lightgray;
+  background-color: yellow;
   padding: 10px;
   border-radius: 5px;
+  max-width: 412px;
+  width: 45%;
+`;
+
+const SiteContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* 요소들이 자동으로 줄 바꿈되도록 설정 */
+  justify-content: center; /* 요소들을 가운데 정렬 */
+`;
+
+const SiteImage = styled.img`
+  width: 200px;
+  height: auto;
+  margin: 5px;
 `;
 
 export default CheckSitePictures;
