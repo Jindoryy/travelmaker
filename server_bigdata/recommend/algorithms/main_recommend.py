@@ -42,6 +42,13 @@ def genderAgeRecommend(user_id, num_result):
     return top_destination_ids
 
 
+def getRandomDestinations(limit=60):
+    # 완전 랜덤 장소 목록 생성
+    random_destinations = Destination.objects.order_by('?')[:limit]
+    random_destination_ids = [destination.DESTINATION_ID for destination in random_destinations]
+    return random_destination_ids
+
+
 # TF-IDF를 사용하여 특성 텍스트를 벡터화하고, 사용자의 특성을 기반으로 코사인 유사도를 계산하여 유사한 장소를 추천합니다.
 def basicCbfRecommend(user_id):
     # 사용자가 좋아요를 누른 장소의 특성을 가져오기
@@ -89,14 +96,10 @@ def basicCbfRecommend(user_id):
     # 유사도에 따라 장소 정렬
     similar_destinations = [similar_destinations[i] for i in similarities.argsort()[::-1]]
 
-    # 목록을 무작위로 섞기
-    random.shuffle(similar_destinations)
-
     # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
     destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
-
-    # 100개의 장소로 제한
-    destination_ids = destination_ids[:100]
+    destination_ids = destination_ids[:40] + getRandomDestinations(60)
+    random.shuffle(destination_ids)
 
     return destination_ids
 

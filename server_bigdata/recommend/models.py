@@ -42,7 +42,7 @@ class Destination(models.Model):
     PROVINCE_ID = models.IntegerField()
     LATITUDE = models.FloatField()
     LONGITUDE = models.FloatField()
-    CONTENT = models.CharField(max_length=255)
+    CONTENT = models.TextField()
     NAME = models.CharField(max_length=255)
     TYPE = models.CharField(max_length=255)
     FEATURE = models.CharField(max_length=255)
