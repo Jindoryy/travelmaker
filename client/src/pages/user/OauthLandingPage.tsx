@@ -45,6 +45,7 @@ const OauthLandingPage = () => {
             '로컬 스토리지에 저장된 리프레시 토큰:',
             localStorage.getItem('refreshToken'),
           );
+          navigate('/');
         })
         .catch((error) => {
           // 요청 실패 시 로직

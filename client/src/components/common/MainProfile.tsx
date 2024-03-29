@@ -62,11 +62,11 @@ const Profile = () => {
   const getProfileImage = () => {
     switch (userState) {
       case 'beforeTravel':
-        return require('../assets/image/KissingCat.png');
+        return require('../../assets/image/KissingCat.png');
       case 'beforeCourse':
-        return require('../assets/image/WorldMap.png');
+        return require('../../assets/image/WorldMap.png');
       default:
-        return require('../assets/image/AirplaneDeparture.png');
+        return require('../../assets/image/AirplaneDeparture.png');
     }
   };
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { destinationDetail } from '../../utils/axios/axios-travel';
-import HeaderTabs from '../../components/HeaderTabs';
-import CheckSitePictures from '../../components/CheckSitePictures';
+import HeaderTabs from '../../components/common/HeaderTabs';
+import CheckSitePictures from '../../components/course/CheckSitePictures';
 import { useLocation } from 'react-router-dom';
 
 interface DestinationResponse {

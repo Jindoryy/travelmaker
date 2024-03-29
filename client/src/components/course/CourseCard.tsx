@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useTravelInfo } from '../store/useTravelStore';
+import { useTravelInfo } from '../../store/useTravelStore';
 import styled from 'styled-components';
 
 import Box from '@mui/material/Box';
