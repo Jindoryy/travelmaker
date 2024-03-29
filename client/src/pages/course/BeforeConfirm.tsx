@@ -4,6 +4,7 @@ import { travelDetail, destinationDistance } from '../../utils/axios/axios-trave
 import HeaderTabs from '../../components/HeaderTabs';
 import KakaoMap from '../../components/KakaoMap';
 import CourseCard from '../../components/CourseCard';
+import { useTravelInfo, useTravelCity } from '../../store/useTravelStore';
 
 import styled from 'styled-components';
 import { useTheme } from '@mui/material/styles';
@@ -11,149 +12,118 @@ import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
+//store에 저장된 여행 보내기
 interface TravelInfo {
-  city: string;
   startDate: string;
   endDate: string;
-  friendTag: number;
+  friendTag: number[];
   transportation: string;
   destinationIdList: number[];
 }
 
-const travelInfo = {
-  city: '강릉',
-  startDate: '2024-03-20',
-  endDate: '2024-03-22',
-  friendTag: 0,
-  transportation: 'WALK',
-  destinationIdList: [1000981, 1003205, 1004281, 1005548, 1005620, 1007868, 1008362],
-};
-
-//코스 정보 한번에 받아오기(아래는 예시 데이터)
-//받아올 때 마커이미지 url도 박아주자!!!
-const courseInfo = [
-  [
-    {
-      destinationId: 1,
-      destinationType: '명소',
-      destinationName: '수성못',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-강릉.jpg'),
-      lat: 37.503325874722,
-      lng: 127.04403462366,
-      markerImage: '',
-    },
-    {
-      destinationId: 2,
-      destinationType: '식당',
-      destinationName: '맛있다',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-속초.jpg'),
-      lat: 37.49676829082603,
-      lng: 127.0343494916394,
-      markerImage: '',
-    },
-    {
-      destinationId: 9,
-      destinationType: '카페',
-      destinationName: '카페다',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-평창.jpg'),
-      lat: 37.48815415066257,
-      lng: 127.03606423768073,
-      markerImage: '',
-    },
-  ],
-  [
-    {
-      destinationId: 3,
-      destinationType: '명소',
-      destinationName: '식당이라고',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-강릉.jpg'),
-      lat: 37.506513372885955,
-      lng: 127.07959372848626,
-      markerImage: '',
-    },
-    {
-      destinationId: 4,
-      destinationType: '카페',
-      destinationName: '맛있다니까',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-삼척.jpg'),
-      lat: 37.501911481748635,
-      lng: 127.03933357219438,
-      markerImage: '',
-    },
-  ],
-  [
-    {
-      destinationId: 5,
-      destinationType: '카페',
-      destinationName: '카페카페라고',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-영월.jpg'),
-      lat: 37.50082377853314,
-      lng: 127.03087380542581,
-      markerImage: '',
-    },
-    {
-      destinationId: 6,
-      destinationType: '식당',
-      destinationName: '맛있디거영',
-      destinationImgUrl: require('../../assets/image/kangwondo/강원-인제.jpg'),
-      lat: 37.48877081046816,
-      lng: 127.01901317288296,
-      markerImage: '',
-    },
-  ],
-];
-
-//데이터에 따라 마커 이미지 설정해주는 함수
-const markerSet = courseInfo.forEach((el: any) => {
-  let number = 1;
-  el.forEach((ele: any) => {
-    let color = '';
-    if (ele.destinationType == '명소') color = 'orange';
-    else if (ele.destinationType == '식당') color = 'pink';
-    else color = 'red';
-    ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
-    number++;
-  });
-});
-
-//1일차 정보
-const firstDate = [...courseInfo[0]];
-
-//2일차 정보
-const secondDate = courseInfo.length >= 2 ? [...courseInfo[1]] : null;
-
-//3일차 정보
-const thirdDate = courseInfo.length >= 3 ? [...courseInfo[2]] : null;
+interface Point {
+  destinationId: number;
+  latitude: number;
+  longitude: number;
+}
+//store에 저장된 여행 보내고 받는 리스폰스
+interface TravelInfoType {
+  point: Point;
+  nextDestinationDistance: number;
+  destinationName: string;
+  destinationType: string;
+  destinationUrl: string;
+}
+interface TravelResponseType {
+  travelResponse: TravelInfoType[];
+}
 
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const BeforeConfirm = () => {
+  const { setTravelInfo, travelInfo } = useTravelInfo();
+  const { setTravelCity, travelCity } = useTravelCity();
   const [selectedTab, setSelectedTab] = useState(1);
-  const location = useLocation();
-  // 스팟별 거리 (대중교통에 따라 계산해서 표시해 주어야합니다.)
-  const spotToSpot = [[14, 23], [30], [42]];
-  // const [spotToSpot, setSpotToSpot] = useState<number[]>([]);
-  // [{ point: { destinationId: number; latitude: number; longitude: number; }; nextDestinationDistance: number; }]
+  const [markerList, setMarkerList] = useState<any>();
+  const [courseInfo, setCourseInfo] = useState<any>([[]]);
+  const [spottoSpot, setSpottoSpot] = useState<any>([[]]);
+  const [key, setKey] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (travelInfo) {
-      getTravel(travelInfo);
-    }
-  }, [travelInfo.destinationIdList]);
+    getTravel(travelInfo);
+  }, []);
 
+  useEffect(() => {
+    // courseInfo가 변경될 때마다 key를 업데이트
+    setKey((prevKey) => prevKey + 1);
+  }, [courseInfo, spottoSpot]);
   const getTravel = (travelInfo: TravelInfo) => {
-    travelDetail(
-      travelInfo.startDate,
-      travelInfo.endDate,
-      travelInfo.friendTag,
-      travelInfo.transportation,
-      travelInfo.destinationIdList,
-    )
+    travelDetail(travelInfo)
       .then((response) => {
         console.log(response.data.data);
+        const travelLists = response.data.data.travelList;
+        if (travelLists.length >= 4) {
+          const lists = travelLists.slice(0, 3);
+          updateCourseInfo(lists);
+        } else updateCourseInfo(travelLists);
+        markerSet();
       })
       .catch((error) => {
         console.error('Error: ', error);
       });
+  };
+  const updateCourseInfo = (travelList: any[][]) => {
+    const updatedCourseInfo = [...courseInfo];
+    const updatedSpottoSpot = [...spottoSpot];
+    // travelList를 순회하면서 각각의 요소를 courseInfo에 추가
+    travelList.forEach((destinationGroup, index) => {
+      if (!courseInfo[index]) courseInfo[index] = [];
+      if (!spottoSpot[index]) spottoSpot[index] = [];
+      destinationGroup.forEach((destination) => {
+        courseInfo[index].push({
+          destinationId: destination.point.destinationId,
+          destinationType: destination.destinationType,
+          destinationName: destination.destinationName,
+          destinationImgUrl: destination.destinationImgUrl,
+          lat: destination.point.latitude,
+          lng: destination.point.longitude,
+          markerImage: '',
+        });
+        spottoSpot[index].push(destination.nextDestinationDistance);
+      });
+    });
+    setCourseInfo(updatedCourseInfo);
+    setSpottoSpot(updatedSpottoSpot);
+  };
+
+  const updateMarker = (travelList: any) => {
+    const newArr: any[][] = [];
+    for (let i = 0; i < travelList.length; i++) {
+      for (let j = 0; j < travelList[i].length; j++) {
+        const lat = travelList[i][j].point.latitude;
+        const lng = travelList[i][j].point.longitude;
+        newArr[i][j] = { lat, lng };
+      }
+    }
+    setMarkerList(newArr);
+  };
+  useEffect(() => {
+    markerSet();
+  }, [markerList]);
+  // 데이터에 따라 마커 이미지 설정해주는 함수
+  const markerSet = () => {
+    courseInfo.forEach((el: any) => {
+      let number = 1;
+      el.forEach((ele: any) => {
+        if (number >= 7) return;
+        let color = '';
+        if (ele.destinationType == 'sights') color = 'orange';
+        else if (ele.destinationType == 'food') color = 'pink';
+        else color = 'red';
+        ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
+        number++;
+      });
+    });
   };
 
   const handleTabChange = (tabNumber: number) => {
@@ -161,6 +131,20 @@ const BeforeConfirm = () => {
   };
   const letters = ['1일차', '2일차', '3일차'];
 
+  const editButton = () => {
+    console.log('edit');
+    console.log(courseInfo);
+    navigate('/editcourse', {
+      state: {
+        courseInfo: courseInfo,
+      },
+    });
+  };
+
+  const saveButton = () => {
+    console.log('일정 저장');
+    console.log(courseInfo);
+  };
   return (
     <StyledEngineProvider>
       <BoxContainer>
@@ -170,28 +154,36 @@ const BeforeConfirm = () => {
           size={courseInfo.length}
           letters={letters}
         />
-        <CourseMap>
+        <CourseMap key={key}>
           <TravelHeader>
-            <HeaderTitle>{travelInfo.city}</HeaderTitle>
+            <HeaderTitle>{travelCity.city}</HeaderTitle>
             <HeaderDate>
               {travelInfo.startDate} ~ {travelInfo.endDate}
             </HeaderDate>
           </TravelHeader>
-          <TravelMap id="map">
-            <KakaoMap dateCourse={courseInfo[selectedTab - 1]} />
+          <TravelMap>
+            <KakaoMap dateCourse={courseInfo[selectedTab - 1].slice(0, 6)} />
           </TravelMap>
         </CourseMap>
         <EditBody>
-          <EditButton disableRipple>편집</EditButton>
+          <EditButton disableRipple onClick={() => editButton()}>
+            편집
+          </EditButton>
         </EditBody>
         <CourseBody>
-          {courseInfo[selectedTab - 1].map((place: any, index: number) => (
-            <CourseCard
-              key={index}
-              course={courseInfo[`${selectedTab - 1}`][index]}
-              spotToSpot={spotToSpot[`${selectedTab - 1}`][index - 1]}
-            />
-          ))}
+          {courseInfo[selectedTab - 1].map(
+            (place: any, index: number) =>
+              index <= 5 && (
+                <CourseCard
+                  key={index}
+                  course={courseInfo[`${selectedTab - 1}`][index]}
+                  spotToSpot={spottoSpot[`${selectedTab - 1}`][index - 1]}
+                />
+              ),
+          )}
+          <ButtonBox>
+            <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
+          </ButtonBox>
         </CourseBody>
       </BoxContainer>
     </StyledEngineProvider>
@@ -203,6 +195,7 @@ const BoxContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  max-width: 412px;
 `;
 
 const CourseMap = styled.div`
@@ -267,4 +260,25 @@ const CourseBody = styled.div`
   align-items: center;
 `;
 
+const ButtonBox = styled(Box)`
+  && {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+const ChooseButton = styled.button`
+  width: 390px;
+  height: 40px;
+  background-color: ${(props) => props.theme.main};
+  color: ${(props) => props.theme.subtext};
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+`;
 export default BeforeConfirm;
