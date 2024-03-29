@@ -2,6 +2,7 @@ package com.a305.travelmaker.domain.travel.service;
 
 import com.a305.travelmaker.domain.city.entity.City;
 import com.a305.travelmaker.domain.city.repository.CityRepository;
+import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
@@ -13,6 +14,7 @@ import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.domain.travel.dto.Spot;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelInfoResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRecommendCluster;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
@@ -24,6 +26,7 @@ import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import com.google.gson.Gson;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,6 +74,7 @@ public class TravelService {
   private List<Integer> destinationsIdList = new ArrayList<>(); // 군집내에 속해 있는 ID 리스트
   private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
   private List<DestinationDistanceResponse> destinationDistanceResponse = new ArrayList<>();
+
   @Transactional
   public TravelResponse saveTravel(TravelRequest travelRequest) {
 
@@ -79,7 +83,7 @@ public class TravelService {
       1. 군집화 실행 (군집 개수 ≤ 여행일 수)
       2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
       - 빅데이터 서버에서 카테고리 안 겹치게 데이터 반환 해줌.
-      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+      3. 모든 장소에 대한 최적 거리 탐색 (DFS)
       4. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
     */
 
@@ -189,7 +193,7 @@ public class TravelService {
     System.out.println(travelDaysIdList);
 
     /*
-      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+      3. 모든 장소에 대한 최적 거리 탐색 (DFS)
      */
 
     for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) { // Day 마다 반복문 실행
@@ -520,5 +524,37 @@ public class TravelService {
       }
     }
     return centroidsChanged;
+  }
+
+  public TravelInfoResponse findTravelInfo(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+
+    destinationDistanceResponses = new ArrayList<>();
+
+    long travelDays = ChronoUnit.DAYS.between(travel.getStartDate(), travel.getEndDate()) + 1;
+
+    List<Course> courseList = travel.getCourseList();
+
+    for (Course course : courseList) {
+
+      destinationsIdList = new ArrayList<>();
+      String[] destinationList = course.getDestinationList().split(",");
+      for (String dId : destinationList) {
+
+        destinationsIdList.add(Integer.parseInt(dId));
+      }
+
+      destinationDistanceResponses.add(destinationService.findDestinationDistance(
+          destinationsIdList));
+    }
+
+    return TravelInfoResponse.builder()
+        .cityName(travel.getCityName())
+        .startDate(travel.getStartDate())
+        .endDate(travel.getEndDate())
+        .transportation(travel.getTransportation())
+        .travelList(destinationDistanceResponses)
+        .build();
   }
 }
