@@ -10,7 +10,7 @@ interface ImageProps {
   };
 }
 
-const ProvinceButton: React.FC<ImageProps> = ({ content }) => {
+const ProvinceWideButton: React.FC<ImageProps> = ({ content }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -26,32 +26,47 @@ const ProvinceButton: React.FC<ImageProps> = ({ content }) => {
 };
 
 const Container = styled.div`
-  width: 10rem;
-  height: 10rem;
+  width: 370px;
+  height: 80px;
   position: relative;
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  &:hover img {
+    transform: scale(1.2);
+    transition-duration: 0.5s;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.6), transparent);
+  }
 `;
 
 const Image = styled.img`
-  width: 40rem;
-  height: 10rem;
-  left: 0;
-  top: 0;
+  width: 370px;
+  height: 110px;
   margin: 0;
-  position: absolute;
+  object-fit: cover;
+  object-position: center bottom;
   border-radius: 0.5rem;
 `;
 
 const TextOverlay = styled.div`
-  width: 4rem;
-  height: 2.5rem;
-  left: 0;
-  top: 6.675rem;
   position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  padding-right: 1rem;
   text-align: center;
   color: #ffc65c;
   font-family: 'Black Han Sans', sans-serif;
-  font-weight: normal;
-  font-size: 2.8rem;
+  font-size: 2rem;
+  z-index: 1;
 `;
 
-export default ProvinceButton;
+export default ProvinceWideButton;

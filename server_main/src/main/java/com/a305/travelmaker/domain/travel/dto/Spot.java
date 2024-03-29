@@ -11,12 +11,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Spot implements Comparable<Spot> {
+public class Spot {
 
   int v;
   double distance;
 
-  public int compareTo(Spot o) {
-    return Double.compare(this.distance, o.distance);
-  }
+//  public int compareTo(Spot o) {
+//    return Double.compare(this.distance, o.distance);
+//  }
 }

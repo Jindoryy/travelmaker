@@ -1,11 +1,31 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useTravelInfo } from '../store/useTravelStore';
 import styled from 'styled-components';
 
-import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
-
+//걸어서 1km: 12분, 차타고 1km: 2분, 대중교통 1km: 5분 ?
 const CourseCard = ({ course, spotToSpot }: any) => {
-  useEffect(() => {}, [course]);
+  const [toGoTime, setToGoTime] = useState<number>(spotToSpot);
+  const { travelInfo } = useTravelInfo();
+  const transportation = travelInfo.transportation;
+  const time =
+    {
+      WALK: 12,
+      BUS: 5,
+      CAR: 2,
+    }[transportation] || 5;
+  const getTwoDecimalPlaces = (number: number) => {
+    return Math.round(number * 100) / 100;
+  };
+  const getTime = (distance: number) => {
+    return Math.round(distance * time);
+  };
+  useEffect(() => {
+    const distance = getTwoDecimalPlaces(spotToSpot);
+    let realTime = getTime(distance);
+    if (realTime == 0) realTime = 1;
+    setToGoTime(realTime);
+  }, [course]);
   return (
     <CardContainer>
       <NumberCircle>
@@ -14,10 +34,16 @@ const CourseCard = ({ course, spotToSpot }: any) => {
       <CardBox>
         <CardDetail>
           <DetailDesc>
-            <DetailCategory>{course.destinationType}</DetailCategory>
+            <DetailCategory>
+              {course.destinationType == 'sights'
+                ? '명소'
+                : course.destinationType == 'food'
+                  ? '식당'
+                  : '카페'}
+            </DetailCategory>
             <DetailTitle>{course.destinationName}</DetailTitle>
           </DetailDesc>
-          {spotToSpot ? <DetailTime>예상추정시간: 약 {spotToSpot}분</DetailTime> : <></>}
+          {spotToSpot ? <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime> : <></>}
         </CardDetail>
         <CardImage src={course.destinationImgUrl}></CardImage>
       </CardBox>
@@ -88,10 +114,11 @@ const DetailTitle = styled(Box)`
   && {
     width: 90%;
     font-family: 'Pretendard';
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
     padding: 5px;
+    margin-top: 5px;
   }
 `;
 
