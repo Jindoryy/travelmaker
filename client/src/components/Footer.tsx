@@ -92,6 +92,7 @@ const FooterBox = styled(Box)`
   margin: auto;
   bottom: 0;
   background-color: white;
+  z-index: 99;
 `;
 
 const OneButton = styled(Button)`

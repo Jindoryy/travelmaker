@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import ProvinceHeader from '../../components/course/ProvinceHeader';
-import ProvinceList from '../../components/course/ProvinceList';
+import ProvinceButtonSlide from '../../components/course/ProvinceButtonSlide';
+import ProvinceWideButtonList from '../../components/course/ProvinceWideButtonList';
 
 const ProvinceChoicePage = () => {
   return (
     <>
       <PageContainer>
         <ProvinceHeader />
-        <ProvinceList />
+        <ProvinceButtonSlide />
+        <ProvinceWideButtonList />
       </PageContainer>
     </>
   );
@@ -15,11 +17,15 @@ const ProvinceChoicePage = () => {
 
 const PageContainer = styled.div`
   border-radius: 10px;
-  background-color: #eff1fe;
+  /* background-color: #eff1fe; */
   display: flex;
-  max-width: 350px;
+  max-width: 410px;
   flex-direction: column;
   padding: 10px;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
 `;
 
 export default ProvinceChoicePage;
