@@ -25,12 +25,12 @@ public class LikesService {
         return userId.equals(tokenUserId);
     }
 
-    public void addLike(LikesRequest likesRequset) {
-        Optional<User> optionalUser = userRepository.findById(likesRequset.getUserId());
-        User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + likesRequset.getUserId()));
+    public boolean addLike(LikesRequest likesRequest) {
+        User user = userRepository.findById(likesRequest.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + likesRequest.getUserId()));
 
-        Optional<Destination> optionalDestination = destinationRepository.findById(likesRequset.getDestinationId());
-        Destination destination = optionalDestination.orElseThrow(() -> new IllegalArgumentException("Destination not found with ID: " + likesRequset.getDestinationId()));
+        Destination destination = destinationRepository.findById(likesRequest.getDestinationId())
+            .orElseThrow(() -> new IllegalArgumentException("Destination not found with ID: " + likesRequest.getDestinationId()));
 
         Optional<Likes> optionalLikes = likesRepository.findByUserIdAndDestinationId(user.getId(), destination.getId());
 
@@ -42,11 +42,13 @@ public class LikesService {
                 .flag(true)
                 .build();
             likesRepository.save(newLike);
+            return true;
         } else {
             //한번이라도 이력이 있는 장소에 대해서 flag 업데이트
             Likes existingLike = optionalLikes.get();
             existingLike.setFlag(!existingLike.getFlag());
             likesRepository.save(existingLike);
+            return existingLike.getFlag();
         }
     }
 }
