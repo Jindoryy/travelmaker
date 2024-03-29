@@ -20,7 +20,7 @@ interface ArrowProps {
 }
 
 const ProvinceButtonSlide = () => {
-  const [provinceContents, setProvinceContents] = useState<Province[]>(contents);
+  const [provinceContents, setProvinceContents] = useState<Province[]>([]);
   const [loading, setLoading] = useState(true);
 
   function NextArrow(props: ArrowProps) {
@@ -129,70 +129,5 @@ const GudieText = styled.div`
   font-size: larger;
   padding: 0 0 10px 10px;
 `;
-
-const contents = [
-  {
-    provinceId: 1,
-    provinceName: '서울',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 2,
-    provinceName: '경기도',
-    provinceUrl:
-      'https://t1.daumcdn.net/thumb/R720x0/?fname=http://t1.daumcdn.net/brunch/service/user/2fG8/image/jG1i_PH_-M7JPZvmUJFk8GluML4.jpg',
-  },
-  {
-    provinceId: 3,
-    provinceName: '강원도',
-    provinceUrl:
-      'https://post-phinf.pstatic.net/MjAxOTAxMjhfMTk5/MDAxNTQ4NjYzNTQyNzI2.7nppcsLa6UTZokcS91d790P6lyouAMzX-3Zn_9T01r0g.zSLiaPN3fErmABLTBIkDHOUowOkEy61FxJlH1HyJpeMg.JPEG/GettyImages-jv11321426-2.jpg?type=w800_q75',
-  },
-  {
-    provinceId: 4,
-    provinceName: '인천',
-    provinceUrl: 'https://balpumnews.cdn.ntruss.com/wp-content/uploads/2024/03/3156_16651_3458.jpg',
-  },
-  {
-    provinceId: 5,
-    provinceName: '충청북도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 6,
-    provinceName: '충청남도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 7,
-    provinceName: '전라북도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 8,
-    provinceName: '경상북도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 9,
-    provinceName: '전라남도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 10,
-    provinceName: '경상남도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 11,
-    provinceName: '제주도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-  {
-    provinceId: 12,
-    provinceName: '울릉도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
-  },
-];
 
 export default ProvinceButtonSlide;
