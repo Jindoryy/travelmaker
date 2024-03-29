@@ -29,4 +29,4 @@ const useUserInfo  = create(
     )
 )
 
-export default useUserInfo
+export default useUserInfo;
