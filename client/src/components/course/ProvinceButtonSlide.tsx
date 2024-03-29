@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import ProvinceButton from '../../features/course/ProvinceButton';
 import styled from 'styled-components';
-import { getCourse } from '../../utils/axios/axios-course';
 import { Skeleton } from '@mui/material';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { getCourse } from '../../utils/axios/axios-course';
+import ProvinceSlideButton from '../../features/course/ProvinceSlideButton';
 
 interface Province {
   provinceId: number;
@@ -10,9 +13,61 @@ interface Province {
   provinceUrl: string;
 }
 
-const ProvinceList = () => {
-  const [provinceContents, setProvinceContents] = useState<Province[]>([]);
+interface ArrowProps {
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+}
+
+const ProvinceButtonSlide = () => {
+  const [provinceContents, setProvinceContents] = useState<Province[]>(contents);
   const [loading, setLoading] = useState(true);
+
+  function NextArrow(props: ArrowProps) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: 'block',
+          position: 'absolute',
+          top: '55%',
+          right: '15px',
+          zIndex: 1,
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+  function PrevArrow(props: ArrowProps) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: 'block',
+          position: 'absolute',
+          top: '55%',
+          left: '15px',
+          zIndex: 1,
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 800,
+    autoplay: true,
+    slidesToShow: 2.5,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
 
   useEffect(() => {
     getCourse()
@@ -31,6 +86,7 @@ const ProvinceList = () => {
 
   return (
     <ListContainer>
+      <GudieText> 추천 지역</GudieText>
       {loading || provinceContents.length === 0 ? (
         <>
           <Skeleton variant="rectangular" width={210} height={118} />
@@ -38,29 +94,40 @@ const ProvinceList = () => {
           <Skeleton width="80%" />
         </>
       ) : (
-        <GridContainer>
+        <Slider {...settings}>
           {provinceContents.map((content, index) => (
-            <ProvinceButton key={index} content={content} />
+            <Box>
+              <ProvinceSlideButton key={index} content={content} />
+            </Box>
           ))}
-        </GridContainer>
+        </Slider>
       )}
     </ListContainer>
   );
 };
 
 const ListContainer = styled.div`
+  width: 390px;
+  height: 245px;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 1);
-  display: flex;
-  max-width: 350px;
+  display: flex-row;
   flex-direction: column;
   padding: 10px;
+  margin-bottom: 10px;
 `;
 
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px; /* 원하는 간격으로 조정 가능 */
+const Box = styled.div`
+  width: 100%;
+  height: 240px;
+  padding-left: 85px;
+  box-sizing: border-box;
+`;
+
+const GudieText = styled.div`
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: larger;
+  padding: 0 0 10px 10px;
 `;
 
 const contents = [
@@ -72,17 +139,19 @@ const contents = [
   {
     provinceId: 2,
     provinceName: '경기도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
+    provinceUrl:
+      'https://t1.daumcdn.net/thumb/R720x0/?fname=http://t1.daumcdn.net/brunch/service/user/2fG8/image/jG1i_PH_-M7JPZvmUJFk8GluML4.jpg',
   },
   {
     provinceId: 3,
     provinceName: '강원도',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
+    provinceUrl:
+      'https://post-phinf.pstatic.net/MjAxOTAxMjhfMTk5/MDAxNTQ4NjYzNTQyNzI2.7nppcsLa6UTZokcS91d790P6lyouAMzX-3Zn_9T01r0g.zSLiaPN3fErmABLTBIkDHOUowOkEy61FxJlH1HyJpeMg.JPEG/GettyImages-jv11321426-2.jpg?type=w800_q75',
   },
   {
     provinceId: 4,
     provinceName: '인천',
-    provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
+    provinceUrl: 'https://balpumnews.cdn.ntruss.com/wp-content/uploads/2024/03/3156_16651_3458.jpg',
   },
   {
     provinceId: 5,
@@ -125,4 +194,5 @@ const contents = [
     provinceUrl: 'https://cdn.pixabay.com/photo/2022/10/15/16/44/night-view-7523474_1280.jpg',
   },
 ];
-export default ProvinceList;
+
+export default ProvinceButtonSlide;
