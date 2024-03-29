@@ -9,7 +9,7 @@ from .algorithms import main_recommend, travel_recommend, city_recommend
 # 성별, 나이 기반 추천 + 기본 추천 
 @api_view(['GET'])
 def getMainList(request, user_id):
-    user_likes_count = Likes.objects.filter(USER=user_id, FLAG=1).count()
+    user_likes_count = Likes.objects.filter(USER_ID=user_id, FLAG=1).count()
     
     # 사용자의 좋아요 누른 장소 수에 따라 추천 방식 선택
     if user_likes_count <= 20:

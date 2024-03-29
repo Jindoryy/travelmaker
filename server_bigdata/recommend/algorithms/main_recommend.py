@@ -19,27 +19,29 @@ def genderAgeRecommend(user_id, num_result):
 
     # 사용자의 성별과 나이 정보 가져오기
     user_gender = user.GENDER
-    user_birth = user.BIRTH
+    user_age = user.calculate_age()
     
     # 모든 사용자의 좋아요 정보 가져오기
-    all_users_likes = Likes.objects.filter(FLAG=True).values('USER', 'DESTINATION_id')  # 변경된 부분
+    all_users_likes = Likes.objects.filter(FLAG=1).values('USER_ID', 'DESTINATION_ID')
 
     # 좋아요 데이터프레임 생성
     likes_df = pd.DataFrame(list(all_users_likes))
 
     # 사용자의 성별과 나이 정보를 기반으로 한 사용자 필터링
     similar_users = User.objects.filter(GENDER=user_gender).exclude(USER_ID=user_id)
-    similar_users = similar_users.filter(BIRTH__gte=user_birth - timedelta(days=365*5), BIRTH__lte=user_birth + timedelta(days=365*5))
+    similar_users = similar_users.filter(BIRTH__gte=user.BIRTH - timedelta(days=365*5), BIRTH__lte=user.BIRTH + timedelta(days=365*5))
+
 
     # 유사한 사용자들이 좋아요를 누른 장소들의 빈도수를 계산
-    similar_likes = likes_df[likes_df['USER'].isin([u.USER_ID for u in similar_users])]  # 변경된 부분
-    similar_likes_count = similar_likes.groupby('DESTINATION_id').size().reset_index(name='count')  # 변경된 부분
+    similar_likes = likes_df[likes_df['USER_ID'].isin([u.USER_ID for u in similar_users])]
+    similar_likes_count = similar_likes.groupby('DESTINATION_ID').size().reset_index(name='count')
 
     # 유사한 사용자들이 가장 많이 누른 장소 추출
     top_destinations = similar_likes_count.sort_values(by='count', ascending=False).head(num_result)
-    top_destination_ids = top_destinations['DESTINATION_id'].tolist()
+    top_destination_ids = top_destinations['DESTINATION_ID'].tolist()
     
     return top_destination_ids
+
 
 
 def getRandomDestinations(limit=60):
@@ -52,10 +54,12 @@ def getRandomDestinations(limit=60):
 # TF-IDF를 사용하여 특성 텍스트를 벡터화하고, 사용자의 특성을 기반으로 코사인 유사도를 계산하여 유사한 장소를 추천합니다.
 def basicCbfRecommend(user_id):
     # 사용자가 좋아요를 누른 장소의 특성을 가져오기
-    user_likes = Likes.objects.filter(USER_id=user_id, FLAG=True)  # 변경된 부분
+    user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
     user_features = []
     for like in user_likes:
-        user_features.extend(like.DESTINATION.FEATURE.split(','))  # 변경된 부분
+        destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
+        if destination:
+            user_features.extend(destination.FEATURE.split(','))
 
     # 각 특성의 빈도 계산
     feature_counter = Counter(user_features)
@@ -73,7 +77,7 @@ def basicCbfRecommend(user_id):
     similar_destinations = list(set(similar_destinations))
 
     # 유사한 장소 중 사용자가 이미 좋아요를 누른 장소 제외
-    user_liked_destination_ids = [like.DESTINATION_id for like in user_likes]  # 변경된 부분
+    user_liked_destination_ids = [like.DESTINATION_ID for like in user_likes]
     similar_destinations = [destination for destination in similar_destinations if destination.DESTINATION_ID not in user_liked_destination_ids]
 
     # 최대한 비슷한 장소로 30개를 채워주기
@@ -96,12 +100,16 @@ def basicCbfRecommend(user_id):
     # 유사도에 따라 장소 정렬
     similar_destinations = [similar_destinations[i] for i in similarities.argsort()[::-1]]
 
+    # 목록을 무작위로 섞기
+    random.shuffle(similar_destinations)
+
     # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
     destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
     destination_ids = destination_ids[:40] + getRandomDestinations(60)
     random.shuffle(destination_ids)
 
     return destination_ids
+
 
 
 def predict_destination_rating(algo, user_id, features, similarity):
@@ -120,10 +128,10 @@ def predict_destination_rating(algo, user_id, features, similarity):
 
 def basicCfRecommend(user_id):
     # 사용자가 좋아요를 누른 장소 데이터 가져오기
-    user_likes = Likes.objects.filter(USER_id=user_id)  # 변경된 부분
+    user_likes = Likes.objects.filter(USER_ID=user_id)
 
     # 사용자가 좋아요를 누른 장소의 특징 가져오기
-    liked_destinations = [like.DESTINATION_id for like in user_likes]  # 변경된 부분
+    liked_destinations = [like.DESTINATION_ID for like in user_likes]
     user_features = []
     for dest_id in liked_destinations:
         destination = Destination.objects.get(pk=dest_id)

@@ -1,3 +1,4 @@
+# models.py
 from django.db import models
 from datetime import datetime
 
@@ -42,7 +43,7 @@ class Destination(models.Model):
     PROVINCE_ID = models.IntegerField()
     LATITUDE = models.FloatField()
     LONGITUDE = models.FloatField()
-    CONTENT = models.TextField()
+    CONTENT = models.CharField(max_length=255)
     NAME = models.CharField(max_length=255)
     TYPE = models.CharField(max_length=255)
     FEATURE = models.CharField(max_length=255)
@@ -68,22 +69,11 @@ class BitBooleanField(models.BooleanField):
             return value
         return int(value)
 
-
 class Likes(models.Model):
     LIKE_ID = models.AutoField(primary_key=True)
-    DESTINATION = models.ForeignKey(Destination, on_delete=models.CASCADE)
-    USER = models.ForeignKey(User, on_delete=models.CASCADE)
+    DESTINATION_ID = models.IntegerField()
+    USER_ID = models.IntegerField()
     FLAG = BitBooleanField(default=False)
 
     class Meta:
         db_table = 'likes'
-
-
-# class Likes(models.Model):
-#     LIKE_ID = models.AutoField(primary_key=True)
-#     DESTINATION_ID = models.IntegerField()
-#     USER_ID = models.IntegerField()
-#     FLAG = BitBooleanField(default=False)
-
-#     class Meta:
-#         db_table = 'likes'

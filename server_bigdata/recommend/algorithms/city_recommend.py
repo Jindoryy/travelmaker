@@ -13,9 +13,9 @@ def cityRecommend(request):
     # 모든 사용자 및 친구들의 좋아요 데이터를 가져와서 사용자별로 특성을 추출하고 가중치를 계산
     all_user_features = defaultdict(list)
     for user_id in user_ids:
-        user_likes = Likes.objects.filter(USER_id=user_id, FLAG=True)
+        user_likes = Likes.objects.filter(USER_ID=user_id, FLAG=1)
         for like in user_likes:
-            destination = like.DESTINATION
+            destination = Destination.objects.filter(DESTINATION_ID=like.DESTINATION_ID).first()
             if destination:
                 all_user_features[user_id].extend(destination.FEATURE.split(','))
 
