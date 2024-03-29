@@ -1,6 +1,8 @@
 package com.a305.travelmaker.domain.travel.controller;
 
+import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelInfoRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
@@ -29,18 +31,32 @@ public class TravelController {
   private final TravelService travelService;
   private final TokenProvider tokenProvider;
 
-  @Operation(summary = "여행 저장", description = "여행 정보를 받아 저장한다.")
-  @PostMapping
-  public SuccessResponse<TravelResponse> addTravel(@RequestBody TravelRequest travelRequest) {
+  @Operation(summary = "여행 정보 생성", description = "여행 정보를 생성한다.")
+  @GetMapping
+  public SuccessResponse<TravelResponse> makeTravel(@RequestBody TravelRequest travelRequest) {
 
-    return new SuccessResponse<>(travelService.saveTravel(travelRequest));
+    return new SuccessResponse<>(travelService.createTravel(travelRequest));
   }
 
-  @Operation(summary = "여행 정보 조회", description = "여행 정보를 조회한다.")
+  @Operation(summary = "여행 정보 저장", description = "여행 정보를 저장한다.")
+  @PostMapping
+  public void addTravel(@RequestBody TravelInfoRequest travelInfoRequest) {
+
+    travelService.saveTravel(travelInfoRequest);
+  }
+
+  @Operation(summary = "여행 정보 조회 (메인 페이지 - 코스후)", description = "여행 정보를 조회한다.")
   @GetMapping("/main-before/{id}")
   public SuccessResponse<TravelBeforeResponse> getTravelBeforeDetail(@PathVariable Integer id) {
 
     return new SuccessResponse<>(travelService.findTravelBeforeDetail(id));
+  }
+
+  @Operation(summary = "여행 정보 조회 (메인 페이지 - 여행중)", description = "여행 정보를 조회한다.")
+  @GetMapping("/main-after/{id}")
+  public SuccessResponse<TravelAfterResponse> getTravelAfterDetail(@PathVariable Integer id) {
+
+    return new SuccessResponse<>(travelService.findTravelAfterDetail(id));
   }
 
   @Operation(summary = "여행 리스트 조회", description = "여행 리스트를 조회한다.")

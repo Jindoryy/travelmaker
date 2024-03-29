@@ -9,6 +9,7 @@ const KakaoMap = ({ dateCourse }: any) => {
   // 선을 구성하는 좌표 배열
   const polyline: kakao.maps.LatLng[] = [];
   useEffect(() => {
+    if (!dateCourse || !dateCourse.length) return;
     mapscript();
   }, [dateCourse]);
 
@@ -16,13 +17,15 @@ const KakaoMap = ({ dateCourse }: any) => {
     // 선을 구성하는 좌표 배열 리셋해주기
     const polyline: kakao.maps.LatLng[] = [];
     const container = mapRef.current;
-    if (!container) return;
-    let options = {
-      center: new kakao.maps.LatLng(37.503325874722, 127.04403462366),
-      level: 7,
-    };
+    if (!container || !dateCourse.length) return;
 
+    let options = {
+      center: new kakao.maps.LatLng(dateCourse[0].lat, dateCourse[0].lng),
+      level: 8,
+    };
     //map
+
+    if (!container || !dateCourse.length) return;
     const map = new kakao.maps.Map(container, options);
 
     //마커가 표시 될 위치
@@ -36,9 +39,11 @@ const KakaoMap = ({ dateCourse }: any) => {
     });
 
     //선 그리기
-    dateCourse.forEach((el: any) => {
-      polyline.push(new kakao.maps.LatLng(el.lat, el.lng));
-    });
+    if (polyline.length == 0) {
+      dateCourse.forEach((el: any) => {
+        polyline.push(new kakao.maps.LatLng(el.lat, el.lng));
+      });
+    }
 
     const linePath = new kakao.maps.Polyline({
       path: polyline, // 선을 구성하는 좌표배열

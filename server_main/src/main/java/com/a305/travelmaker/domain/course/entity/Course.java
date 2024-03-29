@@ -10,13 +10,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Course extends BaseEntity{
 
   @Id
@@ -30,4 +35,7 @@ public class Course extends BaseEntity{
 
   @Column(name = "destination_list", length = 1000)
   private String destinationList;
+
+  @Column(name = "start_date")
+  private LocalDate startDate;
 }
