@@ -2,6 +2,9 @@ package com.a305.travelmaker.domain.travel.service;
 
 import com.a305.travelmaker.domain.city.entity.City;
 import com.a305.travelmaker.domain.city.repository.CityRepository;
+import com.a305.travelmaker.domain.course.dto.CourseInfo;
+import com.a305.travelmaker.domain.course.entity.Course;
+import com.a305.travelmaker.domain.course.repository.CourseRepository;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.destination.service.DestinationService;
@@ -10,26 +13,35 @@ import com.a305.travelmaker.domain.diary.entity.File;
 import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
+import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.domain.travel.dto.Spot;
+import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.TravelInfoRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRecommendCluster;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
+import com.a305.travelmaker.domain.user.entity.User;
+import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.FileUtil;
 import com.a305.travelmaker.global.util.HarversineUtil;
 import com.google.gson.Gson;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -43,9 +55,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TravelService {
 
   private static final int ALL_DESTINATION_COUNT = 6; // 빅데이터 서버로 부터 받아오는 Day 별로 장소의 개수
-  private static final double DNF = Double.MAX_VALUE;
+//  private static final double DNF = Double.MAX_VALUE;
   private boolean[] visited;
-  private double[] dist;
+//  private double[] dist;
   private List<Spot>[] graph;
   //  private int[][] graph;
 //  private double[][] dist;
@@ -60,6 +72,8 @@ public class TravelService {
   private final HarversineUtil harversineUtil;
   private final CityRepository cityRepository;
   private final MemoRepository memoRepository;
+  private final CourseRepository courseRepository;
+  private final UserRepository userRepository;
 
   @Value("${cloud.aws.s3.base-url}")
   private String baseUrl;
@@ -72,7 +86,7 @@ public class TravelService {
   private List<List<DestinationDistanceResponse>> destinationDistanceResponses = new ArrayList<>(); // 데이터 반환 값
   private List<DestinationDistanceResponse> destinationDistanceResponse = new ArrayList<>();
   @Transactional
-  public TravelResponse saveTravel(TravelRequest travelRequest) {
+  public TravelResponse createTravel(TravelRequest travelRequest) {
 
     /*
       0. 데이터 세팅
@@ -114,7 +128,7 @@ public class TravelService {
         1-1. 초기 중심 무작위 선택
         1-2. 각 장소들의 경도와 위도를 기준으로 중심점과의 비교를 통해 군집화
         1-3. 새로운 중심 개선
-        1-4. 2, 3번의 과정을 반복하면서 k개의 군집이 생성되면 종료
+        1-4. 2, 3번의 과정을 반복하면서 k개의 군집이 생성되면 종료 (만약 k개의 군집이 생성되지 않는다면 가장 많은 point를 가진 군집의 point를 나눠서 새로운 군집 생성)
      */
     initializeClusters(travelDays);
     System.out.println(clusters);
@@ -122,7 +136,7 @@ public class TravelService {
     while (centroidsChanged) {
       assignPointsToClusters(); // 중심점을 기준으로 각 군집에 할당
       centroidsChanged = updateCentroids(); // 중심점 재계산 - 변경점이 없다면 종료
-    }
+      }
 
     for (int i = 0; i < clusters.size(); i++) {
 
@@ -166,7 +180,7 @@ public class TravelService {
           .placeIds(placeIds)
           .userId(1111L)
           .build();
-
+      System.out.println("r 값은 여기 : " + r);
       travelRecommendClusterList.put(String.valueOf(i + 1), travelRecommendCluster);
     }
 
@@ -205,6 +219,9 @@ public class TravelService {
       String day = entry.getKey();
       List<Integer> placeIds = entry.getValue(); // 장소 ID를 담는 리스트
       List<Point> points = new ArrayList<>(); // 장소 ID, 위도, 경도를 담은 클래스를 담는 리스트
+
+      System.out.println(placeIds);
+      System.out.println(points);
 
       for (Integer placeId : placeIds) {
 
@@ -376,52 +393,74 @@ public class TravelService {
     Cluster firstCluster = new Cluster(firstCentroid);
     clusters.add(firstCluster);
 
+    // 이미 선택된 중심점의 인덱스를 기록할 리스트 생성
+    List<Integer> selectedIndexes = new ArrayList<>();
+    selectedIndexes.add(index);
+
     // 나머지 중심점을 선택
     for (int i = 1; i < travelDays; i++) {
 
-      // 각 데이터 포인트에 대해 가장 먼 중심점의 거리를 계산
-      List<Double> distances = new ArrayList<>();
-      for (Point point : pointList) {
+      // 이미 선택된 중심점과 중복되지 않도록 랜덤하게 인덱스 선택
+      int newIndex;
+      do {
+        newIndex = new Random().nextInt(pointList.size());
+      } while (selectedIndexes.contains(newIndex));
 
-        double maxDistance = Double.MIN_VALUE;
-        for (Cluster cluster : clusters) {
+      // 선택된 중심점을 기록
+      selectedIndexes.add(newIndex);
 
-          // 클러스터(군집)의 중심점과 현재점 과의 거리 계산
-          double distance = harversineUtil.calculateDistance(cluster.getCentroid(), point);
-          if (distance < maxDistance) {
-            maxDistance = distance;
-          }
-        }
-
-        // 클러스터(군집)의 중심점과 가장 먼 점의 거리를 추가
-        distances.add(maxDistance);
-      }
-
-      // 각 데이터 포인트를 초기 중심점 후보로 선택할 확률을 계산하여 누적 확률 리스트에 저장
-      List<Double> probabilities = new ArrayList<>();
-      double totalDistance = 0.0;
-      for (double distance : distances) {
-        totalDistance += distance;
-      }
-      double cumulativeProbability = 0.0;
-      for (double distance : distances) {
-        double probability = distance / totalDistance;
-        cumulativeProbability += probability;
-        probabilities.add(cumulativeProbability);
-      }
-
-      // 누적 확률 리스트를 사용하여 새로운 중심점을 선택
-      double randomValue = new Random().nextDouble();
-      for (int j = 0; j < probabilities.size(); j++) {
-
-        if (randomValue > probabilities.get(j)) {
-          Point newCentroid = pointList.get(j);
-          Cluster newCluster = new Cluster(newCentroid);
-          clusters.add(newCluster);
-          break;
-        }
-      }
+      // 새로운 중심점 추가
+      Point newCentroid = pointList.get(newIndex);
+      Cluster newCluster = new Cluster(newCentroid);
+      clusters.add(newCluster);
     }
+
+//    // 나머지 중심점을 선택
+//    for (int i = 1; i < travelDays; i++) {
+//
+//      // 각 데이터 포인트에 대해 가장 먼 중심점의 거리를 계산
+//      List<Double> distances = new ArrayList<>();
+//      for (Point point : pointList) {
+//
+//        double maxDistance = Double.MIN_VALUE;
+//        for (Cluster cluster : clusters) {
+//
+//          // 클러스터(군집)의 중심점과 현재점 과의 거리 계산
+//          double distance = harversineUtil.calculateDistance(cluster.getCentroid(), point);
+//          if (distance < maxDistance) {
+//            maxDistance = distance;
+//          }
+//        }
+//
+//        // 클러스터(군집)의 중심점과 가장 먼 점의 거리를 추가
+//        distances.add(maxDistance);
+//      }
+//
+//      // 각 데이터 포인트를 초기 중심점 후보로 선택할 확률을 계산하여 누적 확률 리스트에 저장
+//      List<Double> probabilities = new ArrayList<>();
+//      double totalDistance = 0.0;
+//      for (double distance : distances) {
+//        totalDistance += distance;
+//      }
+//      double cumulativeProbability = 0.0;
+//      for (double distance : distances) {
+//        double probability = distance / totalDistance;
+//        cumulativeProbability += probability;
+//        probabilities.add(cumulativeProbability);
+//      }
+//
+//      // 누적 확률 리스트를 사용하여 새로운 중심점을 선택
+//      double randomValue = new Random().nextDouble();
+//      for (int j = 0; j < probabilities.size(); j++) {
+//
+//        if (randomValue > probabilities.get(j)) {
+//          Point newCentroid = pointList.get(j);
+//          Cluster newCluster = new Cluster(newCentroid);
+//          clusters.add(newCluster);
+//          break;
+//        }
+//      }
+//    }
   }
 
   public TravelBeforeResponse findTravelBeforeDetail(Integer id) {
@@ -520,5 +559,91 @@ public class TravelService {
       }
     }
     return centroidsChanged;
+  }
+
+  @Transactional
+  public void saveTravel(TravelInfoRequest travelInfoRequest) {
+
+    // 여행 저장하면 코스 데이터는 무조건 생성.
+    
+    // 리스트 형태로 받아온 친구 ID를 String 형태로 바꿔서 ,로 구분해 저장
+    List<Integer> friendIdList = travelInfoRequest.getFriendIdList();
+    String friends = friendIdList.stream()
+        .map(Object::toString)
+        .collect(Collectors.joining(","));
+
+    User user = userRepository.findById(126L).get();
+    
+    Travel travel = Travel.builder()
+        .user(user)
+        .cityName(travelInfoRequest.getCityName())
+        .startDate(travelInfoRequest.getStartDate())
+        .endDate(travelInfoRequest.getEndDate())
+        .friends(friends)
+        .transportation(travelInfoRequest.getTransportation())
+        .status(DiaryStatus.BEFORE_DIARY)
+        .build();
+
+    travelRepository.save(travel);
+
+    // 오늘 날짜 구하기
+    LocalDate today = LocalDate.now();
+
+    long travelDays = travelInfoRequest.calculateTravelDays();
+    for (int i = 0; i < travelDays; i++) {
+
+      List<Integer> courselist = travelInfoRequest.getCourseList().get(i);
+      String courses = courselist.stream()
+          .map(Object::toString)
+          .collect(Collectors.joining(","));
+
+      courseRepository.save(
+          Course.builder()
+              .travel(travel)
+              .destinationList(courses)
+              .startDate(today.plusDays(i))
+              .build()
+      );
+    }
+  }
+
+  public TravelAfterResponse findTravelAfterDetail(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+
+    List<CourseInfo> courseInfoList = new ArrayList<>();
+    List<Course> courseList = travel.getCourseList();
+
+    // 오늘 날짜 구하기
+    LocalDate today = LocalDate.now();
+
+    for (Course course : courseList) {
+
+      // 코스의 시작 날짜 가져오기
+      LocalDate startDate = course.getStartDate();
+
+      // 오늘 날짜인 경우
+      if (startDate.isEqual(today)) {
+
+        String[] destinationList = course.getDestinationList().split(",");
+
+        for (String destinationId : destinationList) {
+
+          Integer dId = Integer.parseInt(destinationId);
+          Destination destination = destinationRepository.findById(dId).get();
+
+          courseInfoList.add(CourseInfo.builder()
+              .destinationName(destination.getName())
+              .destinationImgUrl(destination.getImgUrl())
+              .build());
+        }
+      }
+    }
+
+    return TravelAfterResponse.builder()
+        .cityName(travel.getCityName())
+        .startDate(travel.getStartDate())
+        .courseInfoList(courseInfoList)
+        .build();
   }
 }
