@@ -3,6 +3,7 @@ package com.a305.travelmaker.domain.travel.controller;
 import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelInfoRequest;
+import com.a305.travelmaker.domain.travel.dto.TravelInfoResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelResponse;
@@ -30,6 +31,13 @@ public class TravelController {
 
   private final TravelService travelService;
   private final TokenProvider tokenProvider;
+
+  @Operation(summary = "여행 상세 정보", description = "여행 상세 정보를 조회한다.")
+  @GetMapping("/{id}")
+  public SuccessResponse<TravelInfoResponse> getTravelInfo(@PathVariable Integer id) {
+
+    return new SuccessResponse<>(travelService.findTravelInfo(id));
+  }
 
   @Operation(summary = "여행 정보 생성", description = "여행 정보를 생성한다.")
   @GetMapping
