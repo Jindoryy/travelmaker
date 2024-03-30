@@ -32,15 +32,6 @@ const useUserInfo  = create(
     }),
     {
         name: "userInfo",
-        storage: createJSONStorage(() => localStorage),
-        version: 1.0,
-        // persist 옵션에 onRehydrateStorage 추가하여 상태 복원 시 로그 추가
-        onRehydrateStorage: () => (state, error) => {
-            if (error) {
-                console.log("상태 복원 중 오류 발생:", error);
-            }
-            console.log("상태 복원 후:", state);
-        },
     }
     )
 );
