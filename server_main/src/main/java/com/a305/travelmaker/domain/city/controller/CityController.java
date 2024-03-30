@@ -23,7 +23,7 @@ public class CityController {
 
   private final CityService cityService;
 
-  @Operation(summary = "시 리스트 조회", description = "시 리스트를 조회한다.")
+  @Operation(summary = "시 인기 리스트 조회", description = "시 인기 리스트를 조회한다.")
   @GetMapping("/{id}")
   public SuccessResponse<List<CityResponse>> getCityList(@PathVariable Integer id) {
 

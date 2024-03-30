@@ -19,6 +19,7 @@ import com.a305.travelmaker.domain.travel.dto.Spot;
 import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelInfoRequest;
+import com.a305.travelmaker.domain.travel.dto.TravelInfoResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelRecommendCluster;
 import com.a305.travelmaker.domain.travel.dto.TravelRequest;
@@ -34,6 +35,7 @@ import com.a305.travelmaker.global.util.HarversineUtil;
 import com.google.gson.Gson;
 import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -93,7 +95,7 @@ public class TravelService {
       1. 군집화 실행 (군집 개수 ≤ 여행일 수)
       2. 빅데이터 서버에 군집별로 (센터포인트, R, id리스트) 넘겨서 군집별로 장소 ID 리스트(유저가 선택한 장소 + 빅데이터 기반 추천 장소 리스트) 받기
       - 빅데이터 서버에서 카테고리 안 겹치게 데이터 반환 해줌.
-      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+      3. 모든 장소에 대한 최적 거리 탐색 (DFS)
       4. 데이터 베이스 저장 후 응답 객체 형식에 맞춰서 데이터 반환
     */
 
@@ -134,9 +136,10 @@ public class TravelService {
     System.out.println(clusters);
     boolean centroidsChanged = true;
     while (centroidsChanged) {
+
       assignPointsToClusters(); // 중심점을 기준으로 각 군집에 할당
       centroidsChanged = updateCentroids(); // 중심점 재계산 - 변경점이 없다면 종료
-      }
+    }
 
     for (int i = 0; i < clusters.size(); i++) {
 
@@ -203,7 +206,7 @@ public class TravelService {
     System.out.println(travelDaysIdList);
 
     /*
-      3. 모든 장소에 대한 최적 거리 탐색 (플로이드-워셜)
+      3. 모든 장소에 대한 최적 거리 탐색 (DFS)
      */
 
     for (Map.Entry<String, List<Integer>> entry : travelDaysIdList.entrySet()) { // Day 마다 반복문 실행
@@ -656,5 +659,37 @@ public class TravelService {
         userId, DiaryStatus.BEFORE_DIARY, today, weekAgo);
 
     return count > 0;
+  }
+
+  public TravelInfoResponse findTravelInfo(Integer id) {
+
+    Travel travel = travelRepository.findById(id).get();
+
+    destinationDistanceResponses = new ArrayList<>();
+
+//    long travelDays = ChronoUnit.DAYS.between(travel.getStartDate(), travel.getEndDate()) + 1;
+
+    List<Course> courseList = travel.getCourseList();
+
+    for (Course course : courseList) {
+
+      destinationsIdList = new ArrayList<>();
+      String[] destinationList = course.getDestinationList().split(",");
+      for (String dId : destinationList) {
+
+        destinationsIdList.add(Integer.parseInt(dId));
+      }
+
+      destinationDistanceResponses.add(destinationService.findDestinationDistance(
+          destinationsIdList));
+    }
+
+    return TravelInfoResponse.builder()
+        .cityName(travel.getCityName())
+        .startDate(travel.getStartDate())
+        .endDate(travel.getEndDate())
+        .transportation(travel.getTransportation())
+        .travelList(destinationDistanceResponses)
+        .build();
   }
 }
