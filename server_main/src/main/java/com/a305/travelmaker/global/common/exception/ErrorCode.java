@@ -26,7 +26,13 @@ public enum ErrorCode {
 
     FILE_UPLOAD_ERROR(404, "파일 업로드 에러"),
 
-    INVALID_LIKE_REQUEST_ERROR(409, "현재 좋아요 상태가 변경하려는 상태와 동일합니다.");
+    INVALID_LIKE_REQUEST_ERROR(409, "현재 좋아요 상태가 변경하려는 상태와 동일합니다."),
+
+    MISSING_USER_INFO(400, "누락된 정보가 있습니다."),
+
+    INFO_ALREADY_EXISTS(409, "이미 존재하는 정보입니다."),
+
+    SERVICE_ERROR(500, "로그인 장애! 고객센터로 문의 주세요!");
 
     private final int status;
 

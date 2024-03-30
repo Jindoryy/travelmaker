@@ -22,7 +22,6 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Setter
 public class User extends BaseEntity {
 
     @Id
@@ -67,5 +66,13 @@ public class User extends BaseEntity {
         Collection<String> roles = new ArrayList<>();
         roles.add(role.getValue());
         return roles;
+    }
+    public void updateGenderAndBirth(GenderStatus gender, LocalDate birth) {
+        this.gender = gender;
+        this.birth = birth;
+    }
+
+    public void updateStatus(UserStatus newStatus) {
+        this.status = newStatus;
     }
 }
