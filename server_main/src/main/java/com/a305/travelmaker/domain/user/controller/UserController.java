@@ -1,29 +1,41 @@
 package com.a305.travelmaker.domain.user.controller;
 
+import com.a305.travelmaker.domain.login.dto.UserDetail;
 import com.a305.travelmaker.domain.user.dto.UserStatusResponse;
 import com.a305.travelmaker.domain.user.service.UserService;
+import com.a305.travelmaker.global.common.dto.SuccessResponse;
+import com.a305.travelmaker.global.common.exception.CustomException;
+import com.a305.travelmaker.global.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 @Tag(name = "User", description = "유저 API")
 public class UserController {
 
     private final UserService userService;
-    @Operation(summary = "유저 상태 조회", description = "상태를 조회한다.")
-    @GetMapping("/{userId}/status")
-    public ResponseEntity<UserStatusResponse> getUserStatus(@PathVariable("userId") Long userId) {
-        String userStatus = userService.getUserStatus(userId);
-        UserStatusResponse response = new UserStatusResponse(userStatus);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @Operation(summary = "유저 상태 조회 개발용 임시(토큰 불 필요)", description = "유저 여행 상태, 성별-생년월일 입력 여부 반환")
+    @PostMapping("/status")
+    public SuccessResponse<UserStatusResponse> getUserStatusTmp(@RequestBody Long userId) {
+        return new SuccessResponse<>(userService.getUserStatus(userId));
+    }
+
+    @Operation(summary = "유저 상태 조회", description = "유저 여행 상태, 성별-생년월일 입력 여부 반환")
+    @GetMapping("/status")
+    public SuccessResponse<UserStatusResponse> getUserStatus(@AuthenticationPrincipal UserDetail userDetail) {
+        if (userDetail == null) {
+            throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+        }
+        Long userId = userDetail.getId();
+        return new SuccessResponse<>(userService.getUserStatus(userId));
     }
 }

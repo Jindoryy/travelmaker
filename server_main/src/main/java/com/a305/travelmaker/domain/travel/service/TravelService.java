@@ -646,4 +646,15 @@ public class TravelService {
         .courseInfoList(courseInfoList)
         .build();
   }
+
+  public boolean checkUserDiaryStatus(Long userId){
+    LocalDate today = LocalDate.now();
+    LocalDate weekAgo = today.minusWeeks(1);
+
+    // 오늘 기준으로 일주일 전까지 탐색 유무만 체크하면 되므로 count
+    long count = travelRepository.countByUserIdAndStatusAndStartDateBetween(
+        userId, DiaryStatus.BEFORE_DIARY, today, weekAgo);
+
+    return count > 0;
+  }
 }
