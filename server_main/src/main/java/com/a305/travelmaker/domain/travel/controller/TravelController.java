@@ -40,14 +40,14 @@ public class TravelController {
   }
 
   @Operation(summary = "여행 정보 생성", description = "여행 정보를 생성한다.")
-  @GetMapping
+  @PostMapping
   public SuccessResponse<TravelResponse> makeTravel(@RequestBody TravelRequest travelRequest) {
 
     return new SuccessResponse<>(travelService.createTravel(travelRequest));
   }
 
   @Operation(summary = "여행 정보 저장", description = "여행 정보를 저장한다.")
-  @PostMapping
+  @PostMapping("/info")
   public void addTravel(@RequestBody TravelInfoRequest travelInfoRequest) {
 
     travelService.saveTravel(travelInfoRequest);
