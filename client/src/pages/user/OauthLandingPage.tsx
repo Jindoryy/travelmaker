@@ -30,7 +30,7 @@ const OauthLandingPage = () => {
           // 스토어에 사용자 정보 저장
           setUserInfo({ userId, nickName, profileUrl });
           // LocalStorage에 사용자 정보 저장
-          localStorage.setItem('userInfo', JSON.stringify({ userId, nickName, profileUrl }));
+          // localStorage.setItem('userInfo', JSON.stringify({ userId, nickName, profileUrl }));
           // LocalStorage에 인증토큰,재발급토큰 저장
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', refreshToken);
