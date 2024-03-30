@@ -3,15 +3,16 @@
 package com.a305.travelmaker.domain.user.service;
 
 import com.a305.travelmaker.domain.travel.service.TravelService;
-import com.a305.travelmaker.domain.user.dto.GenderStatus;
 import com.a305.travelmaker.domain.user.dto.UserExtraInfoDto;
+import com.a305.travelmaker.domain.user.dto.UserFriendResponse;
 import com.a305.travelmaker.domain.user.dto.UserStatus;
 import com.a305.travelmaker.domain.user.dto.UserStatusResponse;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.common.exception.CustomException;
 import com.a305.travelmaker.global.common.exception.ErrorCode;
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -73,5 +74,43 @@ public class UserService {
         }
         user.updateGenderAndBirth(userInfo.getGender(), userInfo.getBirth());
         userRepository.save(user);
+    }
+
+    public List<UserFriendResponse> searchUsers(String searchCondition) {
+        List<User> users;
+        // String의 시작이 #이면 태그 검색
+        if (searchCondition.startsWith("#")) {
+            // 태그 검색
+            int tag = Integer.parseInt(searchCondition.substring(1));
+            users = userRepository.findByTag(tag);
+        } else {
+            // 닉네임 검색
+            users = userRepository.findByNicknameContaining(searchCondition);
+        }
+        // 검색 결과가 없으면 에러처리
+        if (users.isEmpty()) throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR);
+
+        return users.stream()
+            .map(user -> UserFriendResponse.builder()
+                .userId(user.getId())
+                .profileUrl(user.getProfileUrl())
+                .nickname(user.getNickname())
+                .tag(user.getTag())
+                .build())
+            .toList();
+    }
+
+    // 유저 태그 랜덤으로 생성하는 기능
+    public int generateUniqueUserTag() {
+        Random rand = new Random();
+        int attemptLimit = 10; // 무한 루프 방지를 위한 시도 횟수 제한
+        for (int attempt = 0; attempt < attemptLimit; attempt++) {
+            int randomNumber =
+                10000000 + rand.nextInt(90000000); // 10000000(8자리)부터 99999999(8자리) 사이의 숫자 생성
+            if (!userRepository.existsByTag(randomNumber)) {
+                return randomNumber;
+            }
+        }
+        throw new CustomException(ErrorCode.SERVICE_ERROR);
     }
 }

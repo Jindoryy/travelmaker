@@ -30,7 +30,9 @@ public enum ErrorCode {
 
     MISSING_USER_INFO(400, "누락된 정보가 있습니다."),
 
-    INFO_ALREADY_EXISTS(409, "이미 존재하는 정보입니다.");
+    INFO_ALREADY_EXISTS(409, "이미 존재하는 정보입니다."),
+
+    SERVICE_ERROR(500, "로그인 장애! 고객센터로 문의 주세요!");
 
     private final int status;
 

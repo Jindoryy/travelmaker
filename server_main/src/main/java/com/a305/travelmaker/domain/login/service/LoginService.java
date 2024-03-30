@@ -8,6 +8,7 @@ import com.a305.travelmaker.domain.login.entity.RefreshToken;
 import com.a305.travelmaker.domain.login.repository.RefreshTokenRepository;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
+import com.a305.travelmaker.domain.user.service.UserService;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class LoginService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
     private final RestTemplate restTemplate;
+    private final UserService userService;
 
     private final String GRANT_TYPE = "authorization_code";
 
@@ -101,7 +103,7 @@ public class LoginService {
         if (loginUser == null) {
             //User 객체 Builder로 생성
             loginUser = User.builder()
-                .tag(0000)// 임시값 추후 tag 로직 추가해서 수정
+                .tag(userService.generateUniqueUserTag())
                 .kakaoId(userinfo.getId())
                 .nickname(userinfo.getKakao_account().getProfile().getNickname())
                 .email(userinfo.getKakao_account().getEmail())
