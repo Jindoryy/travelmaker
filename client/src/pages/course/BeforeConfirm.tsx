@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { travelDetail, destinationDistance } from '../../utils/axios/axios-travel';
+import { useNavigate } from 'react-router-dom';
+import { travelDetail } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseCard from '../../components/course/CourseCard';
 import { useTravelInfo, useTravelCity } from '../../store/useTravelStore';
 
 import styled from 'styled-components';
-import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -16,7 +15,6 @@ import Button from '@mui/material/Button';
 interface TravelInfo {
   startDate: string;
   endDate: string;
-  friendTag: number[];
   transportation: string;
   destinationIdList: number[];
 }
@@ -34,52 +32,62 @@ interface TravelInfoType {
   destinationType: string;
   destinationUrl: string;
 }
-interface TravelResponseType {
-  travelResponse: TravelInfoType[];
-}
+
 
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const BeforeConfirm = () => {
   const { setTravelInfo, travelInfo } = useTravelInfo();
   const { setTravelCity, travelCity } = useTravelCity();
   const [selectedTab, setSelectedTab] = useState(1);
-  const [markerList, setMarkerList] = useState<any>();
   const [courseInfo, setCourseInfo] = useState<any>([[]]);
-  const [spottoSpot, setSpottoSpot] = useState<any>([[]]);
+  const [firstDate, setFirstDate] = useState<any>([]);
+  const [secondDate, setSecondDate] = useState<any>([]);
+  const [thirdDate, setThirdDate] = useState<any>([]);
+  const [selectedDate, setSelectedDate] = useState<any>([...firstDate]);
   const [key, setKey] = useState(0);
+  const [size, setSize] = useState(courseInfo.length);
   const navigate = useNavigate();
 
   useEffect(() => {
     getTravel(travelInfo);
   }, []);
+  
+  useEffect(() => {
+    setSelectedDate([...firstDate]);
+  }, [courseInfo])
 
   useEffect(() => {
-    // courseInfo가 변경될 때마다 key를 업데이트
-    setKey((prevKey) => prevKey + 1);
-  }, [courseInfo, spottoSpot]);
+    if (selectedTab == 2) setSelectedDate([...thirdDate]);
+    else if (selectedTab == 1) setSelectedDate([...secondDate]);
+    else setSelectedDate([...firstDate]);
+  }, [selectedTab])
 
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
       .then((response) => {
-        console.log(response.data.data);
+        console.log(response.data.data.travelList)
         const travelLists = response.data.data.travelList;
         if (travelLists.length >= 4) {
           const lists = travelLists.slice(0, 3);
           updateCourseInfo(lists);
         } else updateCourseInfo(travelLists);
-        markerSet();
       })
       .catch((error) => {
         console.error('Error: ', error);
       });
   };
+
   const updateCourseInfo = (travelList: any[][]) => {
     const updatedCourseInfo = [...courseInfo];
-    const updatedSpottoSpot = [...spottoSpot];
+    const updatedFirstDate = [...firstDate];
+    const updatedSecondDate = [...secondDate];
+    const updatedThirdDate = [...thirdDate];
     // travelList를 순회하면서 각각의 요소를 courseInfo에 추가
     travelList.forEach((destinationGroup, index) => {
       if (!courseInfo[index]) courseInfo[index] = [];
-      if (!spottoSpot[index]) spottoSpot[index] = [];
+      if (!firstDate[index]) firstDate[index] = [];
+      if (!secondDate[index]) secondDate[index] = [];
+      if (!thirdDate[index]) thirdDate[index] = [];
       destinationGroup.forEach((destination) => {
         courseInfo[index].push({
           destinationId: destination.point.destinationId,
@@ -89,28 +97,29 @@ const BeforeConfirm = () => {
           lat: destination.point.latitude,
           lng: destination.point.longitude,
           markerImage: '',
+          nextDestinationDistance: destination.nextDestinationDistance
         });
-        spottoSpot[index].push(destination.nextDestinationDistance);
+        if (index === 0) updatedFirstDate.push(destination);
+        else if (index === 1) updatedSecondDate.push(destination);
+        else if (index === 2) updatedThirdDate.push(destination);
       });
     });
     setCourseInfo(updatedCourseInfo);
-    setSpottoSpot(updatedSpottoSpot);
+    markerSet();
+    let lengths = travelList.length;
+    setFirstDate([...courseInfo[0]]);
+    if (lengths == 3) {
+      setSecondDate([...courseInfo[1]]);
+      setThirdDate([...courseInfo[2]]);
+    } else if (lengths == 2) setSecondDate([...courseInfo[1]]);
+    sizeSet(lengths);
   };
 
-  const updateMarker = (travelList: any) => {
-    const newArr: any[][] = [];
-    for (let i = 0; i < travelList.length; i++) {
-      for (let j = 0; j < travelList[i].length; j++) {
-        const lat = travelList[i][j].point.latitude;
-        const lng = travelList[i][j].point.longitude;
-        newArr[i][j] = { lat, lng };
-      }
-    }
-    setMarkerList(newArr);
-  };
-  useEffect(() => {
-    markerSet();
-  }, [markerList]);
+  const sizeSet = (num: number) => {
+    setSize(num);
+  }
+
+
   // 데이터에 따라 마커 이미지 설정해주는 함수
   const markerSet = () => {
     courseInfo.forEach((el: any) => {
@@ -152,18 +161,18 @@ const BeforeConfirm = () => {
         <HeaderTabs
           selectedTab={selectedTab}
           onTabChange={handleTabChange}
-          size={courseInfo.length}
+          size={size}
           letters={letters}
         />
-        <CourseMap key={key}>
+        <CourseMap>
           <TravelHeader>
             <HeaderTitle>{travelCity.city}</HeaderTitle>
             <HeaderDate>
               {travelInfo.startDate} ~ {travelInfo.endDate}
             </HeaderDate>
           </TravelHeader>
-          <TravelMap>
-            <KakaoMap dateCourse={courseInfo[selectedTab - 1].slice(0, 6)} />
+          <TravelMap key={key}>
+            <KakaoMap dateCourse={selectedDate} />
           </TravelMap>
         </CourseMap>
         <EditBody>
@@ -172,15 +181,12 @@ const BeforeConfirm = () => {
           </EditButton>
         </EditBody>
         <CourseBody>
-          {courseInfo[selectedTab - 1].map(
+          {selectedDate && selectedDate.map(
             (place: any, index: number) =>
-              index <= 5 && (
                 <CourseCard
                   key={index}
-                  course={courseInfo[`${selectedTab - 1}`][index]}
-                  spotToSpot={spottoSpot[`${selectedTab - 1}`][index - 1]}
+                  course={place}
                 />
-              ),
           )}
           <ButtonBox>
             <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>

@@ -152,7 +152,6 @@ interface DestinationDistanceResponse {
 interface TravelInfoType {
   startDate: string;
   endDate: string;
-  friendTag: number[];
   transportation: string;
   destinationIdList: number[];
 }
