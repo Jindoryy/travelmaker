@@ -12,6 +12,7 @@ import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
+import DateTrans from './pages/course/DateTrans';
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,11 @@ function App() {
         {
           path: 'course',
           children: [
+            {
+              path: 'datetrans',
+              element: <DateTrans />,
+              errorElement: <ErrorPage />,
+            },
             {
               path: 'city',
               element: <CityChoice />,
