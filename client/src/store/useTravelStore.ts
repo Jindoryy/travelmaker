@@ -90,15 +90,15 @@ const defaultTravelState = {
   friendTag: [1, 2, 3],
   transportation: 'CAR',
   destinationIdList: [125417, 125617, 125636, 133494, 132775],
-}
+};
 
 const useTravel = create<TravelState & TravelActions>((set) => ({
   travel: defaultTravelState,
   setTravel: (travel: TravelType) => {
     set({ travel });
-  }, 
+  },
   deleteTravel: () => {
     set({ travel: defaultTravelState });
-  }
-}))
+  },
+}));
 export { useTravelInfo, useTravelCity, useTravel };

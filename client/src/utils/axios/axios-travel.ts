@@ -30,9 +30,11 @@ interface DestinationArrayResponse {
   data: [
     {
       destinationId: number;
-      destinationName: string;
       destinationType: string;
+      destinationContent: string;
+      destinationName: string;
       destinationImgUrl: string;
+      likes_flag: boolean;
     },
   ];
 }
@@ -235,5 +237,4 @@ export {
   destinationDistance,
   destinationArray,
   destinationsListDetail,
-
 };

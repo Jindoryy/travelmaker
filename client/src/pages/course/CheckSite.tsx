@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { destinationDetail } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import CheckSitePictures from '../../components/course/CheckSitePictures';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useTravelInfo } from '../../store/useTravelStore';
 
 interface DestinationResponse {
   status: string;
@@ -29,7 +30,10 @@ const CheckSite = () => {
     },
   });
   const location = useLocation();
+  const navigate = useNavigate(); // 이동을 위한 hook 추가
   const [cityId, setCityId] = useState<number | undefined>(location.state?.cityId);
+
+  const { setTravelInfo } = useTravelInfo();
 
   useEffect(() => {
     if (cityId) {
@@ -64,6 +68,12 @@ const CheckSite = () => {
 
   const letters = ['명소', '식당', '카페'];
 
+  // 다음 페이지로 이동하는 함수
+  const goToNextPage = () => {
+    // 여기에 다음 페이지 경로를 넣어주세요
+    navigate('/course/beforeconfirm');
+  };
+
   return (
     <MainPageContainer>
       <StyledHeaderTabs>
@@ -75,6 +85,7 @@ const CheckSite = () => {
           //   destinationList={destinationList}
         />
       </StyledHeaderTabs>
+
       <SitePicturesContainer>
         <SitePicturesStyle>
           <CheckSitePictures
@@ -87,6 +98,7 @@ const CheckSite = () => {
             }
           />
         </SitePicturesStyle>
+        <NextPageButton onClick={goToNextPage}>완료</NextPageButton>
       </SitePicturesContainer>
     </MainPageContainer>
   );
@@ -113,12 +125,26 @@ const SitePicturesStyle = styled.div`
   margin: 10px;
   background-color: white;
   border-radius: 15px;
-  z-index: 0;
 `;
 
 const SitePicturesContainer = styled.div`
   margin-top: 20px;
   z-index: 0;
+`;
+// 추가된 버튼에 대한 스타일 지정
+const NextPageButton = styled.button`
+  position: absolute; /* 버튼의 위치를 조정하기 위해 필요 */
+  left: 5%;
+  bottom: 10%;
+  width: 90%;
+  /* right: 20px; 원하는 위치로 조정 */
+  border: none;
+  padding: 10px 20px;
+  background-color: #566cf0;
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 10;
 `;
 
 export default CheckSite;
