@@ -6,15 +6,16 @@ import styled from 'styled-components';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseEditCard from '../../components/course/CourseEditCard';
+import ChooseSite from './ChooseSite';
 
 import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Drawer from '@mui/material/Drawer';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
-// 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const EditCoursePage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,6 +29,9 @@ const EditCoursePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<any>([...firstDate]);
   const [destinationIdList, setDestinationIdList] = useState<any[]>([]);
   const [distanceList, setDistanceList] = useState<any[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedDestinationId, setSelectedDestinationId] = useState<number | null>(null);
+
   const travelSaveStore = useTravelSave();
 
   const handleTabChange = (tabNumber: number) => {
@@ -103,8 +107,24 @@ const EditCoursePage: React.FC = () => {
   }, [selectedTab, firstDate, secondDate, thirdDate, distanceList, destinationIdList]);
 
   const addButton = () => {
-    console.log('추ㅏㄱ')
+    setIsDrawerOpen(true);
   }
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
+
+  const closeDrawerIfDestinationSelected = () => {
+    if (selectedDestinationId) {
+      console.log("Selected destinationId:", selectedDestinationId);
+    }
+  };
+
+  const handleDestinationSelect = (destinationId: number) => {
+    // 선택한 목적지의 destinationId를 상태에 저장
+    setSelectedDestinationId(destinationId);
+  };
+
 
   const saveButton = () => {
     let travelInfos: any = [];
@@ -205,6 +225,9 @@ const EditCoursePage: React.FC = () => {
           <AddButton onClick={() => addButton()}>
             <AddBoxIcon />
           </AddButton>
+          <Drawer anchor="bottom" open={isDrawerOpen} onClose={closeDrawerIfDestinationSelected} PaperProps={{style:{height:'70%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}}>
+            <ChooseSite onCloseDrawer={closeDrawer} onDestinationSelect={handleDestinationSelect} />
+          </Drawer>
         </EditBody>
         <ButtonBox>
             <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
@@ -300,4 +323,6 @@ const ChooseButton = styled.button`
   border: none;
   cursor: pointer;
 `;
+
+
 export default EditCoursePage;

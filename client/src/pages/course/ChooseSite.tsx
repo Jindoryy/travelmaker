@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { destinationDetail, destinationArray } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
-import CheckSitePictures from '../../components/course/CheckSitePictures';
+import ChooseSitePictures from '../../components/course/ChooseSitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTravelInfo, useTravelSave } from '../../store/useTravelStore';
 
@@ -17,18 +17,15 @@ interface DestinationResponse {
   };
 }
 
-const ChooseSite = () => {
+const ChooseSite: React.FC<{ onDestinationSelect: (destinationId: number) => void, onCloseDrawer: () => void  }> = ({ onDestinationSelect, onCloseDrawer }) => {
   const [selectedTab, setSelectedTab] = useState(1);
   const [destinationList, setDestinationList] = useState<any>([[]]);
-  const location = useLocation();
-  const navigate = useNavigate(); // 이동을 위한 hook 추가
   const travelSave = useTravelSave();
   const [cityId, setCityId] = useState<any>(travelSave.travel.cityName);
   const [allList, setAllList] = useState<any>([[]]);
   const [sightsList, setSightsList] = useState<any>([]);
   const [foodList, setFoodList] = useState<any>([]);
   const [cafeList, setCafeList] = useState<any>([]);
-  const [likeList, SetLikeList] = useState<any>([]);
 
 
   const { setTravelInfo } = useTravelInfo();
@@ -122,8 +119,11 @@ const ChooseSite = () => {
       transportation: travelSave.travel.transportation,
       courseList: [...likes]
     })
-    // 여기에 다음 페이지 경로를 넣어주세요
-    navigate('/course/beforeconfirm');
+  };
+
+  const handleLikeChange = (likeId: number) => {
+      onDestinationSelect(likeId);
+      onCloseDrawer();
   };
 
   return (
@@ -139,11 +139,10 @@ const ChooseSite = () => {
 
       <SitePicturesContainer>
         <SitePicturesStyle>
-        {selectedTab === 1 && <CheckSitePictures array={sightsList} />}
-        {selectedTab === 2 && <CheckSitePictures array={foodList} />}
-        {selectedTab === 3 && <CheckSitePictures array={cafeList} />}
+        {selectedTab === 1 && <ChooseSitePictures array={sightsList} onlikeChange={handleLikeChange} />}
+        {selectedTab === 2 && <ChooseSitePictures array={foodList} onlikeChange={handleLikeChange} />}
+        {selectedTab === 3 && <ChooseSitePictures array={cafeList} onlikeChange={handleLikeChange} />}
         </SitePicturesStyle>
-        <NextPageButton onClick={goToNextPage}>완료</NextPageButton>
       </SitePicturesContainer>
     </MainPageContainer>
   );
@@ -151,19 +150,20 @@ const ChooseSite = () => {
 
 const StyledHeaderTabs = styled.div`
   position: fixed;
-  top: 0;
+  top: 30%;
   z-index: 1;
   background-color: white;
 `;
 
 const MainPageContainer = styled.div`
-  margin-top: 15px;
+  margin-top: 100px;
   display: flex;
   max-width: 412px;
-  width: 100vw;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
 `;
 
 const SitePicturesStyle = styled.div`
@@ -173,23 +173,10 @@ const SitePicturesStyle = styled.div`
 `;
 
 const SitePicturesContainer = styled.div`
+height: 100%; 
   margin-top: 20px;
   z-index: 0;
 `;
-// 추가된 버튼에 대한 스타일 지정
-const NextPageButton = styled.button`
-  position: absolute; /* 버튼의 위치를 조정하기 위해 필요 */
-  left: 5%;
-  bottom: 10%;
-  width: 90%;
-  /* right: 20px; 원하는 위치로 조정 */
-  border: none;
-  padding: 10px 20px;
-  background-color: #566cf0;
-  color: #fff;
-  border-radius: 10px;
-  cursor: pointer;
-  z-index: 10;
-`;
+
 
 export default ChooseSite;
