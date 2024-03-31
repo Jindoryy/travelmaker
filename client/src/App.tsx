@@ -13,6 +13,7 @@ import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
 import EditCoursePage from './pages/course/EditCoursePage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
+import MyPage from './pages/user/MyPage';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 
@@ -73,6 +74,7 @@ function App() {
           element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
+        { path: '/mypage', element: <MyPage />, errorElement: <ErrorPage /> },
         {
           path: '/editcourse',
           element: <EditCoursePage />,
