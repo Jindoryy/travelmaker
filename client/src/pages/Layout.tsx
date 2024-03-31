@@ -28,7 +28,7 @@ const OutletBox = styled(Box)`
   && {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
   }
 
   &&::-webkit-scrollbar {

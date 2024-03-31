@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import type { SVGProps } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { To, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import useUserInfo from '../../store/useUserStore';
 
 const Footer = (props: SVGProps<SVGSVGElement>) => {
   const [activeButton, setActiveButton] = useState(2);
   const navigate = useNavigate();
+  const { userInfo } = useUserInfo();
+
+  const checkLoginAndNavigate = () => {
+    if (userInfo.userId === -1 || userInfo.userId === undefined) {
+      // userId가 -1이거나 undefined면 로그인 페이지로 이동
+      navigate('/login');
+    } else {
+      navigate('/mypage');
+    }
+  };
 
   return (
     <FooterBox>
@@ -64,10 +75,7 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       <OneButton
         disableRipple
         className={activeButton === 3 ? 'active' : undefined}
-        onClick={() => {
-          setActiveButton(3);
-          // navigate('/my');
-        }}
+        onClick={() => checkLoginAndNavigate()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
