@@ -17,7 +17,7 @@ interface DestinationResponse {
   };
 }
 
-const CheckSite = () => {
+const ChooseSite = () => {
   const [selectedTab, setSelectedTab] = useState(1);
   const [destinationList, setDestinationList] = useState<any>([[]]);
   const location = useLocation();
@@ -192,4 +192,4 @@ const NextPageButton = styled.button`
   z-index: 10;
 `;
 
-export default CheckSite;
+export default ChooseSite;

@@ -24,21 +24,8 @@ interface SiteInfoProps {
     },
   ];
 }
-const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
-  const [siteInfo, setSiteInfo] = useState<SiteInfoProps>({
-    status: '',
-    data: [
-      {
-        destinationId: 0,
-        destinationType: '',
-        destinationContent: '',
-        destinationName: '',
-        destinationImgUrl: '',
-        likes_flag: false,
-      },
-    ],
-  });
-
+const CheckSitePictures: React.FC<any> = ({ array }) => {
+  const [siteInfo, setSiteInfo] = useState<any>([...array]);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null); // 이미지가 뒤집힌 인덱스를 관리
   const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
   const [selectedDestinationIds, setSelectedDestinationIds] = useState<number[]>([]); // 체크된 목적지의 destinationId 리스트
@@ -50,13 +37,11 @@ const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
   const userId = 126;
 
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 한 번만 실행
-    getSiteInfo(array);
-  }, [array]); // array가 변경될 때마다 실행
+  }, [array]);
 
   useEffect(() => {
     // basic 목적지 이미지의 수 만큼 랜덤한 높이를 생성하여 상태로 설정
-    const heights = siteInfo.data.map(() => getRandomHeight());
+    const heights = siteInfo.map(() => getRandomHeight());
     setImageHeights(heights);
   }, [siteInfo]);
 
@@ -71,47 +56,30 @@ const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
 
   const handleCheckboxChange =
     (destinationId: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
-      console.log('Liked destinationId:', destinationId);
       // 체크박스 상태 변경 시 실행되는 핸들러
       const isChecked = event.target.checked;
-
       if (isChecked) {
         // 체크된 경우 선택된 목적지 목록에 추가
         setSelectedDestinationIds((prevIds) => [...prevIds, destinationId]);
-        siteInfo.data.map((el) => {
+        array.map((el:any) => {
           if (el.destinationId == destinationId) el.likes_flag = !el.likes_flag;
-          console.log(el.likes_flag);
         });
-        // setSiteInfo()
       } else {
         // 체크 해제된 경우 선택된 목적지 목록에서 제거
         setSelectedDestinationIds((prevIds) => prevIds.filter((id) => id !== destinationId));
-        siteInfo.data.map((el) => {
+        array.map((el:any) => {
           if (el.destinationId == destinationId) el.likes_flag = !el.likes_flag;
-          console.log(el.likes_flag);
         });
       }
     };
 
-  const getSiteInfo = (array: number[]) => {
-    destinationArray(array)
-      .then((response) => {
-        const siteResponse: SiteInfoProps = {
-          status: response.data.status,
-          data: response.data.data,
-        };
-        setSiteInfo(siteResponse);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  };
+
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   return (
     <Masonry columns={2} spacing={1}>
-      {siteInfo.data.map((site, index) => (
+      {array.map((site:any, index:any) => (
         <SiteContainer key={site.destinationId}>
           <StyledCheckbox
             {...label}
@@ -121,8 +89,7 @@ const CheckSitePictures: React.FC<CheckSitePicturesProps> = ({ array }) => {
                 color: yellow[600],
               },
             }}
-            // checked={site.likes_flag}
-            // checked={site.likes_flag === false ? false : true}
+            checked={site.likes_flag}
             onChange={handleCheckboxChange(site.destinationId)}
           />
           <SiteImage

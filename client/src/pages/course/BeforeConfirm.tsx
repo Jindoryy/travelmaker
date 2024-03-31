@@ -4,7 +4,7 @@ import { travelDetail, travelSave } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseCard from '../../components/course/CourseCard';
-import { useTravelInfo, useTravelCity, useTravelSave } from '../../store/useTravelStore';
+import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
 
 import styled from 'styled-components';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -36,7 +36,6 @@ interface TravelInfoType {
 
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const BeforeConfirm = () => {
-  const { setTravelInfo, travelInfo } = useTravelInfo();
   const { setTravelCity, travelCity } = useTravelCity();
   const travelSaveStore = useTravelSave();
   const [selectedTab, setSelectedTab] = useState(1);
@@ -50,7 +49,12 @@ const BeforeConfirm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getTravel(travelInfo);
+    getTravel({
+      startDate: travelSaveStore.travel.startDate,
+      endDate: travelSaveStore.travel.endDate,
+      transportation: travelSaveStore.travel.transportation,
+      destinationIdList: travelSaveStore.travel.courseList,
+    });
   }, []);
 
 
@@ -209,7 +213,7 @@ const BeforeConfirm = () => {
           <TravelHeader>
             <HeaderTitle>{travelCity.city}</HeaderTitle>
             <HeaderDate>
-              {travelInfo.startDate} ~ {travelInfo.endDate}
+              {travelSaveStore.travel.startDate} ~ {travelSaveStore.travel.endDate}
             </HeaderDate>
           </TravelHeader>
           <TravelMap key={key}>
