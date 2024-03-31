@@ -29,6 +29,13 @@ public class ProvinceController {
     return new SuccessResponse<>(provinceService.findProvinceList());
   }
 
+  @Operation(summary = "도 추천 리스트 조회", description = "도 추천 리스트를 조회한다.")
+  @GetMapping("/recommend")
+  public SuccessResponse<List<ProvinceResponse>> getProvinceRecommend() {
+
+    return new SuccessResponse<>(provinceService.findProvinceRecommend());
+  }
+
   @Operation(summary = "도 데이터 입력 (테스트)", description = "도 데이터 입력")
   @PostMapping
   public void addProvince(

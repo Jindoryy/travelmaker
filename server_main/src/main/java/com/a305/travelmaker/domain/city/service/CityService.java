@@ -21,7 +21,7 @@ public class CityService {
   public List<CityResponse> findCityList(Integer id) {
 
     List<CityResponse> cityResponses = new ArrayList<>();
-    List<City> cities = cityRepository.findByProvinceId(id);
+    List<City> cities = cityRepository.findCitiesByProvinceIdOrderByLikes(id);
 
     for (City city : cities) {
       CityResponse response = CityResponse.builder()
@@ -31,6 +31,7 @@ public class CityService {
           .build();
       cityResponses.add(response);
     }
+
     return cityResponses;
   }
 

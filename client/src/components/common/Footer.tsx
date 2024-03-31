@@ -99,7 +99,6 @@ const FooterBox = styled(Box)`
   max-width: 412px;
   width: 100vw;
   position: fixed;
-  height: 50px;
   padding: 10px 0;
   margin: auto;
   bottom: 0;
