@@ -8,6 +8,7 @@ import com.a305.travelmaker.domain.diary.entity.Diary;
 import com.a305.travelmaker.domain.diary.entity.File;
 import com.a305.travelmaker.domain.diary.repository.DiaryRepository;
 import com.a305.travelmaker.domain.diary.repository.FileRepository;
+import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.domain.user.entity.User;
@@ -66,7 +67,7 @@ public class DiaryService {
   @Transactional
   public void saveDiary(Long userId, List<MultipartFile> files, DiaryAddRequest diaryAddRequest) {
 
-    // travelId로 여행 정보를 불러온 다음, 관련 엔티티(User, Travel)랑 같이 저장, 그리고 파일 저장
+    // travelId로 여행 정보를 불러온 다음, 관련 엔티티(User, Travel)랑 같이 저장, traveStatus변경(BEFORE_DIARY인지 AFTER_DIARY인지), 그리고 파일 저장
     Travel travel = travelRepository.findById(diaryAddRequest.getTravelId()).get();
     User user = userRepository.findById(userId).get();
 
@@ -77,6 +78,9 @@ public class DiaryService {
             .text(diaryAddRequest.getText())
             .build()
     );
+
+    travel.setStatus(DiaryStatus.AFTER_DIARY);
+    travelRepository.save(travel);
 
     for (MultipartFile file : files) {
 

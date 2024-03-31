@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 
+//최적경로 보기 위한 TravelInfo
 interface TravelInfoType {
   startDate: string;
   endDate: string;
-  friendTag: number[];
   transportation: string;
   destinationIdList: number[];
 }
@@ -17,6 +17,7 @@ interface TravelInfoActions {
   deleteTravelInfo: () => void;
 }
 
+//도, 시 저장하기 위한 TravelCity
 interface TravelCityType {
   cityId: number;
   city: string;
@@ -32,6 +33,25 @@ interface TravelCityActions {
   setTravelCity: (travelCity: TravelCityType) => void;
 }
 
+//최종 여행 저장 위한 Type
+interface TravelType {
+  cityName: string;
+  startDate: string;
+  endDate: string;
+  friendTag: number[];
+  transportation: string;
+  courseList: number[];
+}
+interface TravelState {
+  travel: TravelType;
+}
+
+interface TravelActions {
+  setTravel: (travel: TravelType) => void;
+  deleteTravel: () => void;
+}
+
+//도, 시 저장 위한 변수
 const defaultCityState = {
   cityId: 212,
   city: '강릉',
@@ -46,22 +66,41 @@ const useTravelCity = create<TravelCityState & TravelCityActions>((set) => ({
   },
 }));
 
-const defaultState = {
+//최적 경로 위한 변수
+const defaultCourseState = {
   startDate: '2024-03-20',
   endDate: '2024-03-22',
-  friendTag: [1, 2, 3],
   transportation: 'CAR',
   destinationIdList: [125417, 125617, 125636, 133494, 132775],
 };
 
 const useTravelInfo = create<TravelInfoState & TravelInfoActions>((set) => ({
-  travelInfo: defaultState,
+  travelInfo: defaultCourseState,
   setTravelInfo: (travelInfo: TravelInfoType) => {
     set({ travelInfo });
   },
   deleteTravelInfo: () => {
-    set({ travelInfo: defaultState });
+    set({ travelInfo: defaultCourseState });
   },
 }));
 
-export { useTravelInfo, useTravelCity };
+//최종 여행 저장 변수
+const defaultTravelState = {
+  cityName: '212',
+  startDate: '2024-03-20',
+  endDate: '2024-03-22',
+  friendTag: [0],
+  transportation: 'CAR',
+  courseList: [125417, 125617, 125636, 133494, 132775],
+};
+
+const useTravelSave = create<TravelState & TravelActions>((set) => ({
+  travel: defaultTravelState,
+  setTravel: (travel: TravelType) => {
+    set({ travel });
+  },
+  deleteTravel: () => {
+    set({ travel: defaultTravelState });
+  },
+}));
+export { useTravelInfo, useTravelCity, useTravelSave };

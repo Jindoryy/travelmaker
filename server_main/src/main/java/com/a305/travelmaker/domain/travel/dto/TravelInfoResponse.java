@@ -1,6 +1,6 @@
 package com.a305.travelmaker.domain.travel.dto;
 
-import jakarta.persistence.Column;
+import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,14 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TravelListResponse {
+public class TravelInfoResponse {
 
-  private Integer travelId;
   private String cityName;
   private LocalDate startDate;
   private LocalDate endDate;
-  private List<String> friendNameList;
-  private String imgUrl;
-  private DiaryStatus status;
-  private Integer diaryId;
+  private Transportation transportation;
+  private List<List<DestinationDistanceResponse>> travelList;
+  ;
 }

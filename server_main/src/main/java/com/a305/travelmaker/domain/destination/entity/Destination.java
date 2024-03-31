@@ -2,6 +2,7 @@ package com.a305.travelmaker.domain.destination.entity;
 
 import com.a305.travelmaker.domain.city.entity.City;
 import com.a305.travelmaker.domain.destination.dto.DestinationType;
+import com.a305.travelmaker.domain.likes.entity.Likes;
 import com.a305.travelmaker.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,10 +16,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Destination {
 
   @Id

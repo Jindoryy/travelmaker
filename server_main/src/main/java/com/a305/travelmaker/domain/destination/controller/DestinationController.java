@@ -57,7 +57,7 @@ public class DestinationController {
 //    String token = request.getHeader("Authorization").substring(7);
 //    Long userId = tokenProvider.getUserIdFromToken(token);
 
-    return new SuccessResponse<>(destinationService.findDestinationList(126L));
+    return new SuccessResponse<>(destinationService.findDestinationList(125L));
   }
 
   @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")

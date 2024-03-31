@@ -11,8 +11,11 @@ import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
+import EditCoursePage from './pages/course/EditCoursePage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import MyPage from './pages/user/MyPage';
+import DateTransChoice from './pages/course/DateTransChoice';
+import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 
 function App() {
   const router = createBrowserRouter([
@@ -29,6 +32,16 @@ function App() {
         {
           path: 'course',
           children: [
+            {
+              path: 'datetrans',
+              element: <DateTransChoice />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'alonetogether',
+              element: <AloneTogetherChoice />,
+              errorElement: <ErrorPage />,
+            },
             {
               path: 'city',
               element: <CityChoice />,
@@ -61,9 +74,10 @@ function App() {
           element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
+        { path: '/mypage', element: <MyPage />, errorElement: <ErrorPage /> },
         {
-          path: '/mypage',
-          element: <MyPage />,
+          path: '/editcourse',
+          element: <EditCoursePage />,
           errorElement: <ErrorPage />,
         },
       ],
