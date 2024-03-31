@@ -1,8 +1,55 @@
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
 import SitePictures from '../../components/common/SitePictures';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { kakaoauthentication } from '../../utils/axios/axios-user';
+
+interface UserResponse {
+  status: string;
+  data: {
+    userId: number;
+    nickName: string;
+    profileUrl: string;
+    status: string;
+    tokenType: string;
+    accessToken: string;
+    expiresIn: number;
+    refreshToken: string;
+    refreshTokenExpiresIn: number;
+  };
+}
 
 const MainPage = () => {
+  const [userInfoList, setUserInfoList] = useState<UserResponse>({
+    status: '',
+    data: {
+      userId: 0,
+      nickName: '',
+      profileUrl: '',
+      status: '',
+      tokenType: '',
+      accessToken: '',
+      expiresIn: 0,
+      refreshToken: '',
+      refreshTokenExpiresIn: 0,
+    },
+  });
+  const location = useLocation();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await kakaoauthentication('your_code_here'); // Replace "your_code_here" with the actual code
+        setUserInfoList(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <MainPageContainer>
       <LogoLargeContainer>
