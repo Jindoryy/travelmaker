@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useTravelInfo } from '../../store/useTravelStore';
 import styled from 'styled-components';
 
-import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 
@@ -12,10 +12,37 @@ interface CourseEditCardProps {
   spotToSpot: number;
   provided: DraggableProvided;
   image: any;
+  distance: number;
+  idx: number;
 }
 
-const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, provided, image }) => {
+const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, provided, image, distance, idx }) => {
   const [markerImage, setMarkerImage] = useState(image);
+  const { travelInfo } = useTravelInfo();
+  const transportation = travelInfo.transportation;
+  const time =
+  {
+    WALK: 12,
+    BUS: 5,
+    CAR: 2,
+  }[transportation] || 5;
+  const [toGoTime, setToGoTime] = useState<number>(Math.round(distance * time));
+
+  useEffect(() => {
+    let realTime = getTime(distance);
+    if (realTime == 0) realTime = 1;
+    setToGoTime(realTime);
+  }, [])
+
+  const getTime = (distance: number) => {
+    return Math.round(distance * time);
+  };
+
+  useEffect(() => {
+    let realTime = getTime(distance);
+    if (realTime == 0) realTime = 1;
+    setToGoTime(realTime);
+  }, [distance]);
 
   useEffect(() => {
     setMarkerImage(image);
@@ -38,6 +65,11 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, pro
                 : '카페'}
           </DetailCategory>
           <DetailTitle>{course.destinationName}</DetailTitle>
+          {idx <= 4? (
+                <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime>
+              ) : (
+                <></>
+              )}
         </CardDetail>
       </CardBox>
       <MoveCard {...provided.dragHandleProps}>
@@ -48,6 +80,7 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, spotToSpot, pro
 };
 
 const CardContainer = styled.div`
+  max-width: 380px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,6 +153,17 @@ const DetailTitle = styled(Box)`
     width: 90%;
     font-family: 'Pretendard';
     font-size: 20px;
+    font-weight: bold;
+    color: ${(props) => props.theme.maintext};
+    padding: 5px;
+  }
+`;
+
+const DetailTime = styled(Box)`
+  && {
+    width: 90%;
+    font-family: 'Pretendard';
+    font-size: 12px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
     padding: 5px;

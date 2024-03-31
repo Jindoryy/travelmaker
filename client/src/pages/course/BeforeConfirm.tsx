@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { travelDetail } from '../../utils/axios/axios-travel';
+import { travelDetail, travelSave } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseCard from '../../components/course/CourseCard';
-import { useTravelInfo, useTravelCity } from '../../store/useTravelStore';
+import { useTravelInfo, useTravelCity, useTravelSave } from '../../store/useTravelStore';
 
 import styled from 'styled-components';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -38,6 +38,7 @@ interface TravelInfoType {
 const BeforeConfirm = () => {
   const { setTravelInfo, travelInfo } = useTravelInfo();
   const { setTravelCity, travelCity } = useTravelCity();
+  const travelSaveStore = useTravelSave();
   const [selectedTab, setSelectedTab] = useState(1);
   const [courseInfo, setCourseInfo] = useState<any>([[]]);
   const [firstDate, setFirstDate] = useState<any>([]);
@@ -51,16 +52,13 @@ const BeforeConfirm = () => {
   useEffect(() => {
     getTravel(travelInfo);
   }, []);
-  
-  useEffect(() => {
-    setSelectedDate([...firstDate]);
-  }, [courseInfo])
+
 
   useEffect(() => {
-    if (selectedTab == 2) setSelectedDate([...thirdDate]);
-    else if (selectedTab == 1) setSelectedDate([...secondDate]);
-    else setSelectedDate([...firstDate]);
-  }, [selectedTab])
+    if (selectedTab == 3) setSelectedDate([...thirdDate]);
+    else if (selectedTab == 2) setSelectedDate([...secondDate]);
+    else if (selectedTab == 1) setSelectedDate([...firstDate]);
+  }, [selectedTab, courseInfo])
 
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
@@ -146,15 +144,58 @@ const BeforeConfirm = () => {
     console.log(courseInfo);
     navigate('/editcourse', {
       state: {
-        courseInfo: courseInfo,
+        firstDate: firstDate,
+        secondDate: secondDate,
+        thirdDate: thirdDate,
+        size: size,
       },
     });
   };
 
   const saveButton = () => {
-    console.log('일정 저장');
-    console.log(courseInfo);
-  };
+    let travelInfos: any = [];
+    if (size == 3) {
+      travelInfos = ([[...firstDate.map((el:any) => {
+        return el.destinationId
+      })], [...secondDate.map((el:any) => {
+        return el.destinationId
+      })], [...thirdDate.map((el:any) => {
+        return el.destinationId
+      })]]);
+    } else if (size == 2) {
+      travelInfos = ([[...firstDate.map((el:any) => {
+        return el.destinationId
+      })], [...secondDate.map((el:any) => {
+        return el.destinationId
+      })]]);
+    } else {
+      travelInfos = ([[...firstDate.map((el:any) => {
+        return el.destinationId
+      })]]);
+    }
+    saveTravel(travelInfos);
+  }
+  const saveTravel = (travelInfos: any) => {
+    const travelSaveInfo = {
+      cityName: travelSaveStore.travel.cityName,
+      startDate: travelSaveStore.travel.startDate,
+      endDate: travelSaveStore.travel.endDate,
+      friendIdList: travelSaveStore.travel.friendTag,
+      transportation: travelSaveStore.travel.transportation,
+      courseList: travelInfos
+    }
+    travelSave(travelSaveInfo)
+    .then((response:any) => {
+      if (response.status == 200) {
+        alert("여행을 저장했습니다!");
+      }
+    })
+    .catch((err:any) => {
+      console.error(err)
+    });
+    // navigate('/my');
+    
+  }
   return (
     <StyledEngineProvider>
       <BoxContainer>
