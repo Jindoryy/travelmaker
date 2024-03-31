@@ -5,13 +5,15 @@ interface ProfileProps {
   scrolled: boolean;
   scrollHeight: number;
   fontSize: string;
+  userState: string;
 }
 
 interface ProfileImageProps {
   size: string;
 }
 
-const Profile = () => {
+const Profile = ({ fontSize, userState }: ProfileProps) => {
+  // userState props로 변경
   const [scrolled, setScrolled] = useState(false);
   const [scrollHeight, setScrollHeight] = useState(0);
 
@@ -34,25 +36,11 @@ const Profile = () => {
     };
   }, []);
 
-  const [userState, setUserState] = useState<'beforeCourse' | 'beforeTravel' | 'onTravel'>(
-    'beforeCourse',
-  );
-
-  useEffect(() => {
-    const states: Array<'beforeCourse' | 'beforeTravel' | 'onTravel'> = [
-      'beforeCourse',
-      'beforeTravel',
-      'onTravel',
-    ];
-    const randomIndex = Math.floor(Math.random() * states.length);
-    setUserState(states[randomIndex]);
-  }, []);
-
   const getProfileContent = () => {
     switch (userState) {
-      case 'onTravel':
+      case 'ON_COURSE':
         return '즐거운 ㅇㅇ여행 ㅇ일차';
-      case 'beforeTravel':
+      case 'AFTER_COURSE':
         return '두근두근 기대되는 여행';
       default:
         return '이런 곳은 어떠세요?';
@@ -61,9 +49,9 @@ const Profile = () => {
 
   const getProfileImage = () => {
     switch (userState) {
-      case 'beforeTravel':
+      case 'AFTER_COURSE':
         return require('../../assets/image/KissingCat.png');
-      case 'beforeCourse':
+      case 'BEFORE_COURSE':
         return require('../../assets/image/WorldMap.png');
       default:
         return require('../../assets/image/AirplaneDeparture.png');
@@ -99,12 +87,14 @@ const Profile = () => {
       scrolled={scrolled}
       scrollHeight={scrollHeight}
       fontSize={getProfileContentFontSize()}
+      userState={userState}
     >
       <StyledProfileImage src={getProfileImage()} alt="Profile" size={getProfileSize()} />
       <StyledProfileContent
         scrolled={scrolled}
         scrollHeight={scrollHeight}
         fontSize={getProfileContentFontSize()}
+        userState={userState}
       >
         {getProfileContent()}
       </StyledProfileContent>
