@@ -3,52 +3,22 @@ import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
 import SitePictures from '../../components/common/SitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { kakaoauthentication } from '../../utils/axios/axios-user';
-
-interface UserResponse {
-  status: string;
-  data: {
-    userId: number;
-    nickName: string;
-    profileUrl: string;
-    status: string;
-    tokenType: string;
-    accessToken: string;
-    expiresIn: number;
-    refreshToken: string;
-    refreshTokenExpiresIn: number;
-  };
-}
+import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
 
 const MainPage = () => {
-  const [userInfoList, setUserInfoList] = useState<UserResponse>({
-    status: '',
-    data: {
-      userId: 0,
-      nickName: '',
-      profileUrl: '',
-      status: '',
-      tokenType: '',
-      accessToken: '',
-      expiresIn: 0,
-      refreshToken: '',
-      refreshTokenExpiresIn: 0,
-    },
-  });
-  const location = useLocation();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await kakaoauthentication('your_code_here'); // Replace "your_code_here" with the actual code
-        setUserInfoList(response.data);
-        console.log(response);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
 
-    fetchData();
-  }, []);
+  useEffect(() => {
+    // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
+    getUserStatus()
+      .then((response) => {
+        setUserStatus(response.data); // 상태를 업데이트
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error.message); // 오류 메시지 설정
+      });
+  }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
 
   return (
     <MainPageContainer>
@@ -59,7 +29,12 @@ const MainPage = () => {
       </LogoLargeContainer>
 
       <StyledProfile>
-        <Profile />
+        <Profile
+          scrolled={false}
+          scrollHeight={0}
+          fontSize={''}
+          userState={userStatus?.data.status || ''}
+        />
       </StyledProfile>
 
       <SitePicturesContainer>
