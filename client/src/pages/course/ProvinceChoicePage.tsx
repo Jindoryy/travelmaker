@@ -10,7 +10,7 @@ const ProvinceChoicePage = () => {
         <ProvinceHeader />
         <ProvinceButtonSlide />
         <ProvinceWideButtonList />
-        <FooterMargin />
+        {/* <FooterMargin /> */}
       </PageContainer>
     </>
   );
@@ -24,7 +24,7 @@ const PageContainer = styled.div`
   flex-direction: column;
   padding: 10px;
   height: 100%;
-  overflow: hidden;
+  min-height: 100vh;
   padding: 0;
   margin: 0;
 `;
