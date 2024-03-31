@@ -148,7 +148,7 @@ interface DestinationDistanceResponse {
   ];
 }
 
-//여행 저장시 필요한 여행 타입
+//여행 생성시 필요한 여행 타입(최적 경로 받기)
 interface TravelInfoType {
   startDate: string;
   endDate: string;
@@ -156,6 +156,18 @@ interface TravelInfoType {
   destinationIdList: number[];
 }
 
+//여행 최종 저장시 필요한 타입
+interface TravelSaveType {
+  cityName: string;
+  startDate: string;
+  endDate: string;
+  transportation: string;
+  courseList: number[];
+}
+
+interface TravelSaveResponse {
+  success: boolean;
+}
 //시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
   return oauthInstance.get<CityResponse>(`city/${provinceId}`, {
@@ -207,7 +219,7 @@ const destinationArray = (destinationsIdList: number[]) => {
   });
 };
 
-//장소 좋아요
+//장소 좋아요 
 const likeDestination = (
   userId: number,
   destinationId: number,
@@ -222,10 +234,17 @@ const likeDestination = (
 const destinationDistance = (destinationsIdList: number[]) => {
   return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
     params: {
-      destinationsIdList: destinationsIdList,
+      destinationsIdList: destinationsIdList.join(',')
     },
   });
 };
+
+//여행 최종 저장하기
+const travelSave = (travelInfo: TravelSaveType) => {
+  console.log(travelInfo)
+  return oauthInstance.post<TravelSaveResponse>('travel/info', travelInfo);
+}
+
 export {
   cityDetail,
   travelDetail,
@@ -235,5 +254,5 @@ export {
   destinationDistance,
   destinationArray,
   destinationsListDetail,
-
+  travelSave
 };

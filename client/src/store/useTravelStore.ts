@@ -35,11 +35,12 @@ interface TravelCityActions {
 
 //최종 여행 저장 위한 Type
 interface TravelType {
+  cityName: string;
   startDate: string;
   endDate: string;
   friendTag: number[];
   transportation: string;
-  destinationIdList: number[];
+  courseList: number[];
 }
 interface TravelState {
   travel: TravelType;
@@ -85,14 +86,15 @@ const useTravelInfo = create<TravelInfoState & TravelInfoActions>((set) => ({
 
 //최종 여행 저장 변수
 const defaultTravelState = {
+  cityName: '212',
   startDate: '2024-03-20',
   endDate: '2024-03-22',
-  friendTag: [1, 2, 3],
+  friendTag: [0],
   transportation: 'CAR',
-  destinationIdList: [125417, 125617, 125636, 133494, 132775],
+  courseList: [125417, 125617, 125636, 133494, 132775],
 }
 
-const useTravel = create<TravelState & TravelActions>((set) => ({
+const useTravelSave = create<TravelState & TravelActions>((set) => ({
   travel: defaultTravelState,
   setTravel: (travel: TravelType) => {
     set({ travel });
@@ -101,4 +103,4 @@ const useTravel = create<TravelState & TravelActions>((set) => ({
     set({ travel: defaultTravelState });
   }
 }))
-export { useTravelInfo, useTravelCity, useTravel };
+export { useTravelInfo, useTravelCity, useTravelSave };
