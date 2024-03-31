@@ -16,6 +16,7 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       // userId가 -1이거나 undefined면 로그인 페이지로 이동
       navigate('/login');
     } else {
+      setActiveButton(3);
       navigate('/mypage');
     }
   };
