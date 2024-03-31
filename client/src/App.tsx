@@ -88,7 +88,7 @@ const StyledContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100vw;
-  height: 90vh;
+  height: 100vh;
   overscroll-behavior-y: none;
 `;
 
