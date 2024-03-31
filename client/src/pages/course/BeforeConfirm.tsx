@@ -51,16 +51,13 @@ const BeforeConfirm = () => {
   useEffect(() => {
     getTravel(travelInfo);
   }, []);
-  
-  useEffect(() => {
-    setSelectedDate([...firstDate]);
-  }, [courseInfo])
+
 
   useEffect(() => {
-    if (selectedTab == 2) setSelectedDate([...thirdDate]);
-    else if (selectedTab == 1) setSelectedDate([...secondDate]);
-    else setSelectedDate([...firstDate]);
-  }, [selectedTab])
+    if (selectedTab == 3) setSelectedDate([...thirdDate]);
+    else if (selectedTab == 2) setSelectedDate([...secondDate]);
+    else if (selectedTab == 1) setSelectedDate([...firstDate]);
+  }, [selectedTab, courseInfo])
 
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
