@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -69,6 +69,7 @@ public class Travel extends BaseEntity {
   @Column(length = 1000)
   private String friends;
 
+  @Setter
   @Enumerated(EnumType.STRING)
   private DiaryStatus status = DiaryStatus.BEFORE_DIARY;
 }
