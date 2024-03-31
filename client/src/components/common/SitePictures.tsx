@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { siteListDetail, likeDestination } from '../../utils/axios/axios-travel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useUserInfo from '../../store/useUserStore';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';
 // import MasonryItem from '@mui/lab/MasonryItem'; // MasonryItem 추가
 //좋아요 체크박스
@@ -69,9 +67,9 @@ const SitePictures = () => {
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null); // 이미지가 뒤집힌 인덱스를 관리
   const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
   const location = useLocation();
-  // const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
-  // const userId = userInfo.userId; // userId 가져오기
-  const userId = 126;
+  const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
+  const userId = userInfo.userId; // userId 가져오기
+  // const userId = 126;
   useEffect(() => {
     // 컴포넌트가 마운트될 때 한 번만 실행
     getSiteInfoList();

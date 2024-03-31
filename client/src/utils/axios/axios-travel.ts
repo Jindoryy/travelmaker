@@ -30,9 +30,11 @@ interface DestinationArrayResponse {
   data: [
     {
       destinationId: number;
-      destinationName: string;
       destinationType: string;
+      destinationContent: string;
+      destinationName: string;
       destinationImgUrl: string;
+      likes_flag: boolean;
     },
   ];
 }
@@ -219,7 +221,7 @@ const destinationArray = (destinationsIdList: number[]) => {
   });
 };
 
-//장소 좋아요 
+//장소 좋아요
 const likeDestination = (
   userId: number,
   destinationId: number,
@@ -234,16 +236,16 @@ const likeDestination = (
 const destinationDistance = (destinationsIdList: number[]) => {
   return oauthInstance.get<DestinationDistanceResponse>('destination/distance', {
     params: {
-      destinationsIdList: destinationsIdList.join(',')
+      destinationsIdList: destinationsIdList.join(','),
     },
   });
 };
 
 //여행 최종 저장하기
 const travelSave = (travelInfo: TravelSaveType) => {
-  console.log(travelInfo)
+  console.log(travelInfo);
   return oauthInstance.post<TravelSaveResponse>('travel/info', travelInfo);
-}
+};
 
 export {
   cityDetail,
@@ -254,5 +256,5 @@ export {
   destinationDistance,
   destinationArray,
   destinationsListDetail,
-  travelSave
+  travelSave,
 };
