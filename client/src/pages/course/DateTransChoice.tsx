@@ -2,14 +2,10 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 
-const DateTrans = () => {
+const DateTransChoice = () => {
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const saveButton = () => {
-    console.log('일정 저장');
-  };
-
-  const choices = [
+  const transportations = [
     {
       image:
         'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Bus.png',
@@ -38,6 +34,11 @@ const DateTrans = () => {
     }
   };
 
+  const saveButton = () => {
+    //기간, 이동수단 선택했는지 검사 후 저장
+    console.log('일정 저장');
+  };
+
   return (
     <>
       <PageContainer>
@@ -51,14 +52,14 @@ const DateTrans = () => {
         <TransContainer>
           <TransInfoText>이동수단 선택</TransInfoText>
           <TransChoiceContainer>
-            {choices.map((choice, index) => (
+            {transportations.map((transportations, index) => (
               <TransChoice
                 key={index}
                 onClick={() => onTabChange(index + 1)}
                 className={selectedTab === index + 1 ? 'active' : ''}
               >
-                <img src={choice.image} alt={choice.alt} width="75" height="75" />
-                <div>{choice.label}</div>
+                <img src={transportations.image} alt={transportations.alt} width="75" height="75" />
+                <div>{transportations.label}</div>
               </TransChoice>
             ))}
           </TransChoiceContainer>
@@ -80,20 +81,20 @@ const PageContainer = styled.div`
   align-items: center;
 `;
 const CalendarContainer = styled.div`
-  background-color:gold;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px
+  margin-bottom: 30px;
+  flex-basis: 45%;
 `;
 const CalendarInfoContainer = styled.div`
-  margin-bottom: 10px;
   text-align: center;
+  margin-bottom: 20px;
 `;
 const CalendarInfoText1 = styled.div`
   font-size: 24px;
   font-weight: bold;
-  margin-bottom:5px
+  margin-bottom:5px;
 `;
   const CalendarInfoText2 = styled.div`
   font-size: 16px;
@@ -101,11 +102,12 @@ const CalendarInfoText1 = styled.div`
 `;
 const TransContainer = styled.div`
   text-align: center;
+  flex-basis: 20%;
 `;
 const TransInfoText = styled.div`
   font-size: 24px;
   font-weight: bold;
-  margin-bottom:5px
+  margin-bottom: 20px;
 `;
 const TransChoiceContainer = styled.div`
   display: flex;
@@ -148,4 +150,4 @@ const ChooseButton = styled.button`
   border: none;
   cursor: pointer;
 `;
-export default DateTrans;
+export default DateTransChoice;

@@ -13,7 +13,8 @@ import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
 import EditCoursePage from './pages/course/EditCoursePage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
-import DateTrans from './pages/course/DateTrans';
+import DateTransChoice from './pages/course/DateTransChoice';
+import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 
 function App() {
   const router = createBrowserRouter([
@@ -32,7 +33,12 @@ function App() {
           children: [
             {
               path: 'datetrans',
-              element: <DateTrans />,
+              element: <DateTransChoice />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'alonetogether',
+              element: <AloneTogetherChoice />,
               errorElement: <ErrorPage />,
             },
             {
