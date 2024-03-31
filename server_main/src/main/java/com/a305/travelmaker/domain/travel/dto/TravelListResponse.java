@@ -21,4 +21,5 @@ public class TravelListResponse {
   private List<String> friendNameList;
   private String imgUrl;
   private DiaryStatus status;
+  private Integer diaryId;
 }
