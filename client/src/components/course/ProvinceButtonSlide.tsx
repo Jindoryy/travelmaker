@@ -125,7 +125,6 @@ const Box = styled.div`
 `;
 
 const GudieText = styled.div`
-  font-family: 'Black Han Sans', sans-serif;
   font-size: larger;
   padding: 0 0 10px 10px;
 `;

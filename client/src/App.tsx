@@ -12,6 +12,7 @@ import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
+import MyPage from './pages/user/MyPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -58,6 +59,11 @@ function App() {
         {
           path: '/login/oauth2/code/kakao',
           element: <OauthLandingPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/mypage',
+          element: <MyPage />,
           errorElement: <ErrorPage />,
         },
       ],

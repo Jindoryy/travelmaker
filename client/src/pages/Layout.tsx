@@ -9,19 +9,41 @@ const Layout = () => {
       <OutletBox>
         <Outlet />
       </OutletBox>
-      <Footer />
+      <FooterBox>
+        <Footer />
+      </FooterBox>
     </ContainerBox>
   );
 };
 
 const ContainerBox = styled(Box)`
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 `;
 
 const OutletBox = styled(Box)`
-  padding-bottom: 80px;
+  && {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    /* overflow-y: scroll; */
+  }
+
+  &&::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const FooterBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  weight: 100vw;
+  height: 3vh;
+  margin-top: 8vh;
+  background-color: #fff;
 `;
 export default Layout;
