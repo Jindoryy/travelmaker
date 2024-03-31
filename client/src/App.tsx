@@ -11,6 +11,7 @@ import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
 import OauthLandingPage from './pages/user/OauthLandingPage';
+import EditCoursePage from './pages/course/EditCoursePage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import DateTrans from './pages/course/DateTrans';
 
@@ -66,6 +67,11 @@ function App() {
           element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
+        {
+          path: '/editcourse',
+          element: <EditCoursePage />,
+          errorElement: <ErrorPage />,
+        },
       ],
     },
   ]);
@@ -88,7 +94,7 @@ const StyledContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100vw;
-  height: 90vh;
+  height: 100vh;
   overscroll-behavior-y: none;
 `;
 
