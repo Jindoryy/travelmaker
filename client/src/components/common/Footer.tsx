@@ -107,9 +107,9 @@ const FooterBox = styled(Box)`
   align-items: center;
   max-width: 412px;
   width: 100vw;
-  position: fixed;
   padding: 10px 0;
   margin: auto;
+  position: fixed;
   bottom: 0;
   background-color: white;
   z-index: 99;
