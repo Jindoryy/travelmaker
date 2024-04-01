@@ -149,7 +149,7 @@ const CalendarContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 30px 0px 30px;
+  margin: 10px;
   padding-bottom: 30px;
   border-radius: 8px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -181,7 +181,7 @@ const TransContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px 0px 50px;
+  margin: 10px 0px 20px;
   border-radius: 8px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 `;

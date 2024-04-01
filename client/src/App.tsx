@@ -16,6 +16,7 @@ import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import MyPage from './pages/user/MyPage';
 import DiaryWrite from './pages/user/DiaryWrite';
 import DiaryDetail from './pages/user/DiaryDetail';
+import DiaryUpdate from './pages/user/DiaryUpdate';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 import MakeGroup from './pages/course/MakeGroup';
@@ -103,6 +104,12 @@ function App() {
           //나중에 파라미터 추가
           path: '/diarywrite',
           element: <DiaryWrite />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          //나중에 파라미터 추가
+          path: '/diaryupdate',
+          element: <DiaryUpdate />,
           errorElement: <ErrorPage />,
         },
         {
