@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const ScheduleStatusButton: React.FC<StatusProps> = ({ data }) => {
-  const { travelId, status } = data;
+  const { travelId, status, diaryId } = data;
   console.log(travelId);
   const navigate = useNavigate();
 
   const handleClick = () => {
     switch (status) {
       case '코스보기':
-        navigate(`/course/detail/${travelId}`, {
+        navigate(`/course/detail`, {
           state: {
             travelId: travelId,
           },
@@ -25,7 +25,7 @@ const ScheduleStatusButton: React.FC<StatusProps> = ({ data }) => {
       case '일기보기':
         navigate(`/diary/detail`, {
           state: {
-            diaryId: travelId,
+            diaryId: diaryId,
           },
         });
         break;
@@ -46,6 +46,7 @@ export default ScheduleStatusButton;
 interface StatusData {
   travelId: number;
   status: '코스보기' | '일기작성' | '일기보기';
+  diaryId: number;
 }
 interface StatusProps {
   data: StatusData;
