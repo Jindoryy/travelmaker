@@ -104,11 +104,10 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({
 };
 
 const CardContainer = styled.div`
-  max-width: 380px;
+  width: 380px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 95%;
   height: 100px;
   padding: 5px;
   margin: 5px;

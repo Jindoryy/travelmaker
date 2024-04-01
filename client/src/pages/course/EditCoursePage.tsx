@@ -290,99 +290,97 @@ const EditCoursePage: React.FC = () => {
     navigate('/mypage');
   };
   return (
-    <StyledEngineProvider>
-      <BoxContainer>
-        <HeaderTabs
-          selectedTab={selectedTab}
-          onTabChange={handleTabChange}
-          size={size}
-          letters={letters}
-        />
-        <CourseMap>
-          <TravelHeader>
-            <HeaderTitle>{travelCity.city}</HeaderTitle>
-            <HeaderDate>
-              {travelInfo.startDate} ~ {travelInfo.endDate}
-            </HeaderDate>
-          </TravelHeader>
-          <TravelMap id="map">
-            <KakaoMap dateCourse={selectedDate} />
-          </TravelMap>
-        </CourseMap>
-        <EditBody>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable
-              droppableId={`course-edit-droppable-${selectedTab}`}
-              key={`course-edit-droppable-${selectedTab}`}
-            >
-              {(provided: any) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {selectedDate &&
-                    selectedDate.map((place: any, index: number) => (
-                      <Draggable
-                        key={
-                          place.destinationId ? place.destinationId.toString() : index.toString()
-                        }
-                        draggableId={
-                          place.destinationId ? place.destinationId.toString() : index.toString()
-                        }
-                        index={index}
-                      >
-                        {(provided: any) => (
-                          <CourseEditCard
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onDelete={handleDelete}
-                            course={place}
-                            provided={provided}
-                            image={place.markerImage}
-                            distance={place.nextDestinationDistance}
-                            idx={index}
-                            size={selectedDate.length - 1}
-                          />
-                        )}
-                      </Draggable>
-                    ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <AddButton>
-            {selectedDate.length < 8 ? (
-              <AddBoxOutlinedIcon
-                onClick={() => addButton()}
-                style={{ width: '35px', height: '35px', color: 'rgba(86, 108, 240, 0.8)' }}
-              />
-            ) : (
-              <></>
-            )}
-          </AddButton>
-          <Drawer
-            anchor="bottom"
-            open={isDrawerOpen}
-            onClose={closeDrawerIfDestinationSelected}
-            PaperProps={{
-              style: {
-                height: '70%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-            }}
+    <BoxContainer>
+      <HeaderTabs
+        selectedTab={selectedTab}
+        onTabChange={handleTabChange}
+        size={size}
+        letters={letters}
+      />
+      <CourseMap>
+        <TravelHeader>
+          <HeaderTitle>{travelCity.city}</HeaderTitle>
+          <HeaderDate>
+            {travelInfo.startDate} ~ {travelInfo.endDate}
+          </HeaderDate>
+        </TravelHeader>
+        <TravelMap id="map">
+          <KakaoMap dateCourse={selectedDate} />
+        </TravelMap>
+      </CourseMap>
+      <EditBody>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable
+            droppableId={`course-edit-droppable-${selectedTab}`}
+            key={`course-edit-droppable-${selectedTab}`}
           >
-            <ChooseSite onCloseDrawer={closeDrawer} onDestinationSelect={handleDestinationSelect} />
-          </Drawer>
-        </EditBody>
-        <ButtonBox>
-          <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
-        </ButtonBox>
-      </BoxContainer>
-    </StyledEngineProvider>
+            {(provided: any) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {selectedDate &&
+                  selectedDate.map((place: any, index: number) => (
+                    <Draggable
+                      key={place.destinationId ? place.destinationId.toString() : index.toString()}
+                      draggableId={
+                        place.destinationId ? place.destinationId.toString() : index.toString()
+                      }
+                      index={index}
+                    >
+                      {(provided: any) => (
+                        <CourseEditCard
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          onDelete={handleDelete}
+                          course={place}
+                          provided={provided}
+                          image={place.markerImage}
+                          distance={place.nextDestinationDistance}
+                          idx={index}
+                          size={selectedDate.length - 1}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <AddButton>
+          {selectedDate.length < 8 ? (
+            <AddBoxOutlinedIcon
+              onClick={() => addButton()}
+              style={{ width: '35px', height: '35px', color: 'rgba(86, 108, 240, 0.8)' }}
+            />
+          ) : (
+            <></>
+          )}
+        </AddButton>
+        <Drawer
+          anchor="bottom"
+          open={isDrawerOpen}
+          onClose={closeDrawerIfDestinationSelected}
+          PaperProps={{
+            style: {
+              height: '70%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          }}
+        >
+          <ChooseSite onCloseDrawer={closeDrawer} onDestinationSelect={handleDestinationSelect} />
+        </Drawer>
+      </EditBody>
+      <ButtonBox>
+        <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
+      </ButtonBox>
+    </BoxContainer>
   );
 };
 
 const BoxContainer = styled(Box)`
+  max-width: 412px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -391,7 +389,7 @@ const BoxContainer = styled(Box)`
 
 const CourseMap = styled.div`
   max-width: 400px;
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -430,7 +428,7 @@ const TravelMap = styled.div`
 
 const EditBody = styled.div`
   max-width: 412px;
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
