@@ -4,7 +4,7 @@ import { destinationDetail, destinationArray } from '../../utils/axios/axios-tra
 import HeaderTabs from '../../components/common/HeaderTabs';
 import CheckSitePictures from '../../components/course/CheckSitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useTravelInfo, useTravelSave } from '../../store/useTravelStore';
+import { useTravelInfo, useTravelSave, useTravelCity } from '../../store/useTravelStore';
 
 interface DestinationResponse {
   status: string;
@@ -23,7 +23,8 @@ const CheckSite = () => {
   const location = useLocation();
   const navigate = useNavigate(); // 이동을 위한 hook 추가
   const travelSave = useTravelSave();
-  const [cityId, setCityId] = useState<any>(travelSave.travel.cityName);
+  const travelCity = useTravelCity();
+  const [cityId, setCityId] = useState<any>(travelCity.travelCity.cityId);
   const [allList, setAllList] = useState<any>([[]]);
   const [sightsList, setSightsList] = useState<any>([]);
   const [foodList, setFoodList] = useState<any>([]);
@@ -181,7 +182,6 @@ const NextPageButton = styled.button`
   position: absolute; /* 버튼의 위치를 조정하기 위해 필요 */
   bottom: 13%;
   width: 380px;
-  /* right: 20px; 원하는 위치로 조정 */
   border: none;
   padding: 10px 20px;
   background-color: #566cf0;
@@ -189,6 +189,7 @@ const NextPageButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   z-index: 10;
+  margin-bottom: 50px;
 `;
 
 export default CheckSite;

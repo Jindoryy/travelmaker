@@ -19,6 +19,7 @@ import DiaryDetail from './pages/user/DiaryDetail';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 import MakeGroup from './pages/course/MakeGroup';
+import CourseDetailPage from './pages/course/CourseDetailPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -68,6 +69,11 @@ function App() {
             {
               path: 'beforeconfirm',
               element: <BeforeConfirm />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'detail/:travelId',
+              element: <CourseDetailPage />,
               errorElement: <ErrorPage />,
             },
           ],
