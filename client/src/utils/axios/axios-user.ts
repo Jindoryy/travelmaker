@@ -15,9 +15,11 @@ const getDiaryList = (): Promise<AxiosResponse<DiaryResponse>> => {
 const deleteDiary = (travelId: number) => {
   return oauthInstance.delete(`travel/${travelId}`)
 }
+const updateExtraUserInfo = (data: UpdateExtraUserInfoRequest): Promise<AxiosResponse<UpdateExtraUserInfoResponse>> => {
+  return oauthInstance.patch<UpdateExtraUserInfoResponse>('user/update-extra-info', data);
+}
 
-export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary };
-
+export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo };
 interface ApiResponse<T> {
   status: string;
   data: T;
@@ -55,4 +57,15 @@ interface DiaryData {
   startDate: string;
   endDate: string;
   imgUrls: string;
+}
+
+interface UpdateExtraUserInfoRequest {
+  userId: number;
+  gender: 'MALE' | 'FEMALE';
+  birth: string;
+}
+
+interface UpdateExtraUserInfoResponse {
+  status: string;
+  data: any;
 }
