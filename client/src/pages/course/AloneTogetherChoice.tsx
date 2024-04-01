@@ -29,9 +29,8 @@ const AloneTogetherChoice = () => {
 };
 const PageContainer = styled.div`
   width:412px;
-  height: 735px;
+  height: 100%;
   background-color:#566cf038;
-  padding: 50px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
