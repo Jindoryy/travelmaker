@@ -22,7 +22,7 @@ const DiaryAlert: React.FC<DiaryAlertProps> = ({ handleDisplayAlert }) => {
       <Overlay>
         <Container>
           <CloseIcon onClick={() => handleDisplayAlert()} />
-          <Div5>
+          <Div5 onClick={handleTouch}>
             <Img loading="lazy" src={getImage()} />
             <Div2>
               <Div3>일기쓰기</Div3>
@@ -100,4 +100,6 @@ const Div4 = styled.div`
 
 const Div5 = styled.div`
   display: flex;
+  cursor: pointer;
+  user-select: none;
 `;
