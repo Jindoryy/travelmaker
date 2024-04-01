@@ -5,15 +5,25 @@ import { updateExtraUserInfo } from '../../utils/axios/axios-user';
 import useUserInfo from '../../store/useUserStore';
 import Swal from 'sweetalert2';
 import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
+import FormLabel from '@mui/material/FormLabel';
+
+import dayjs, { Dayjs } from 'dayjs';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { koKR } from '@mui/x-date-pickers/locales';
+import 'dayjs/locale/ko';
 
 interface ExtraInfoModalProps {
   handleDisplayModal: (event?: MouseEvent) => void; // 이벤트 객체를 선택적으로 받도록 수정
 }
 
 const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) => {
-  const [birthDate, setBirthDate] = useState<string>('');
+  // const [birthDate, setBirthDate] = useState<string>('');
   const [gender, setGender] = useState<'MALE' | 'FEMALE' | ''>('');
   const { userInfo } = useUserInfo();
+  const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 이벤트 방지
@@ -27,7 +37,7 @@ const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) =
       return;
     }
 
-    const data = { userId: userInfo.userId, gender: gender as 'MALE' | 'FEMALE', birth: birthDate };
+    const data = { userId: userInfo.userId, gender: gender as 'MALE' | 'FEMALE', birth: birthDate.format('YYYY-MM-DD') };
 
     updateExtraUserInfo(data)
       .then((response) => {
@@ -42,31 +52,48 @@ const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) =
       });
   };
 
+  const theme = createTheme(
+    {
+      palette: {
+        primary: { main: '#566CF0' },
+      },
+    },
+    koKR,
+  );
+
   return (
     <>
       <Overlay>
         <ModalContainer>
           <ModalContentContainer>
             <ModalTitle>추가 정보 입력</ModalTitle>
-            <HorizontalDivider />
             <ModalBodyContainer>
               <Form onSubmit={handleSubmit}>
-                <Label>생년월일</Label>
-                <Input
+                <FormLabel id="birth-calendar" style={{marginBottom:'-5px'}}>생년월일</FormLabel>
+                {/* <Input
                   type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
-                />
-                <Label>성별</Label>
-                {/* <ButtonGroup>
-                  <Button type="button" onClick={() => setGender('MALE')} gender="MALE">
-                    남성
-                  </Button>
-                  <Button type="button" onClick={() => setGender('FEMALE')} gender="FEMALE">
-                    여성
-                  </Button>
-                </ButtonGroup> */}
+                  style={{marginBottom:'10px'}}
+                /> */}
 
+                <ThemeProvider theme={theme}>
+                  <LocalizationProvider 
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="ko"
+                    localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
+                    dateFormats={{month:'M월', year:'YYYY년', normalDate:'YYYY년 M월 D일'}}
+                  >
+                      <MobileDatePicker
+                        views={['year', 'month', 'day']}
+                        value={birthDate}
+                        onChange={(newValue) => setBirthDate(newValue)}
+                        sx={{ mb: 1 }}
+                      />
+                  </LocalizationProvider>
+                </ThemeProvider>
+
+                <FormLabel id="gender-radio" style={{marginBottom:'-12px'}}>성별</FormLabel>
                 <RadioGroup value={gender} onChange={(e) => setGender(e.target.value as 'MALE' | 'FEMALE' | '')}>
                   <FormControlLabel value="MALE" control={<Radio />} label="남성" />
                   <FormControlLabel value="FEMALE" control={<Radio />} label="여성" />
@@ -127,12 +154,12 @@ const ModalContentContainer = styled.div`
   align-items: stretch;
 `;
 const ModalBodyContainer = styled.div`
-  padding: 10px 10px;
+  padding: 10px 20px;
 `;
-const ModalTitle = styled.h2`
+const ModalTitle = styled.div`
   font-weight: bold;
   padding: 0 1rem;
-  margin: 15px 0 15px 0;
+  margin: 15px auto;
   color: #36454f;
   align-self: flex-start;
 `;
@@ -178,7 +205,7 @@ const Button = styled.button<{ gender?: string }>`
 const ButtonSubmit = styled.button`
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
-  margin: 10px;
+  margin: 10px 0px;
   padding: 10px;
   border-radius: 8px;
   font-family: 'Pretendard', sans-serif;
