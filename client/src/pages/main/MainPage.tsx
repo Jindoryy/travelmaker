@@ -1,8 +1,25 @@
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
 import SitePictures from '../../components/common/SitePictures';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
 
 const MainPage = () => {
+  const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
+
+  useEffect(() => {
+    // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
+    getUserStatus()
+      .then((response) => {
+        setUserStatus(response.data); // 상태를 업데이트
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error.message); // 오류 메시지 설정
+      });
+  }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
+
   return (
     <MainPageContainer>
       <LogoLargeContainer>
@@ -12,7 +29,12 @@ const MainPage = () => {
       </LogoLargeContainer>
 
       <StyledProfile>
-        <Profile />
+        <Profile
+          scrolled={false}
+          scrollHeight={0}
+          fontSize={''}
+          userState={userStatus?.data.status || ''}
+        />
       </StyledProfile>
 
       <SitePicturesContainer>

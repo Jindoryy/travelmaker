@@ -20,7 +20,7 @@ const ContainerBox = styled(Box)`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -28,12 +28,13 @@ const OutletBox = styled(Box)`
   && {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   &&::-webkit-scrollbar {
     display: none;
   }
+  flex: 1;
 `;
 
 const FooterBox = styled(Box)`
@@ -41,8 +42,7 @@ const FooterBox = styled(Box)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  weight: 100vw;
-  height: 3vh;
+  height: 2vh;
   margin-top: 8vh;
   background-color: #fff;
 `;
