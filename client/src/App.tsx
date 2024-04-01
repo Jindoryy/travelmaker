@@ -14,6 +14,8 @@ import OauthLandingPage from './pages/user/OauthLandingPage';
 import EditCoursePage from './pages/course/EditCoursePage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import MyPage from './pages/user/MyPage';
+import DiaryWrite from './pages/user/DiaryWrite';
+import DiaryDetail from './pages/user/DiaryDetail';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 import MakeGroup from './pages/course/MakeGroup';
@@ -80,7 +82,23 @@ function App() {
           element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
-        { path: '/mypage', element: <MyPage />, errorElement: <ErrorPage /> },
+        { 
+          path: '/mypage', 
+          element: <MyPage />, 
+          errorElement: <ErrorPage />,
+        },
+        {
+          //나중에 파라미터 추가
+          path: '/diarydetail',
+          element: <DiaryDetail />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          //나중에 파라미터 추가
+          path: '/diarywrite',
+          element: <DiaryWrite />,
+          errorElement: <ErrorPage />,
+        },
         {
           path: '/editcourse',
           element: <EditCoursePage />,

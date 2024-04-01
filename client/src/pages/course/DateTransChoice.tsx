@@ -141,9 +141,6 @@ const DateTransChoice = () => {
 };
 const PageContainer = styled.div`
   width:412px;
-  height:100vh;
-  // background-color:#566cf038;
-  padding: 70px 0px;
   display: flex;
   flex-direction: column;
   align-items: center;

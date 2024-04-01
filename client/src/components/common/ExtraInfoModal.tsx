@@ -176,15 +176,14 @@ const Button = styled.button<{ gender?: string }>`
 `;
 
 const ButtonSubmit = styled.button`
-  padding: 0.5rem 1rem;
+  background-color: ${(props) => props.theme.main};
+  color: ${(props) => props.theme.subtext};
+  margin: 10px;
+  padding: 10px;
   border-radius: 8px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
   border: none;
-  background-color: #36454f;
-  color: ${(props) => props.color || 'black'};
-  transition: all 0.2s ease-in-out;
-  &:hover {
-    color: #36454f;
-    background-color: white;
-    outline: 1px solid #36454f;
-  }
+  cursor: pointer;
 `;
