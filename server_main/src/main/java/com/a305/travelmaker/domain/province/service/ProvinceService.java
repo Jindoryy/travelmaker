@@ -31,6 +31,24 @@ public class ProvinceService {
           .build();
       provinceResponses.add(response);
     }
+    
+    return provinceResponses;
+  }
+
+  public List<ProvinceResponse> findProvinceRecommend() {
+
+    List<ProvinceResponse> provinceResponses = new ArrayList<>();
+    List<Province> provinces = provinceRepository.findTopFiveLikedProvinces();
+
+    for (Province province : provinces) {
+      ProvinceResponse response = ProvinceResponse.builder()
+          .provinceId(province.getId())
+          .provinceName(province.getName())
+          .provinceUrl(province.getImgUrl())
+          .build();
+      provinceResponses.add(response);
+    }
+
     return provinceResponses;
   }
 

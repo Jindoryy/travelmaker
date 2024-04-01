@@ -6,6 +6,8 @@ import com.a305.travelmaker.domain.destination.dto.DestinationRecommend;
 import com.a305.travelmaker.domain.destination.dto.DestinationRecommendResponse;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
+import com.a305.travelmaker.domain.likes.entity.Likes;
+import com.a305.travelmaker.domain.likes.repository.LikesRepository;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.config.RestConfig;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -30,6 +33,7 @@ public class DestinationService {
   private final RestConfig restConfig;
   private final DestinationRepository destinationRepository;
   private final HarversineUtil harversineUtil;
+  private final LikesRepository likesRepository;
   private Point prevPoint, currentPoint;
   @Value("${bigdata.server.domain}")
   private String bigdataServerDomain;
@@ -113,12 +117,15 @@ public class DestinationService {
       for (Integer id : destinationIdList) {
 
         Destination destination = destinationRepository.findById(id).get();
+        Optional<Likes> likesOptional = likesRepository.findByUserIdAndDestinationId(125L, destination.getId());
+        Boolean likesFlag = likesOptional.map(Likes::getFlag).orElse(false);
 
         DestinationListResponse destinationListResponse = DestinationListResponse.builder()
             .destinationId(destination.getId())
             .destinationName(destination.getName())
             .destinationContent(destination.getContent())
             .destinationImgUrl(destination.getImgUrl())
+            .likes_flag(likesFlag)
             .build();
 
         destinationListResponseList.add(destinationListResponse);

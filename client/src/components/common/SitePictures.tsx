@@ -3,10 +3,7 @@ import styled from 'styled-components';
 import { siteListDetail, likeDestination } from '../../utils/axios/axios-travel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useUserInfo from '../../store/useUserStore';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';
-// import MasonryItem from '@mui/lab/MasonryItem'; // MasonryItem 추가
 //좋아요 체크박스
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
@@ -69,7 +66,7 @@ const SitePictures = () => {
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null); // 이미지가 뒤집힌 인덱스를 관리
   const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
   const location = useLocation();
-  // const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
+  const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
   // const userId = userInfo.userId; // userId 가져오기
   const userId = 126;
   useEffect(() => {
@@ -91,12 +88,10 @@ const SitePictures = () => {
   const handleCheckboxChange =
     (destinationId: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
+        // likeDestination(userId, destinationId);
         try {
           // 좋아요 누른 경우 해당 destinationId를 likeDestination으로 전송
           const response = await likeDestination(userId, destinationId);
-          // console.log(userId);
-          // console.log('Liked destinationId:', destinationId);
-          // console.log('Like response:', response.data);
         } catch (error) {
           console.error('Error occurred while liking destination:', error);
         }

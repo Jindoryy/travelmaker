@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTravelInfo } from '../../store/useTravelStore';
 import styled from 'styled-components';
 
 import Box from '@mui/material/Box';
-//걸어서 1km: 12분, 차타고 1km: 2분, 대중교통 1km: 5분 ?
-const CourseCard = ({ course, spotToSpot }: any) => {
-  const [toGoTime, setToGoTime] = useState<number>(spotToSpot);
+
+const CourseCard = ({ course }: any) => {
+  const [toGoTime, setToGoTime] = useState<number>(course.nextDestinationDistance);
   const { travelInfo } = useTravelInfo();
   const transportation = travelInfo.transportation;
   const time =
@@ -21,33 +21,40 @@ const CourseCard = ({ course, spotToSpot }: any) => {
     return Math.round(distance * time);
   };
   useEffect(() => {
-    const distance = getTwoDecimalPlaces(spotToSpot);
+    const distance = getTwoDecimalPlaces(course.nextDestinationDistance);
     let realTime = getTime(distance);
     if (realTime == 0) realTime = 1;
     setToGoTime(realTime);
   }, [course]);
+
   return (
-    <CardContainer>
-      <NumberCircle>
-        <CircleImage src={course.markerImage} />
-      </NumberCircle>
-      <CardBox>
-        <CardDetail>
-          <DetailDesc>
-            <DetailCategory>
-              {course.destinationType == 'sights'
-                ? '명소'
-                : course.destinationType == 'food'
-                  ? '식당'
-                  : '카페'}
-            </DetailCategory>
-            <DetailTitle>{course.destinationName}</DetailTitle>
-          </DetailDesc>
-          {spotToSpot ? <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime> : <></>}
-        </CardDetail>
-        <CardImage src={course.destinationImgUrl}></CardImage>
-      </CardBox>
-    </CardContainer>
+    
+        <CardContainer key={course}>
+          <NumberCircle>
+            <CircleImage src={course.markerImage} />
+          </NumberCircle>
+          <CardBox>
+            <CardDetail>
+              <DetailDesc>
+                <DetailCategory>
+                  {course.destinationType === 'sights'
+                    ? '명소'
+                    : course.destinationType === 'food'
+                    ? '식당'
+                    : '카페'}
+                </DetailCategory>
+                <DetailTitle>{course.destinationName}</DetailTitle>
+              </DetailDesc>
+              {course.nextDestinationDistance ? (
+                <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime>
+              ) : (
+                <></>
+              )}
+            </CardDetail>
+            <CardImage src={course.destinationImgUrl}></CardImage>
+          </CardBox>
+        </CardContainer>
+
   );
 };
 
