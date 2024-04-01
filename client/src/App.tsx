@@ -16,6 +16,8 @@ import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import MyPage from './pages/user/MyPage';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
+import MakeGroup from './pages/course/MakeGroup';
+import CourseDetailPage from './pages/course/CourseDetailPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -43,6 +45,11 @@ function App() {
               errorElement: <ErrorPage />,
             },
             {
+              path: 'makegroup',
+              element: <MakeGroup />,
+              errorElement: <ErrorPage />,
+            },
+            {
               path: 'city',
               element: <CityChoice />,
               errorElement: <ErrorPage />,
@@ -60,6 +67,11 @@ function App() {
             {
               path: 'beforeconfirm',
               element: <BeforeConfirm />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'detail/:travelId',
+              element: <CourseDetailPage />,
               errorElement: <ErrorPage />,
             },
           ],

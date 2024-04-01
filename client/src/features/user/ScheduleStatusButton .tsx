@@ -8,7 +8,11 @@ const ScheduleStatusButton: React.FC<StatusProps> = ({ data }) => {
   const handleClick = () => {
     switch (status) {
       case '코스보기':
-        navigate(`/course/detail/${travelId}`);
+        navigate(`/course/detail/${travelId}`, {
+          state: {
+            travelId: travelId,
+          },
+        });
         break;
       case '일기작성':
         navigate(`/diary/write/${travelId}`);

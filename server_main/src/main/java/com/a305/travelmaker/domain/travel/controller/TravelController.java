@@ -1,8 +1,8 @@
 package com.a305.travelmaker.domain.travel.controller;
 
 import com.a305.travelmaker.domain.login.dto.UserDetail;
-import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
-import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.AfterCourseResponse;
+import com.a305.travelmaker.domain.travel.dto.OnCourseResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelInfoRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelInfoResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
@@ -61,14 +61,14 @@ public class TravelController {
 
   @Operation(summary = "여행 정보 조회 (메인 페이지 - 코스후)", description = "여행 정보를 조회한다.")
   @GetMapping("/main-before/{id}")
-  public SuccessResponse<TravelBeforeResponse> getTravelBeforeDetail(@PathVariable Integer id) {
+  public SuccessResponse<AfterCourseResponse> getTravelBeforeDetail(@PathVariable Integer id) {
 
     return new SuccessResponse<>(travelService.findTravelBeforeDetail(id));
   }
 
   @Operation(summary = "여행 정보 조회 (메인 페이지 - 여행중)", description = "여행 정보를 조회한다.")
   @GetMapping("/main-after/{id}")
-  public SuccessResponse<TravelAfterResponse> getTravelAfterDetail(@PathVariable Integer id) {
+  public SuccessResponse<OnCourseResponse> getTravelAfterDetail(@PathVariable Integer id) {
 
     return new SuccessResponse<>(travelService.findTravelAfterDetail(id));
   }

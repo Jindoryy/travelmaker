@@ -3,6 +3,7 @@ package com.a305.travelmaker.domain.user.service;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,26 +28,30 @@ public class SchedulingService {
 
         // 검색된 여행 목록을 순회합니다.
         for (Travel travel : travels) {
-            // 여행이 종료된 경우
-            if (today.isAfter(travel.getEndDate())) {
-                // 여행 참여자의 사용자 상태를 업데이트합니다.
+            LocalDate twoWeeksBeforeStartDate = travel.getStartDate().minusWeeks(2);
+            // 여행 시작일의 2주 전부터 여행 시작일 사이에 현재 날짜가 있다면
+            if (!today.isBefore(twoWeeksBeforeStartDate) && today.isBefore(travel.getStartDate())) {
                 updateUserStatusAfterCourse(travel.getUser().getId());
-                // 여행 친구들의 사용자 상태도 함께 업데이트합니다.
-                String[] friendIds = travel.getFriends().split(", ");
+                String[] friendIds = travel.getFriends().split(",");
                 for (String friendId : friendIds) {
                     updateUserStatusAfterCourse(Long.parseLong(friendId));
                 }
+            } else if (today.isAfter(travel.getEndDate())) {
+                updateUserStatusBeforeCourse(travel.getUser().getId());
+                String[] friendIds = travel.getFriends().split(",");
+                for (String friendId : friendIds) {
+                    updateUserStatusBeforeCourse(Long.parseLong(friendId));
+                }
             } else if (today.isAfter(travel.getStartDate()) || today.equals(travel.getStartDate())) {
-                // 여행이 시작된 경우 또는 오늘이 여행의 시작일인 경우
-                // 사용자의 상태를 "ON_COURSE"로 업데이트합니다.
                 updateUserStatusOnCourse(travel.getUser().getId());
-                String[] friendIds = travel.getFriends().split(", ");
+                String[] friendIds = travel.getFriends().split(",");
                 for (String friendId : friendIds) {
                     updateUserStatusOnCourse(Long.parseLong(friendId));
                 }
             }
         }
     }
+
 
     // 사용자의 상태를 "AFTER_COURSE"로 업데이트하는 메서드
     private void updateUserStatusAfterCourse(Long userId) {
@@ -57,4 +62,10 @@ public class SchedulingService {
     private void updateUserStatusOnCourse(Long userId) {
         userService.updateUserStatusOnCourse(userId);
     }
+
+    private void updateUserStatusBeforeCourse(Long userId) {
+        userService.updateUserStatusBeforeCourse(userId);
+    }
 }
+
+
