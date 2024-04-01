@@ -182,7 +182,6 @@ const NextPageButton = styled.button`
   position: absolute; /* 버튼의 위치를 조정하기 위해 필요 */
   bottom: 13%;
   width: 380px;
-  /* right: 20px; 원하는 위치로 조정 */
   border: none;
   padding: 10px 20px;
   background-color: #566cf0;
@@ -190,7 +189,7 @@ const NextPageButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   z-index: 10;
-  margin-bottom: 10px;
+  margin-bottom: 50px;
 `;
 
 export default CheckSite;
