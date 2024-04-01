@@ -89,20 +89,20 @@ function App() {
           element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
-        { 
-          path: '/mypage', 
-          element: <MyPage />, 
+        {
+          path: '/mypage',
+          element: <MyPage />,
           errorElement: <ErrorPage />,
         },
         {
           //나중에 파라미터 추가
-          path: '/diarydetail',
+          path: '/diary/detail',
           element: <DiaryDetail />,
           errorElement: <ErrorPage />,
         },
         {
           //나중에 파라미터 추가
-          path: '/diarywrite',
+          path: '/diary/write',
           element: <DiaryWrite />,
           errorElement: <ErrorPage />,
         },

@@ -185,7 +185,7 @@ interface TravelDetailDestination {
   destinationType: string;
   destinationImgUrl: string;
 }
-interface TravelDetailData {
+export interface TravelDetailData {
   cityName: string;
   startDate: string;
   endDate: string;
@@ -281,6 +281,10 @@ const getTravelDetail = (travelId: any) => {
   return oauthInstance.get<TravelDetailResponse>(`travel/${numberOfTravel}`);
 };
 
+const getTravelDetailDiary = (travelId: Number) => {
+  return oauthInstance.get<TravelDetailResponse>(`travel/${travelId}`);
+};
+
 export {
   cityDetail,
   travelDetail,
@@ -292,4 +296,6 @@ export {
   destinationsListDetail,
   travelSave,
   getTravelDetail,
+  getTravelDetailDiary,
+  TravelDetailResponse,
 };
