@@ -1,8 +1,6 @@
 package com.a305.travelmaker.domain.travel.dto;
 
-import com.a305.travelmaker.domain.course.dto.CourseInfo;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TravelAfterResponse {
+public class AfterCourseResponse {
 
-  private String cityName;
   private LocalDate startDate;
-  private List<CourseInfo> courseInfoList;
+  private Integer travelId;
+  private String cityName;
+  private String imgUrl;
 }

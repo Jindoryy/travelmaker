@@ -9,8 +9,8 @@ import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.memo.repository.MemoRepository;
-import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
-import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
+import com.a305.travelmaker.domain.travel.dto.AfterCourseResponse;
+import com.a305.travelmaker.domain.travel.dto.OnCourseResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.domain.travel.service.TravelService;
@@ -37,7 +37,6 @@ public class UserService {
   private final TravelService travelService;
   private final TravelRepository travelRepository;
   private final CityRepository cityRepository;
-  private final MemoRepository memoRepository;
   private final DestinationRepository destinationRepository;
 
 
@@ -53,38 +52,20 @@ public class UserService {
     // 유저 조회가 성공했으모로 diaryCheck에서는 유저 유효성 검증 안합니다.
     boolean diaryCheck = travelService.checkUserDiaryStatus(userId);
 
-    TravelBeforeResponse travelBeforeResponse = null;
-    TravelAfterResponse travelAfterResponse = null;
+    AfterCourseResponse afterCourseResponse = null;
+    OnCourseResponse onCourseResponse = null;
     UserStatus userStatus = user.getStatus();
 
-    if (userStatus.equals(UserStatus.BEFORE_COURSE)) {
+    // 여행 중인 경우
+    if (userStatus.equals(UserStatus.ON_COURSE)) {
 
-      List<Travel> travelList = user.getTravelList();
-      if (!travelList.isEmpty()) {
-
-        List<Travel> travelBeforeList = travelRepository.findTravelWithStartDateBeforeTodayByUserId(
-            user.getId(), LocalDate.now());
-        if (!travelBeforeList.isEmpty()) {
-
-          Travel travel = travelBeforeList.get(0);
-          City city = cityRepository.findByName(travel.getCityName());
-
-          travelBeforeResponse = TravelBeforeResponse.builder()
-              .travelId(travel.getId())
-              .cityName(travel.getCityName())
-              .imgUrl(city.getImgUrl())
-              .build();
-        }
-      }
-    } else if (userStatus.equals(UserStatus.ON_COURSE)) {
-
-      List<Travel> travelAfterList = travelRepository.findTravelByUserIdAndTodayBetweenStartDateAndEndDate(
+      Travel afterCourse = travelRepository.findSingleTravelByUserIdAndTodayBetweenStartDateAndEndDate(
           user.getId(), LocalDate.now());
-      if (!travelAfterList.isEmpty()) {
 
-        Travel travel = travelAfterList.get(0);
+      if (afterCourse != null) {
+
         List<CourseInfo> courseInfoList = new ArrayList<>();
-        List<Course> courseList = travel.getCourseList();
+        List<Course> courseList = afterCourse.getCourseList();
 
         // 오늘 날짜 구하기
         LocalDate today = LocalDate.now();
@@ -112,10 +93,27 @@ public class UserService {
           }
         }
 
-        travelAfterResponse = TravelAfterResponse.builder()
-            .cityName(travel.getCityName())
-            .startDate(travel.getStartDate())
+        onCourseResponse = OnCourseResponse.builder()
+            .cityName(afterCourse.getCityName())
+            .startDate(afterCourse.getStartDate())
             .courseInfoList(courseInfoList)
+            .build();
+      }
+    }
+    // 여행 계획이 있는 경우
+    else if (userStatus.equals(UserStatus.AFTER_COURSE)) {
+
+      Travel afterCourse = travelRepository.findNextTravelByUserId(userId, LocalDate.now());
+
+      if (afterCourse != null) {
+
+        City city = cityRepository.findByName(afterCourse.getCityName());
+
+        afterCourseResponse = AfterCourseResponse.builder()
+            .startDate(afterCourse.getStartDate())
+            .travelId(afterCourse.getId())
+            .cityName(afterCourse.getCityName())
+            .imgUrl(city.getImgUrl())
             .build();
       }
     }
@@ -123,8 +121,8 @@ public class UserService {
     // 유저 상태 반환 DTO 빌드
     UserStatusResponse response = UserStatusResponse.builder()
         .status(user.getStatus().toString())
-        .travelBeforeResponse(travelBeforeResponse)
-        .travelAfterResponse(travelAfterResponse)
+        .afterCourseResponse(afterCourseResponse)
+        .onCourseResponse(onCourseResponse)
         .birthCheck(birthCheck)
         .genderCheck(genderCheck)
         .diaryCheck(diaryCheck)
