@@ -97,7 +97,6 @@ const FeatureContainer = styled.div`
   margin-top: 10px;
   display: flex;
   align-items: center;
-  cursor: pointer;
   user-select: none;
   justify-content: space-between;
   border-radius: 15px;
@@ -115,6 +114,7 @@ const FeatureThumnail = styled.img`
 
 const TextContainer = styled.div`
   width: 180px;
+  height: 100px;
 `;
 
 const TopConatiner = styled.div`
@@ -139,12 +139,11 @@ const TextDate = styled.div`
 const TextFreind = styled.div`
   font-size: 12px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 12px;
 `;
 
 const ButtonPlace = styled.div`
   width: 170px;
   display: flex;
-  align-items: center;
   justify-content: flex-end;
 `;
