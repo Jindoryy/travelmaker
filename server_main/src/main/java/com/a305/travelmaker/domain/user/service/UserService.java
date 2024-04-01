@@ -8,7 +8,6 @@ import com.a305.travelmaker.domain.course.dto.CourseInfo;
 import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
-import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
@@ -65,54 +64,60 @@ public class UserService {
 
         List<Travel> travelBeforeList = travelRepository.findTravelWithStartDateBeforeTodayByUserId(
             user.getId(), LocalDate.now());
-        Travel travel = travelBeforeList.get(0);
-        City city = cityRepository.findByName(travel.getCityName());
+        if (!travelBeforeList.isEmpty()) {
 
-        travelBeforeResponse = TravelBeforeResponse.builder()
-            .travelId(travel.getId())
-            .cityName(travel.getCityName())
-            .imgUrl(city.getImgUrl())
-            .build();
+          Travel travel = travelBeforeList.get(0);
+          City city = cityRepository.findByName(travel.getCityName());
+
+          travelBeforeResponse = TravelBeforeResponse.builder()
+              .travelId(travel.getId())
+              .cityName(travel.getCityName())
+              .imgUrl(city.getImgUrl())
+              .build();
+        }
       }
     } else if (userStatus.equals(UserStatus.ON_COURSE)) {
 
       List<Travel> travelAfterList = travelRepository.findTravelByUserIdAndTodayBetweenStartDateAndEndDate(
           user.getId(), LocalDate.now());
-      Travel travel = travelAfterList.get(0);
-      List<CourseInfo> courseInfoList = new ArrayList<>();
-      List<Course> courseList = travel.getCourseList();
+      if (!travelAfterList.isEmpty()) {
 
-      // 오늘 날짜 구하기
-      LocalDate today = LocalDate.now();
+        Travel travel = travelAfterList.get(0);
+        List<CourseInfo> courseInfoList = new ArrayList<>();
+        List<Course> courseList = travel.getCourseList();
 
-      for (Course course : courseList) {
+        // 오늘 날짜 구하기
+        LocalDate today = LocalDate.now();
 
-        // 코스의 시작 날짜 가져오기
-        LocalDate startDate = course.getStartDate();
+        for (Course course : courseList) {
 
-        // 오늘 날짜인 경우
-        if (startDate.isEqual(today)) {
+          // 코스의 시작 날짜 가져오기
+          LocalDate startDate = course.getStartDate();
 
-          String[] destinationList = course.getDestinationList().split(",");
+          // 오늘 날짜인 경우
+          if (startDate.isEqual(today)) {
 
-          for (String destinationId : destinationList) {
+            String[] destinationList = course.getDestinationList().split(",");
 
-            Integer dId = Integer.parseInt(destinationId);
-            Destination destination = destinationRepository.findById(dId).get();
+            for (String destinationId : destinationList) {
 
-            courseInfoList.add(CourseInfo.builder()
-                .destinationName(destination.getName())
-                .destinationImgUrl(destination.getImgUrl())
-                .build());
+              Integer dId = Integer.parseInt(destinationId);
+              Destination destination = destinationRepository.findById(dId).get();
+
+              courseInfoList.add(CourseInfo.builder()
+                  .destinationName(destination.getName())
+                  .destinationImgUrl(destination.getImgUrl())
+                  .build());
+            }
           }
         }
-      }
 
-      travelAfterResponse = TravelAfterResponse.builder()
-          .cityName(travel.getCityName())
-          .startDate(travel.getStartDate())
-          .courseInfoList(courseInfoList)
-          .build();
+        travelAfterResponse = TravelAfterResponse.builder()
+            .cityName(travel.getCityName())
+            .startDate(travel.getStartDate())
+            .courseInfoList(courseInfoList)
+            .build();
+      }
     }
 
     // 유저 상태 반환 DTO 빌드
