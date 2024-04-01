@@ -145,6 +145,13 @@ public class UserService {
     userRepository.save(user);
   }
 
+    public void updateUserStatusBeforeCourse(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(
+            ErrorCode.USER_NOT_FOUND_ERROR));
+        user.updateStatus(UserStatus.BEFORE_COURSE);
+        userRepository.save(user);
+    }
+
   public void updateGenderAndBirth(UserExtraInfoDto userInfo) {
     // 성별과 생년월일 중 누락된 정보가 있으면 에러
     if (userInfo.getGender() == null || userInfo.getBirth() == null) {
