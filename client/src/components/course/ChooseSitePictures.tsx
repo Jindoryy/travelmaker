@@ -5,21 +5,15 @@ import Masonry from '@mui/lab/Masonry';
 import Checkbox from '@mui/material/Checkbox';
 import { yellow } from '@mui/material/colors';
 
-
 const ChooseSitePictures: React.FC<any> = ({ array, onlikeChange }) => {
   const [siteInfo, setSiteInfo] = useState<any>([...array]);
-  const [flippedIndex, setFlippedIndex] = useState<number | null>(null); 
-  const [imageHeights, setImageHeights] = useState<number[]>([]); 
-
-
-  useEffect(() => {
-  }, [array]);
+  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
+  const [imageHeights, setImageHeights] = useState<number[]>([]);
 
   useEffect(() => {
-    // basic 목적지 이미지의 수 만큼 랜덤한 높이를 생성하여 상태로 설정
-    const heights = siteInfo.map(() => getRandomHeight());
+    const heights = array.map(() => getRandomHeight());
     setImageHeights(heights);
-  }, [siteInfo]);
+  }, [array]);
 
   const getRandomHeight = () => {
     return Math.floor(Math.random() * 200) + 150; // 200부터 400까지의 랜덤한 값 생성
@@ -30,14 +24,11 @@ const ChooseSitePictures: React.FC<any> = ({ array, onlikeChange }) => {
     setFlippedIndex(index === flippedIndex ? null : index);
   };
 
-
-
-
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   return (
     <Masonry columns={2} spacing={1}>
-      {array.map((site:any, index:any) => (
+      {array.map((site: any, index: any) => (
         <SiteContainer key={site.destinationId}>
           <StyledCheckbox
             {...label}
@@ -60,16 +51,24 @@ const ChooseSitePictures: React.FC<any> = ({ array, onlikeChange }) => {
 
           {index === flippedIndex && (
             <Back onClick={() => handleImageClick(index)}>
-              <BackText>
-                {site.destinationName.length > 10
-                  ? site.destinationName.slice(0, 9) + '...'
-                  : site.destinationName}
-
-                <hr />
-                {site.destinationContent.length > 50
-                  ? site.destinationContent.slice(0, 50) + '...'
-                  : site.destinationContent}
-              </BackText>
+              {site.destinationContent ? (
+                <BackText>
+                  {site.destinationName.length > 10
+                    ? site.destinationName.slice(0, 9) + '...'
+                    : site.destinationName}
+                  <hr />
+                  {site.destinationContent.length > 50
+                    ? site.destinationContent.slice(0, 50) + '...'
+                    : site.destinationContent}
+                </BackText>
+              ) : (
+                // destinationContent가 null인 경우
+                <BackText>
+                  {site.destinationName.length > 10
+                    ? site.destinationName.slice(0, 9) + '...'
+                    : site.destinationName}
+                </BackText>
+              )}
             </Back>
           )}
         </SiteContainer>

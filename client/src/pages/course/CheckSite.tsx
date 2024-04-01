@@ -116,7 +116,7 @@ const CheckSite = () => {
       cityName: travelSave.travel.cityName,
       startDate: travelSave.travel.startDate,
       endDate: travelSave.travel.endDate,
-      friendTag: travelSave.travel.friendTag,
+      friendIdList: travelSave.travel.friendIdList,
       transportation: travelSave.travel.transportation,
       courseList: [...likes],
     });

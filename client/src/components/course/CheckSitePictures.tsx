@@ -106,16 +106,24 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
 
           {index === flippedIndex && (
             <Back onClick={() => handleImageClick(index)}>
-              <BackText>
-                {site.destinationName.length > 10
-                  ? site.destinationName.slice(0, 9) + '...'
-                  : site.destinationName}
-
-                <hr />
-                {site.destinationContent.length > 50
-                  ? site.destinationContent.slice(0, 50) + '...'
-                  : site.destinationContent}
-              </BackText>
+              {site.destinationContent ? (
+                <BackText>
+                  {site.destinationName.length > 10
+                    ? site.destinationName.slice(0, 9) + '...'
+                    : site.destinationName}
+                  <hr />
+                  {site.destinationContent.length > 50
+                    ? site.destinationContent.slice(0, 50) + '...'
+                    : site.destinationContent}
+                </BackText>
+              ) : (
+                // destinationContent가 null인 경우
+                <BackText>
+                  {site.destinationName.length > 10
+                    ? site.destinationName.slice(0, 9) + '...'
+                    : site.destinationName}
+                </BackText>
+              )}
             </Back>
           )}
         </SiteContainer>

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseEditCard from '../../components/course/CourseEditCard';
-import ChooseSite from './ChooseSite';
+import ChooseSite from '../../components/course/ChooseSite';
 
 import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -47,57 +47,58 @@ const EditCoursePage: React.FC = () => {
     const reorderedItems = Array.from(selectedDate);
     const [removed] = reorderedItems.splice(result.source.index, 1);
     reorderedItems.splice(result.destination.index, 0, removed);
-    
+
     const updatedCourseList = [...selectedDate];
     updatedCourseList[selectedTab - 1] = reorderedItems;
     const destinationList = updatedCourseList[selectedTab - 1].map((el: any) => {
       return el.destinationId;
-    })
+    });
+    setDestinationIdList(destinationList);
     getDistance(reorderedItems, destinationList);
     changeCourseList(updatedCourseList[selectedTab - 1]);
   };
-  
-  const getDistance = (courseLIst: any, destinationList: number[]) => {
+
+  const getDistance = (courseList: any, destinationList: number[]) => {
     destinationDistance(destinationList)
-    .then((response) => {
-      console.log(response.data.data)
-      const list = (response.data.data);
-      const distanceLists = list.map((el: any) => {
-        return el.nextDestinationDistance;
+      .then((response) => {
+        console.log(response.data.data);
+        const list = response.data.data;
+        const distanceLists = list.map((el: any) => {
+          return el.nextDestinationDistance;
+        });
+        setDistanceList([...distanceLists]);
+        distanceSet(courseList, distanceLists);
       })
-      setDistanceList([...distanceLists]);
-      distanceSet(courseLIst, distanceLists)
-    })
-    .catch((err) => {
-      console.error(err);
-    })
-  }
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   const changeCourseList = (newCourseList: any[]) => {
-    if (selectedTab == 3) setThirdDate([...newCourseList])
-    else if (selectedTab == 2) setSecondDate([...newCourseList])
-    else setFirstDate([...newCourseList])
+    if (selectedTab == 3) setThirdDate([...newCourseList]);
+    else if (selectedTab == 2) setSecondDate([...newCourseList]);
+    else setFirstDate([...newCourseList]);
     markerSet(newCourseList);
-  
+
     setSelectedDate(newCourseList);
   };
 
   const distanceSet = (courseList: any, distanceList: number[]) => {
     courseList.forEach((el: any, index: number) => {
       el.nextDestinationDistance = distanceList[index];
-    }) 
-  }
+    });
+  };
   const markerSet = (courseList: any[]) => {
     let number = 1;
     courseList.forEach((ele: any) => {
-        if (number >= 7) return;
-        let color = '';
-        if (ele.destinationType == 'sights') color = 'orange';
-        else if (ele.destinationType == 'food') color = 'pink';
-        else color = 'red';
-        ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
-        number++;
-      });
+      if (number >= 9) return;
+      let color = '';
+      if (ele.destinationType == 'sights') color = 'orange';
+      else if (ele.destinationType == 'food') color = 'pink';
+      else color = 'red';
+      ele.markerImage = require(`../../assets/image/marker/${color}marker${number}.png`);
+      number++;
+    });
   };
 
   useEffect(() => {
@@ -107,69 +108,145 @@ const EditCoursePage: React.FC = () => {
   }, [selectedTab, firstDate, secondDate, thirdDate, distanceList, destinationIdList]);
 
   const addButton = () => {
-    setIsDrawerOpen(true);
-  }
+    if (selectedDate.length >= 8) {
+      alert('장소는 하루에 8개까지 선택 가능합니다.');
+    } else setIsDrawerOpen(true);
+  };
 
+  //장소 선택하면 바로 닫힘
   const closeDrawer = () => {
     setIsDrawerOpen(false);
   };
 
+  //장소 선택하면 id바뀜
+  const handleDestinationSelect = (destinationId: number) => {
+    setSelectedDestinationId(destinationId);
+    setIsDrawerOpen(false);
+  };
+
+  //안선택하고 닫기
   const closeDrawerIfDestinationSelected = () => {
     if (selectedDestinationId) {
-      console.log("Selected destinationId:", selectedDestinationId);
+      setSelectedDestinationId(null);
     }
+    setIsDrawerOpen(false);
   };
 
-  const handleDestinationSelect = (destinationId: number) => {
-    // 선택한 목적지의 destinationId를 상태에 저장
-    setSelectedDestinationId(destinationId);
+  useEffect(() => {
+    handleChange();
+  }, [selectedDestinationId]);
+
+  const handleChange = () => {
+    const updatedCourseList = [...selectedDate];
+    const destinationList = updatedCourseList.map((el: any) => {
+      return el.destinationId;
+    });
+    if (selectedDestinationId != null) destinationList.push(selectedDestinationId);
+    setDestinationIdList(destinationList);
+    console.log(destinationList);
+    destinationDistance(destinationList)
+      .then((response) => {
+        console.log(response.data.data);
+        const list = response.data.data;
+        const updatedDate = list.map((el) => {
+          return {
+            destinationImgUrl: el.destinationImgUrl,
+            destinationName: el.destinationName,
+            destinationType: el.destinationType,
+            nextDestinationDistance: el.nextDestinationDistance,
+            lat: el.point.latitude,
+            lng: el.point.longitude,
+            destinationId: el.point.destinationId,
+            markerimage: '',
+          };
+        });
+        markerSet(updatedDate);
+        setSelectedDate([...updatedDate]);
+        if (selectedTab == 3) setThirdDate([...updatedDate]);
+        else if (selectedTab == 2) setSecondDate([...updatedDate]);
+        else if (selectedTab == 1) setFirstDate([...updatedDate]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
+  useEffect(() => {
+    const travelSaveInfo = {
+      cityName: travelSaveStore.travel.cityName,
+      startDate: travelSaveStore.travel.startDate,
+      endDate: travelSaveStore.travel.endDate,
+      friendIdList: travelSaveStore.travel.friendIdList,
+      transportation: travelSaveStore.travel.transportation,
+      courseList: destinationIdList,
+    };
+    travelSaveStore.setTravel(travelSaveInfo);
+  }, [selectedDate]);
 
   const saveButton = () => {
     let travelInfos: any = [];
     if (size == 3) {
-      travelInfos = ([[...firstDate.map((el:any) => {
-        return el.destinationId
-      })], [...secondDate.map((el:any) => {
-        return el.destinationId
-      })], [...thirdDate.map((el:any) => {
-        return el.destinationId
-      })]]);
+      travelInfos = [
+        [
+          ...firstDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+        [
+          ...secondDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+        [
+          ...thirdDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+      ];
     } else if (size == 2) {
-      travelInfos = ([[...firstDate.map((el:any) => {
-        return el.destinationId
-      })], [...secondDate.map((el:any) => {
-        return el.destinationId
-      })]]);
+      travelInfos = [
+        [
+          ...firstDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+        [
+          ...secondDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+      ];
     } else {
-      travelInfos = ([[...firstDate.map((el:any) => {
-        return el.destinationId
-      })]]);
+      travelInfos = [
+        [
+          ...firstDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+      ];
     }
     saveTravel(travelInfos);
-  }
+  };
   const saveTravel = (travelInfos: any) => {
     const travelSaveInfo = {
       cityName: travelSaveStore.travel.cityName,
       startDate: travelSaveStore.travel.startDate,
       endDate: travelSaveStore.travel.endDate,
-      friendIdList: travelSaveStore.travel.friendTag,
+      friendIdList: travelSaveStore.travel.friendIdList,
       transportation: travelSaveStore.travel.transportation,
-      courseList: travelInfos
-    }
+      courseList: travelInfos,
+    };
     travelSave(travelSaveInfo)
-    .then((response:any) => {
-      if (response.status == 200) {
-        alert("여행을 저장했습니다!");
-      }
-    })
-    .catch((err:any) => {
-      console.error(err)
-    });
+      .then((response: any) => {
+        if (response.status == 200) {
+          alert('여행을 저장했습니다!');
+        }
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
     // navigate('/my');
-  
-  }
+  };
   return (
     <StyledEngineProvider>
       <BoxContainer>
@@ -198,25 +275,31 @@ const EditCoursePage: React.FC = () => {
             >
               {(provided: any) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {selectedDate && selectedDate.map((place: any, index: number) => (
-                    <Draggable
-                      key={place.destinationId ? place.destinationId.toString() : index.toString()}
-                      draggableId={place.destinationId ? place.destinationId.toString() : index.toString()}
-                      index={index}
-                    >
-                      {(provided: any) => (
-                        <CourseEditCard
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          course={place}
-                          provided={provided}
-                          image={place.markerImage}
-                          distance={place.nextDestinationDistance}
-                          idx={index}
-                        />
-                      )}
-                    </Draggable>
-                  ))}
+                  {selectedDate &&
+                    selectedDate.map((place: any, index: number) => (
+                      <Draggable
+                        key={
+                          place.destinationId ? place.destinationId.toString() : index.toString()
+                        }
+                        draggableId={
+                          place.destinationId ? place.destinationId.toString() : index.toString()
+                        }
+                        index={index}
+                      >
+                        {(provided: any) => (
+                          <CourseEditCard
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            course={place}
+                            provided={provided}
+                            image={place.markerImage}
+                            distance={place.nextDestinationDistance}
+                            idx={index}
+                            size={selectedDate.length - 1}
+                          />
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </div>
               )}
@@ -225,13 +308,25 @@ const EditCoursePage: React.FC = () => {
           <AddButton onClick={() => addButton()}>
             <AddBoxIcon />
           </AddButton>
-          <Drawer anchor="bottom" open={isDrawerOpen} onClose={closeDrawerIfDestinationSelected} PaperProps={{style:{height:'70%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}}>
+          <Drawer
+            anchor="bottom"
+            open={isDrawerOpen}
+            onClose={closeDrawerIfDestinationSelected}
+            PaperProps={{
+              style: {
+                height: '70%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+            }}
+          >
             <ChooseSite onCloseDrawer={closeDrawer} onDestinationSelect={handleDestinationSelect} />
           </Drawer>
         </EditBody>
         <ButtonBox>
-            <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
-          </ButtonBox>
+          <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
+        </ButtonBox>
       </BoxContainer>
     </StyledEngineProvider>
   );
@@ -323,6 +418,5 @@ const ChooseButton = styled.button`
   border: none;
   cursor: pointer;
 `;
-
 
 export default EditCoursePage;
