@@ -14,8 +14,13 @@ import OauthLandingPage from './pages/user/OauthLandingPage';
 import EditCoursePage from './pages/course/EditCoursePage';
 import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import MyPage from './pages/user/MyPage';
+import DiaryWrite from './pages/user/DiaryWrite';
+import DiaryDetail from './pages/user/DiaryDetail';
+import DiaryUpdate from './pages/user/DiaryUpdate';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
+import MakeGroup from './pages/course/MakeGroup';
+import CourseDetailPage from './pages/course/CourseDetailPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -43,6 +48,11 @@ function App() {
               errorElement: <ErrorPage />,
             },
             {
+              path: 'makegroup',
+              element: <MakeGroup />,
+              errorElement: <ErrorPage />,
+            },
+            {
               path: 'city',
               element: <CityChoice />,
               errorElement: <ErrorPage />,
@@ -62,6 +72,11 @@ function App() {
               element: <BeforeConfirm />,
               errorElement: <ErrorPage />,
             },
+            {
+              path: 'detail/:travelId',
+              element: <CourseDetailPage />,
+              errorElement: <ErrorPage />,
+            },
           ],
         },
         {
@@ -74,7 +89,29 @@ function App() {
           element: <OauthLandingPage />,
           errorElement: <ErrorPage />,
         },
-        { path: '/mypage', element: <MyPage />, errorElement: <ErrorPage /> },
+        {
+          path: '/mypage',
+          element: <MyPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          //나중에 파라미터 추가
+          path: '/diary/detail',
+          element: <DiaryDetail />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          //나중에 파라미터 추가
+          path: '/diary/write',
+          element: <DiaryWrite />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          //나중에 파라미터 추가
+          path: '/diaryupdate',
+          element: <DiaryUpdate />,
+          errorElement: <ErrorPage />,
+        },
         {
           path: '/editcourse',
           element: <EditCoursePage />,

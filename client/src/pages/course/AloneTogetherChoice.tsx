@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const AloneTogetherChoice = () => {
+  const navigate = useNavigate();
 
   return (
     <>
       <PageContainer>
         <AloneTogetherContainer>
-          <ChoiceBoxContainer>
+          <ChoiceBoxContainer
+            onClick={()=>{
+              navigate('/course/province');
+            }}>
             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Man%20Raising%20Hand.png" alt="Man Raising Hand"  width="120" height="120" />
             <ChoiceBoxText>혼자</ChoiceBoxText>
           </ChoiceBoxContainer>
-          <ChoiceBoxContainer>
+          <ChoiceBoxContainer 
+            onClick={()=>{
+              navigate('/course/makegroup');
+            }}>
             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Family%20Man%2C%20Woman%2C%20Boy.png" alt="Family Man, Woman, Boy"  width="120" height="120" />
             <ChoiceBoxText>같이</ChoiceBoxText>
           </ChoiceBoxContainer>
@@ -22,9 +29,8 @@ const AloneTogetherChoice = () => {
 };
 const PageContainer = styled.div`
   width:412px;
-  height: 735px;
+  height: 100%;
   background-color:#566cf038;
-  padding: 50px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;

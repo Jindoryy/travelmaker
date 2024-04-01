@@ -3,11 +3,23 @@ import styled from 'styled-components';
 import { getScheduleList, getDiaryList } from '../../utils/axios/axios-user';
 import MyPageScheduleFeature from '../../features/user/MyPageScheduleFeature';
 import MyPageDiaryFeature from '../../features/user/MyPageDiaryFeature';
+import { useLocation } from 'react-router-dom';
 
 const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
   const [activeTab, setActiveTab] = useState('tab1');
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [diaries, setDiaries] = useState<Diary[]>([]);
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab === '1') {
+      setActiveTab('tab1');
+    } else if (tab === '2') {
+      setActiveTab('tab2');
+    }
+  }, [location.search]);
 
   useEffect(() => {
     if (activeTab === 'tab1') {
@@ -119,7 +131,7 @@ const Container = styled.div`
   margin-top: 30px;
   border-radius: 20px;
   background: white;
-  box-shadow: 3px 3px 2px gray;
+  box-shadow: 2px 2px 1px gray;
   flex-direction: column;
   font-family: 'Pretendard', sans-serif;
 `;

@@ -13,13 +13,12 @@ import com.a305.travelmaker.domain.diary.entity.File;
 import com.a305.travelmaker.domain.diary.repository.DiaryRepository;
 import com.a305.travelmaker.domain.memo.entity.Memo;
 import com.a305.travelmaker.domain.memo.repository.MemoRepository;
+import com.a305.travelmaker.domain.travel.dto.AfterCourseResponse;
 import com.a305.travelmaker.domain.travel.dto.Cluster;
 import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
+import com.a305.travelmaker.domain.travel.dto.OnCourseResponse;
 import com.a305.travelmaker.domain.travel.dto.Point;
 import com.a305.travelmaker.domain.travel.dto.Spot;
-import com.a305.travelmaker.domain.travel.dto.Transportation;
-import com.a305.travelmaker.domain.travel.dto.TravelAfterResponse;
-import com.a305.travelmaker.domain.travel.dto.TravelBeforeResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelInfoRequest;
 import com.a305.travelmaker.domain.travel.dto.TravelInfoResponse;
 import com.a305.travelmaker.domain.travel.dto.TravelListResponse;
@@ -466,17 +465,16 @@ public class TravelService {
 //    }
   }
 
-  public TravelBeforeResponse findTravelBeforeDetail(Integer id) {
+  public AfterCourseResponse findTravelBeforeDetail(Integer id) {
 
     Travel travel = travelRepository.findById(id).get();
     Memo memo = memoRepository.findByTravelId(travel.getId());
     City city = cityRepository.findByName(travel.getCityName());
 
-    return TravelBeforeResponse.builder()
+    return AfterCourseResponse.builder()
         .travelId(travel.getId())
         .cityName(travel.getCityName())
         .imgUrl(city.getImgUrl())
-        .memoId(memo.getId())
         .build();
   }
 
@@ -629,7 +627,7 @@ public class TravelService {
     }
   }
 
-  public TravelAfterResponse findTravelAfterDetail(Integer id) {
+  public OnCourseResponse findTravelAfterDetail(Integer id) {
 
     Travel travel = travelRepository.findById(id).get();
 
@@ -662,7 +660,7 @@ public class TravelService {
       }
     }
 
-    return TravelAfterResponse.builder()
+    return OnCourseResponse.builder()
         .cityName(travel.getCityName())
         .startDate(travel.getStartDate())
         .courseInfoList(courseInfoList)

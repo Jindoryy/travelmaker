@@ -4,7 +4,8 @@ import { travelDetail, travelSave } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseCard from '../../components/course/CourseCard';
-import { useTravelInfo, useTravelCity, useTravelSave } from '../../store/useTravelStore';
+import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
+import useUserInfo from '../../store/useUserStore';
 
 import styled from 'styled-components';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -33,10 +34,8 @@ interface TravelInfoType {
   destinationUrl: string;
 }
 
-
 // 일자별로 순서대로 들어온 장소 ID를 조회 API요청하기
 const BeforeConfirm = () => {
-  const { setTravelInfo, travelInfo } = useTravelInfo();
   const { setTravelCity, travelCity } = useTravelCity();
   const travelSaveStore = useTravelSave();
   const [selectedTab, setSelectedTab] = useState(1);
@@ -48,22 +47,33 @@ const BeforeConfirm = () => {
   const [key, setKey] = useState(0);
   const [size, setSize] = useState(courseInfo.length);
   const navigate = useNavigate();
+  const { userInfo } = useUserInfo();
 
   useEffect(() => {
-    getTravel(travelInfo);
-  }, []);
+    if (!userInfo || userInfo.userId === -1) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
+  useEffect(() => {
+    getTravel({
+      startDate: travelSaveStore.travel.startDate,
+      endDate: travelSaveStore.travel.endDate,
+      transportation: travelSaveStore.travel.transportation,
+      destinationIdList: travelSaveStore.travel.courseList,
+    });
+  }, []);
 
   useEffect(() => {
     if (selectedTab == 3) setSelectedDate([...thirdDate]);
     else if (selectedTab == 2) setSelectedDate([...secondDate]);
     else if (selectedTab == 1) setSelectedDate([...firstDate]);
-  }, [selectedTab, courseInfo])
+  }, [selectedTab, courseInfo]);
 
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
       .then((response) => {
-        console.log(response.data.data.travelList)
+        console.log(response.data.data.travelList);
         const travelLists = response.data.data.travelList;
         if (travelLists.length >= 4) {
           const lists = travelLists.slice(0, 3);
@@ -95,7 +105,7 @@ const BeforeConfirm = () => {
           lat: destination.point.latitude,
           lng: destination.point.longitude,
           markerImage: '',
-          nextDestinationDistance: destination.nextDestinationDistance
+          nextDestinationDistance: destination.nextDestinationDistance,
         });
         if (index === 0) updatedFirstDate.push(destination);
         else if (index === 1) updatedSecondDate.push(destination);
@@ -115,8 +125,7 @@ const BeforeConfirm = () => {
 
   const sizeSet = (num: number) => {
     setSize(num);
-  }
-
+  };
 
   // 데이터에 따라 마커 이미지 설정해주는 함수
   const markerSet = () => {
@@ -155,47 +164,67 @@ const BeforeConfirm = () => {
   const saveButton = () => {
     let travelInfos: any = [];
     if (size == 3) {
-      travelInfos = ([[...firstDate.map((el:any) => {
-        return el.destinationId
-      })], [...secondDate.map((el:any) => {
-        return el.destinationId
-      })], [...thirdDate.map((el:any) => {
-        return el.destinationId
-      })]]);
+      travelInfos = [
+        [
+          ...firstDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+        [
+          ...secondDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+        [
+          ...thirdDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+      ];
     } else if (size == 2) {
-      travelInfos = ([[...firstDate.map((el:any) => {
-        return el.destinationId
-      })], [...secondDate.map((el:any) => {
-        return el.destinationId
-      })]]);
+      travelInfos = [
+        [
+          ...firstDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+        [
+          ...secondDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+      ];
     } else {
-      travelInfos = ([[...firstDate.map((el:any) => {
-        return el.destinationId
-      })]]);
+      travelInfos = [
+        [
+          ...firstDate.map((el: any) => {
+            return el.destinationId;
+          }),
+        ],
+      ];
     }
     saveTravel(travelInfos);
-  }
+  };
   const saveTravel = (travelInfos: any) => {
     const travelSaveInfo = {
       cityName: travelSaveStore.travel.cityName,
       startDate: travelSaveStore.travel.startDate,
       endDate: travelSaveStore.travel.endDate,
-      friendIdList: travelSaveStore.travel.friendTag,
+      friendIdList: travelSaveStore.travel.friendIdList,
       transportation: travelSaveStore.travel.transportation,
-      courseList: travelInfos
-    }
+      courseList: travelInfos,
+    };
     travelSave(travelSaveInfo)
-    .then((response:any) => {
-      if (response.status == 200) {
-        alert("여행을 저장했습니다!");
-      }
-    })
-    .catch((err:any) => {
-      console.error(err)
-    });
-    // navigate('/my');
-    
-  }
+      .then((response: any) => {
+        if (response.status == 200) {
+          alert('여행을 저장했습니다!');
+        }
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+    navigate('/mypage');
+  };
   return (
     <StyledEngineProvider>
       <BoxContainer>
@@ -209,7 +238,7 @@ const BeforeConfirm = () => {
           <TravelHeader>
             <HeaderTitle>{travelCity.city}</HeaderTitle>
             <HeaderDate>
-              {travelInfo.startDate} ~ {travelInfo.endDate}
+              {travelSaveStore.travel.startDate} ~ {travelSaveStore.travel.endDate}
             </HeaderDate>
           </TravelHeader>
           <TravelMap key={key}>
@@ -222,13 +251,10 @@ const BeforeConfirm = () => {
           </EditButton>
         </EditBody>
         <CourseBody>
-          {selectedDate && selectedDate.map(
-            (place: any, index: number) =>
-                <CourseCard
-                  key={index}
-                  course={place}
-                />
-          )}
+          {selectedDate &&
+            selectedDate.map((place: any, index: number) => (
+              <CourseCard key={index} course={place} />
+            ))}
           <ButtonBox>
             <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
           </ButtonBox>

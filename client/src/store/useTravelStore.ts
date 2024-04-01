@@ -38,7 +38,7 @@ interface TravelType {
   cityName: string;
   startDate: string;
   endDate: string;
-  friendTag: number[];
+  friendIdList: number[];
   transportation: string;
   courseList: number[];
 }
@@ -54,7 +54,7 @@ interface TravelActions {
 //도, 시 저장 위한 변수
 const defaultCityState = {
   cityId: 212,
-  city: '강릉',
+  city: '강릉시',
   provinceId: 32,
   province: '강원도',
 };
@@ -86,10 +86,10 @@ const useTravelInfo = create<TravelInfoState & TravelInfoActions>((set) => ({
 
 //최종 여행 저장 변수
 const defaultTravelState = {
-  cityName: '212',
+  cityName: '강릉시',
   startDate: '2024-03-20',
   endDate: '2024-03-22',
-  friendTag: [0],
+  friendIdList: [124, 125, 126],
   transportation: 'CAR',
   courseList: [125417, 125617, 125636, 133494, 132775],
 };

@@ -117,7 +117,7 @@ public class DestinationService {
       for (Integer id : destinationIdList) {
 
         Destination destination = destinationRepository.findById(id).get();
-        Optional<Likes> likesOptional = likesRepository.findByUserIdAndDestinationId(125L, destination.getId());
+        Optional<Likes> likesOptional = likesRepository.findByUserIdAndDestinationId(userId, destination.getId());
         Boolean likesFlag = likesOptional.map(Likes::getFlag).orElse(false);
 
         DestinationListResponse destinationListResponse = DestinationListResponse.builder()

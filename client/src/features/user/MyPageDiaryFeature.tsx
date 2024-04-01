@@ -3,10 +3,15 @@ import { useNavigate } from 'react-router-dom';
 
 const MyPageDiaryFeature: React.FC<MyPageDiaryFeatureProps> = ({ data }) => {
   const { diaryId, name, startDate, endDate, imgUrls } = data;
+  console.log('urls', imgUrls);
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/course/detail/${diaryId}`);
+    navigate(`/diary/detail`, {
+      state: {
+        diaryId: diaryId,
+      },
+    });
   };
 
   return (

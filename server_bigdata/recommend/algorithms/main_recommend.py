@@ -105,7 +105,7 @@ def basicCbfRecommend(user_id):
 
     # 추천 결과에서 DESTINATION_ID만 추출하여 리스트에 담기
     destination_ids = [destination.DESTINATION_ID for destination in similar_destinations]
-    destination_ids = destination_ids[:40] + getRandomDestinations(60)
+    destination_ids = destination_ids[:5] + getRandomDestinations(5)
     random.shuffle(destination_ids)
 
     return destination_ids
@@ -166,7 +166,7 @@ def basicCfRecommend(user_id):
     # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
     top_100 = heapq.nlargest(20000, predictions, key=lambda x: x[1])
     random.shuffle(top_100)
-    top_100 = top_100[:100]
+    top_100 = top_100[:10]
 
     recommended_destination_ids = [pred[0].DESTINATION_ID for pred in top_100]
 

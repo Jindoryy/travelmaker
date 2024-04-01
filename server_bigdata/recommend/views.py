@@ -14,11 +14,11 @@ def getMainList(request, user_id):
     # 사용자의 좋아요 누른 장소 수에 따라 추천 방식 선택
     if user_likes_count <= 20:
         # 기준점 이하일 때 user-based 추천(8) + CBF(100)
-        gender_age_response = main_recommend.genderAgeRecommend(user_id,8)
+        gender_age_response = main_recommend.genderAgeRecommend(user_id,4)
         basic_response = main_recommend.basicCbfRecommend(user_id)
     else:
         # 기준점 초과일 때 user-based 추천(4) + CF(100)
-        gender_age_response = main_recommend.genderAgeRecommend(user_id,4)
+        gender_age_response = main_recommend.genderAgeRecommend(user_id,2)
         basic_response = main_recommend.basicCfRecommend(user_id)
 
     combined_response = {

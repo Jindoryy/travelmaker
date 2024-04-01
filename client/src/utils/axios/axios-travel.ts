@@ -163,6 +163,7 @@ interface TravelSaveType {
   cityName: string;
   startDate: string;
   endDate: string;
+  friendIdList: number[];
   transportation: string;
   courseList: number[];
 }
@@ -170,6 +171,32 @@ interface TravelSaveType {
 interface TravelSaveResponse {
   success: boolean;
 }
+
+//저장된 여행 조회하기
+interface TravelDetailPoint {
+  destinationId: number;
+  latitude: number;
+  longitude: number;
+}
+interface TravelDetailDestination {
+  point: TravelDetailPoint;
+  nextDestinationDistance: number;
+  destinationName: string;
+  destinationType: string;
+  destinationImgUrl: string;
+}
+export interface TravelDetailData {
+  cityName: string;
+  startDate: string;
+  endDate: string;
+  transportation: string;
+  travelList: TravelDetailDestination[][];
+}
+interface TravelDetailResponse {
+  status: string;
+  data: TravelDetailData;
+}
+
 //시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
   return oauthInstance.get<CityResponse>(`city/${provinceId}`, {
@@ -213,7 +240,9 @@ const siteListDetail = () => {
 };
 
 // 장소조회(장소선택 페이지)
-const destinationArray = (destinationsIdList: number[]) => {
+const destinationArray = (destinationsIdList: number[] | undefined) => {
+  console.log(destinationsIdList);
+  if (!destinationsIdList) return Promise.reject('destinationsIdList is undefined');
   return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {
       destinationsIdList: destinationsIdList.join(','), // 배열을 문자열로 변환하여 전달
@@ -243,8 +272,17 @@ const destinationDistance = (destinationsIdList: number[]) => {
 
 //여행 최종 저장하기
 const travelSave = (travelInfo: TravelSaveType) => {
-  console.log(travelInfo);
   return oauthInstance.post<TravelSaveResponse>('travel/info', travelInfo);
+};
+
+//저장된 여행 조회하기
+const getTravelDetail = (travelId: any) => {
+  let numberOfTravel = Number(travelId.travelId);
+  return oauthInstance.get<TravelDetailResponse>(`travel/${numberOfTravel}`);
+};
+
+const getTravelDetailDiary = (travelId: Number) => {
+  return oauthInstance.get<TravelDetailResponse>(`travel/${travelId}`);
 };
 
 export {
@@ -257,4 +295,7 @@ export {
   destinationArray,
   destinationsListDetail,
   travelSave,
+  getTravelDetail,
+  getTravelDetailDiary,
+  TravelDetailResponse,
 };

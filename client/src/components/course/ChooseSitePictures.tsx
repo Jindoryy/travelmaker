@@ -1,40 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { destinationArray, likeDestination } from '../../utils/axios/axios-travel';
-import { useLocation, useNavigate } from 'react-router-dom';
-import useUserInfo from '../../store/useUserStore';
+
 import Masonry from '@mui/lab/Masonry';
 import Checkbox from '@mui/material/Checkbox';
 import { yellow } from '@mui/material/colors';
 
-interface CheckSitePicturesProps {
-  array: number[]; // array props의 타입을 명시적으로 정의
-}
-
-interface SiteInfoProps {
-  status: string;
-  data: [
-    {
-      destinationId: number;
-      destinationType: string;
-      destinationContent: string;
-      destinationName: string;
-      destinationImgUrl: string;
-      likes_flag: boolean;
-    },
-  ];
-}
-const CheckSitePictures: React.FC<any> = ({ array }) => {
-  const [siteInfo, setSiteInfo] = useState<any>(array);
-  const [flippedIndex, setFlippedIndex] = useState<number | null>(null); // 이미지가 뒤집힌 인덱스를 관리
-  const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
-  const [selectedDestinationIds, setSelectedDestinationIds] = useState<number[]>([]); // 체크된 목적지의 destinationId 리스트
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
-  // const userId = userInfo.userId; // userId 가져오기
-  const userId = 126;
+const ChooseSitePictures: React.FC<any> = ({ array, onlikeChange }) => {
+  const [siteInfo, setSiteInfo] = useState<any>([...array]);
+  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
+  const [imageHeights, setImageHeights] = useState<number[]>([]);
 
   useEffect(() => {
     const heights = array.map(() => getRandomHeight());
@@ -50,39 +24,10 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
     setFlippedIndex(index === flippedIndex ? null : index);
   };
 
-  const handleCheckboxChange =
-    (destinationId: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
-      // 체크박스 상태 변경 시 실행되는 핸들러
-      const isChecked = event.target.checked;
-      if (isChecked) {
-        // 체크된 경우 선택된 목적지 목록에 추가
-        setSelectedDestinationIds((prevIds) => [...prevIds, destinationId]);
-        array.map((el: any) => {
-          if (el.destinationId == destinationId) el.likes_flag = !el.likes_flag;
-        });
-      } else {
-        // 체크 해제된 경우 선택된 목적지 목록에서 제거
-        setSelectedDestinationIds((prevIds) => prevIds.filter((id) => id !== destinationId));
-        array.map((el: any) => {
-          if (el.destinationId == destinationId) el.likes_flag = !el.likes_flag;
-        });
-      }
-    };
-
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   return (
-    <Masonry
-      columns={2}
-      spacing={1}
-      style={{
-        maxWidth: '412px',
-        display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginTop: '3px',
-      }}
-    >
+    <Masonry columns={2} spacing={1}>
       {array.map((site: any, index: any) => (
         <SiteContainer key={site.destinationId}>
           <StyledCheckbox
@@ -94,7 +39,7 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
               },
             }}
             checked={site.likes_flag}
-            onChange={handleCheckboxChange(site.destinationId)}
+            onChange={() => onlikeChange(site.destinationId)}
           />
           <SiteImage
             style={{ height: `${imageHeights[index]}px` }}
@@ -191,4 +136,4 @@ const StyledCheckbox = styled(Checkbox)`
   z-index: 1;
 `;
 
-export default CheckSitePictures;
+export default ChooseSitePictures;

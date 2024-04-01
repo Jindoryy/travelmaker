@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
 import Weather from '../../components/common/Weather';
@@ -21,6 +21,8 @@ interface WeatherData {
     icon: string;
   }[];
 }
+import ExtraInfoModal from '../../components/common/ExtraInfoModal';
+import DiaryAlert from '../../components/common/DiaryAlert';
 
 const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
@@ -44,13 +46,31 @@ const MainPage = () => {
   useEffect(() => {
     getCurrentLocation();
   }, []);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenAlert, setIsOpenAlert] = useState(false);
+  const handleDisplayModal = useCallback(() => {
+    setIsOpenModal((prev) => (prev = !prev));
+  }, []);
+  const handleDisplayAlert = useCallback(() => {
+    setIsOpenAlert((prev) => (prev = !prev));
+  }, []);
 
   useEffect(() => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
     getUserStatus()
       .then((response) => {
+        console.log(response.data.data.birthCheck);
+        console.log(response.data.data.genderCheck);
+        console.log(response.data.data.diaryCheck);
         setUserStatus(response.data); // 상태를 업데이트
-        console.log(response.data);
+        if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
+          setIsOpenModal(true);
+        } else if (response.data.data.diaryCheck === false) {
+          setIsOpenAlert(true);
+        } else {
+          setIsOpenModal(false);
+          setIsOpenAlert(false);
+        }
       })
       .catch((error) => {
         console.error(error.message); // 오류 메시지 설정
@@ -60,6 +80,8 @@ const MainPage = () => {
   return (
     //고정
     <MainPageContainer>
+      {isOpenAlert && <DiaryAlert handleDisplayAlert={handleDisplayAlert} />}
+      {isOpenModal && <ExtraInfoModal handleDisplayModal={handleDisplayModal} />}
       <LogoLargeContainer>
         <LogoContainer>
           <Logo src="/img/horizontallogo.png" alt="Logo" />
