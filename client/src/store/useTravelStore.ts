@@ -89,7 +89,7 @@ const defaultTravelState = {
   cityName: '212',
   startDate: '2024-03-20',
   endDate: '2024-03-22',
-  friendTag: [0],
+  friendTag: [124, 125, 126],
   transportation: 'CAR',
   courseList: [125417, 125617, 125636, 133494, 132775],
 };

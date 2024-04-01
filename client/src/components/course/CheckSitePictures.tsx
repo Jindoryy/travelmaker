@@ -25,7 +25,7 @@ interface SiteInfoProps {
   ];
 }
 const CheckSitePictures: React.FC<any> = ({ array }) => {
-  const [siteInfo, setSiteInfo] = useState<any>([...array]);
+  const [siteInfo, setSiteInfo] = useState<any>(array);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null); // 이미지가 뒤집힌 인덱스를 관리
   const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
   const [selectedDestinationIds, setSelectedDestinationIds] = useState<number[]>([]); // 체크된 목적지의 destinationId 리스트
@@ -37,13 +37,9 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
   const userId = 126;
 
   useEffect(() => {
-  }, [array]);
-
-  useEffect(() => {
-    // basic 목적지 이미지의 수 만큼 랜덤한 높이를 생성하여 상태로 설정
-    const heights = siteInfo.map(() => getRandomHeight());
+    const heights = array.map(() => getRandomHeight());
     setImageHeights(heights);
-  }, [siteInfo]);
+  }, [array]);
 
   const getRandomHeight = () => {
     return Math.floor(Math.random() * 200) + 150; // 200부터 400까지의 랜덤한 값 생성
@@ -61,25 +57,33 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
       if (isChecked) {
         // 체크된 경우 선택된 목적지 목록에 추가
         setSelectedDestinationIds((prevIds) => [...prevIds, destinationId]);
-        array.map((el:any) => {
+        array.map((el: any) => {
           if (el.destinationId == destinationId) el.likes_flag = !el.likes_flag;
         });
       } else {
         // 체크 해제된 경우 선택된 목적지 목록에서 제거
         setSelectedDestinationIds((prevIds) => prevIds.filter((id) => id !== destinationId));
-        array.map((el:any) => {
+        array.map((el: any) => {
           if (el.destinationId == destinationId) el.likes_flag = !el.likes_flag;
         });
       }
     };
 
-
-
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   return (
-    <Masonry columns={2} spacing={1}>
-      {array.map((site:any, index:any) => (
+    <Masonry
+      columns={2}
+      spacing={1}
+      style={{
+        maxWidth: '412px',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginTop: '3px',
+      }}
+    >
+      {array.map((site: any, index: any) => (
         <SiteContainer key={site.destinationId}>
           <StyledCheckbox
             {...label}

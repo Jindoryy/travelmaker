@@ -30,7 +30,6 @@ const CheckSite = () => {
   const [cafeList, setCafeList] = useState<any>([]);
   const [likeList, SetLikeList] = useState<any>([]);
 
-
   const { setTravelInfo } = useTravelInfo();
 
   useEffect(() => {
@@ -40,10 +39,10 @@ const CheckSite = () => {
   }, []);
 
   const getDestinationInfo = (cityId: string) => {
-    const numberId = Number(cityId)
+    const numberId = Number(cityId);
     destinationDetail(numberId)
       .then((response) => {
-        console.log(response.data.data)
+        console.log(response.data.data);
         const newList = response.data.data.destinationRecommendList;
         getDivide(newList);
         getDestinationDetail(newList);
@@ -58,7 +57,7 @@ const CheckSite = () => {
     setSightsList([...newList.sights]);
     setFoodList([...newList.food]);
     setCafeList([...newList.cafe]);
-  }
+  };
 
   const getDestinationDetail = (newList: any) => {
     destinationArray(newList.sights)
@@ -66,36 +65,35 @@ const CheckSite = () => {
         const array = response.data.data;
         array.map((el: any) => {
           el.likes_flag = false;
-        })
+        });
         setSightsList([...array]);
       })
       .catch((err) => {
-        console.error(err)
-      })
-      destinationArray(newList.food)
+        console.error(err);
+      });
+    destinationArray(newList.food)
       .then((response) => {
         const array = response.data.data;
         array.map((el: any) => {
           el.likes_flag = false;
-        })
+        });
         setFoodList([...array]);
       })
       .catch((err) => {
-        console.error(err)
-      })
-      destinationArray(newList.cafe)
+        console.error(err);
+      });
+    destinationArray(newList.cafe)
       .then((response) => {
         const array = response.data.data;
         array.map((el: any) => {
           el.likes_flag = false;
-        })
+        });
         setCafeList([...array]);
       })
       .catch((err) => {
-        console.error(err)
-      })
-
-  }
+        console.error(err);
+      });
+  };
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
   };
@@ -104,24 +102,24 @@ const CheckSite = () => {
 
   // 다음 페이지로 이동하는 함수
   const goToNextPage = () => {
-    const likes:number[] = [];
+    const likes: number[] = [];
     sightsList.map((el: any) => {
       if (el.likes_flag) likes.push(el.destinationId);
-    })
+    });
     foodList.map((el: any) => {
       if (el.likes_flag) likes.push(el.destinationId);
-    })
+    });
     cafeList.map((el: any) => {
       if (el.likes_flag) likes.push(el.destinationId);
-    })
+    });
     travelSave.setTravel({
       cityName: travelSave.travel.cityName,
       startDate: travelSave.travel.startDate,
       endDate: travelSave.travel.endDate,
       friendTag: travelSave.travel.friendTag,
       transportation: travelSave.travel.transportation,
-      courseList: [...likes]
-    })
+      courseList: [...likes],
+    });
     // 여기에 다음 페이지 경로를 넣어주세요
     navigate('/course/beforeconfirm');
   };
@@ -139,9 +137,9 @@ const CheckSite = () => {
 
       <SitePicturesContainer>
         <SitePicturesStyle>
-        {selectedTab === 1 && <CheckSitePictures array={sightsList} />}
-        {selectedTab === 2 && <CheckSitePictures array={foodList} />}
-        {selectedTab === 3 && <CheckSitePictures array={cafeList} />}
+          {selectedTab === 1 && <CheckSitePictures array={sightsList} />}
+          {selectedTab === 2 && <CheckSitePictures array={foodList} />}
+          {selectedTab === 3 && <CheckSitePictures array={cafeList} />}
         </SitePicturesStyle>
         <NextPageButton onClick={goToNextPage}>완료</NextPageButton>
       </SitePicturesContainer>
@@ -175,13 +173,14 @@ const SitePicturesStyle = styled.div`
 const SitePicturesContainer = styled.div`
   margin-top: 20px;
   z-index: 0;
+  display: flex;
+  justify-content: center;
 `;
 // 추가된 버튼에 대한 스타일 지정
 const NextPageButton = styled.button`
   position: absolute; /* 버튼의 위치를 조정하기 위해 필요 */
-  left: 5%;
-  bottom: 10%;
-  width: 90%;
+  bottom: 13%;
+  width: 380px;
   /* right: 20px; 원하는 위치로 조정 */
   border: none;
   padding: 10px 20px;
