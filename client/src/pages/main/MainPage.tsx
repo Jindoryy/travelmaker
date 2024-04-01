@@ -7,6 +7,8 @@ import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
+import ExtraInfoModal from '../../components/common/ExtraInfoModal';
+import DiaryAlert from '../../components/common/DiaryAlert';
 
 interface WeatherData {
   name: string;
@@ -21,8 +23,6 @@ interface WeatherData {
     icon: string;
   }[];
 }
-import ExtraInfoModal from '../../components/common/ExtraInfoModal';
-import DiaryAlert from '../../components/common/DiaryAlert';
 
 const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
