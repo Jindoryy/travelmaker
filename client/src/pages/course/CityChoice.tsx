@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cityDetail } from '../../utils/axios/axios-travel';
+import useUserInfo from '../../store/useUserStore';
 import styled from 'styled-components';
 import { Swiper as SwiperContainer, SwiperSlide } from 'swiper/react';
 
@@ -20,9 +21,17 @@ interface City {
 
 const CityChoice = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [provinceId, setProvinceId] = useState(location.state?.provinceId);
   const [cityList, setCityList] = useState<City[]>([]);
+  const { userInfo } = useUserInfo();
+
+  useEffect(() => {
+    if (!userInfo || userInfo.userId === -1) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   useEffect(() => {
     if (provinceId) {
@@ -46,7 +55,6 @@ const CityChoice = () => {
     setActiveStep(step);
   };
 
-  const navigate = useNavigate();
   const choiceButton = (cityId: number) => {
     //시티 선택 완료
     navigate('/course/checksite', { state: { cityId: cityId } });

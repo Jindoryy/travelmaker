@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import Box from '@mui/material/Box';
 import DehazeIcon from '@mui/icons-material/Dehaze';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import { DraggableProvided } from 'react-beautiful-dnd';
 
@@ -14,25 +16,35 @@ interface CourseEditCardProps {
   image: any;
   distance: number;
   idx: number;
+  size: number;
+  onDelete: (destinationId: number) => void;
 }
 
-const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, provided, image, distance, idx }) => {
+const CourseEditCard: React.FC<CourseEditCardProps> = ({
+  course,
+  provided,
+  image,
+  distance,
+  idx,
+  size,
+  onDelete,
+}) => {
   const [markerImage, setMarkerImage] = useState(image);
   const { travelInfo } = useTravelInfo();
   const transportation = travelInfo.transportation;
   const time =
-  {
-    WALK: 12,
-    BUS: 5,
-    CAR: 2,
-  }[transportation] || 5;
+    {
+      WALK: 12,
+      BUS: 5,
+      CAR: 2,
+    }[transportation] || 5;
   const [toGoTime, setToGoTime] = useState<number>(Math.round(distance * time));
 
   useEffect(() => {
     let realTime = getTime(distance);
     if (realTime == 0) realTime = 1;
     setToGoTime(realTime);
-  }, [])
+  }, []);
 
   const getTime = (distance: number) => {
     return Math.round(distance * time);
@@ -48,6 +60,9 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, provided, image
     setMarkerImage(image);
   }, [image]);
 
+  const handleDeleteClick = () => {
+    onDelete(course.destinationId);
+  };
   return (
     <CardContainer ref={provided.innerRef} {...provided.draggableProps}>
       <NumberCircle>
@@ -56,25 +71,34 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({ course, provided, image
       <CardBox>
         <CardImage src={course.destinationImgUrl}></CardImage>
         <CardDetail>
-          <DetailCategory>
-            {' '}
-            {course.destinationType == 'sights'
-              ? '명소'
-              : course.destinationType == 'food'
-                ? '식당'
-                : '카페'}
-          </DetailCategory>
+          <DetailHeader>
+            <DetailCategory>
+              {' '}
+              {course.destinationType == 'sights'
+                ? '명소'
+                : course.destinationType == 'food'
+                  ? '식당'
+                  : '카페'}
+            </DetailCategory>
+          </DetailHeader>
           <DetailTitle>{course.destinationName}</DetailTitle>
-          {idx <= 4? (
-                <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime>
-              ) : (
-                <></>
-              )}
+          {idx < size ? <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime> : <></>}
         </CardDetail>
       </CardBox>
       <MoveCard {...provided.dragHandleProps}>
         <DehazeIcon></DehazeIcon>
       </MoveCard>
+      <DeleteButton>
+        <HighlightOffIcon
+          onClick={handleDeleteClick}
+          style={{
+            width: '20px',
+            height: '20px',
+            cursor: 'pointer',
+            color: '#F93053',
+          }}
+        />
+      </DeleteButton>
     </CardContainer>
   );
 };
@@ -137,6 +161,13 @@ const CardDetail = styled(Box)`
   }
 `;
 
+const DetailHeader = styled(Box)`
+  && {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+`;
 const DetailCategory = styled(Box)`
   && {
     width: 90%;
@@ -144,15 +175,15 @@ const DetailCategory = styled(Box)`
     font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.main};
-    padding: 5px;
+    padding-left: 5px;
   }
 `;
 
 const DetailTitle = styled(Box)`
   && {
-    width: 90%;
+    width: 95%;
     font-family: 'Pretendard';
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
     padding: 5px;
@@ -161,7 +192,7 @@ const DetailTitle = styled(Box)`
 
 const DetailTime = styled(Box)`
   && {
-    width: 90%;
+    width: 70%;
     font-family: 'Pretendard';
     font-size: 12px;
     font-weight: bold;
@@ -178,5 +209,13 @@ const MoveCard = styled(Box)`
   align-items: center;
   margin: 5px;
   padding: 5px;
+`;
+
+const DeleteButton = styled(Box)`
+  width: 5%;
+  top: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 export default CourseEditCard;

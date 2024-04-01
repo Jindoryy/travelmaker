@@ -163,6 +163,7 @@ interface TravelSaveType {
   cityName: string;
   startDate: string;
   endDate: string;
+  friendIdList: number[];
   transportation: string;
   courseList: number[];
 }
@@ -213,7 +214,9 @@ const siteListDetail = () => {
 };
 
 // 장소조회(장소선택 페이지)
-const destinationArray = (destinationsIdList: number[]) => {
+const destinationArray = (destinationsIdList: number[] | undefined) => {
+  console.log(destinationsIdList);
+  if (!destinationsIdList) return Promise.reject('destinationsIdList is undefined');
   return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {
       destinationsIdList: destinationsIdList.join(','), // 배열을 문자열로 변환하여 전달
