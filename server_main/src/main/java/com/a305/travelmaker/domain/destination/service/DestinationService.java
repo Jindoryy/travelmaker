@@ -106,7 +106,7 @@ public class DestinationService {
     Map<String, List<DestinationListResponse>> destinationListResponseMap = new HashMap<>();
 
     Map<String, List<Integer>> likeCbfList = restConfig.restTemplate()
-        .getForObject(bigdataServerDomain + "/recommend/main-list/" + userId, HashMap.class);
+        .getForObject(bigdataServerDomain + "/recommend/main-list" + userId, HashMap.class);
 
     for (Map.Entry<String, List<Integer>> entry : likeCbfList.entrySet()) {
 

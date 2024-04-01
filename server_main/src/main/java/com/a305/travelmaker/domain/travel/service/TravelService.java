@@ -489,12 +489,13 @@ public class TravelService {
       City city = cityRepository.findByName(travel.getCityName());
 
       List<String> friendsList = new ArrayList<>();
-      if (travel.getFriends() != null) {
+      if (!travel.getFriends().isEmpty()) {
 
         String friends = travel.getFriends();
         String[] friendsArray = friends.split(",");
         for (String friendId : friendsArray) {
-
+          System.out.println(friendId);
+          System.out.println(friendId.length());
           Long fId = Long.parseLong(friendId);
           User user = userRepository.findById(fId).get();
           friendsList.add(user.getNickname());

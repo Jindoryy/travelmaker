@@ -8,7 +8,6 @@ import com.a305.travelmaker.domain.course.dto.CourseInfo;
 import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
-import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.AfterCourseResponse;
 import com.a305.travelmaker.domain.travel.dto.OnCourseResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class UserService {
   private final CityRepository cityRepository;
   private final DestinationRepository destinationRepository;
 
-
+  @Transactional
   public UserStatusResponse getUserStatus(Long userId) {
 
     // userId로 유저 조회, 미등록 유저시 404 반환
