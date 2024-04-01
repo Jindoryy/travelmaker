@@ -1,12 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
+import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
+import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
+
+interface WeatherData {
+  name: string;
+  main: {
+    temp: number;
+    temp_max: number;
+    temp_min: number;
+  };
+  weather: {
+    id: number;
+    description: string;
+    icon: string;
+  }[];
+}
 
 const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+
+  //위치 가져오기
+  const getCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+      getWeatherByCurrentLocation(lat, lon);
+    });
+  };
+
+  const getWeatherByCurrentLocation = async (lat: number, lon: number) => {
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=07c8f80150954d942a79882827366bc7&units=metric`;
+    let response = await fetch(url);
+    let data: WeatherData = await response.json();
+    setWeather(data);
+  };
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
   useEffect(() => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
@@ -21,27 +58,43 @@ const MainPage = () => {
   }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
 
   return (
+    //고정
     <MainPageContainer>
       <LogoLargeContainer>
         <LogoContainer>
           <Logo src="/img/horizontallogo.png" alt="Logo" />
         </LogoContainer>
       </LogoLargeContainer>
-
       <StyledProfile>
-        <Profile
-          scrolled={false}
-          scrollHeight={0}
-          fontSize={''}
-          userState={userStatus?.data.status || ''}
-        />
+        <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
 
-      <SitePicturesContainer>
+      {/* BEFORE COURSE */}
+      {/* <SitePicturesContainer>
         <SitePicturesStyle>
           <SitePictures />
         </SitePicturesStyle>
-      </SitePicturesContainer>
+      </SitePicturesContainer> */}
+
+      {/* AFTER COURSE */}
+      {/* 날씨 컴포넌트 */}
+      {/* <div>
+        <Container className="container">{weather && <Weather weather={weather} />}</Container>
+      </div> */}
+      {/* d-day */}
+
+      {/* 내 코스보기 페이지로 이동 div */}
+      <StyledMyCourseListDiv>
+        <MyCourseListDiv />
+      </StyledMyCourseListDiv>
+      {/* memo */}
+
+      {/* ON COURSE */}
+      {/* 내 코스보기 페이지로 이동 div */}
+      {/* <StyledMyCourseListDiv>
+        <MyCourseListDiv />
+      </StyledMyCourseListDiv> */}
+      {/* course info */}
     </MainPageContainer>
   );
 };
@@ -99,6 +152,26 @@ const Logo = styled.img`
   height: auto; /* 비율 유지 */
   padding-left: 10px;
   max-width: 412px;
+`;
+
+const Container = styled.div`
+  // 스타일링을 여기에 추가하세요
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  padding-top: 380px; /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+const StyledMyCourseListDiv = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  padding-top: 380px;
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
 `;
 
 export default MainPage;

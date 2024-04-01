@@ -71,6 +71,22 @@ interface UserStatusResponse {
   status: string;
   data: {
     status: string;
+    afterCourseResponse: {
+      startDate: string;
+      travelId: number;
+      cityName: string;
+      imgUrl: string;
+    };
+    onCourseResponse: {
+      cityName: string;
+      startDate: string;
+      courseInfoList: [
+        {
+          destinationName: string;
+          destinationImgUrl: string;
+        },
+      ];
+    };
     birthCheck: boolean;
     genderCheck: boolean;
     diaryCheck: boolean;
