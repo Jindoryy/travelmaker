@@ -74,11 +74,13 @@ interface UpdateExtraUserInfoResponse {
 }
 
 interface UserStatusResponse {
+  birthCheck: null;
+  genderCheck: null;
   status: string;
   data: {
     status: string;
-    birthCheck: boolean;
-    genderCheck: boolean;
+    birthCheck: boolean | null;
+    genderCheck: boolean | null;
     diaryCheck: boolean;
   };
 }
