@@ -7,6 +7,7 @@ import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseEditCard from '../../components/course/CourseEditCard';
 import ChooseSite from '../../components/course/ChooseSite';
+import useUserInfo from '../../store/useUserStore';
 
 import { useTheme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -14,6 +15,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Drawer from '@mui/material/Drawer';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 const EditCoursePage: React.FC = () => {
@@ -33,6 +35,13 @@ const EditCoursePage: React.FC = () => {
   const [selectedDestinationId, setSelectedDestinationId] = useState<number | null>(null);
 
   const travelSaveStore = useTravelSave();
+  const { userInfo } = useUserInfo();
+
+  useEffect(() => {
+    if (!userInfo || userInfo.userId === -1) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
@@ -171,6 +180,39 @@ const EditCoursePage: React.FC = () => {
       });
   };
 
+  const handleDelete = (destinationId: number) => {
+    const updatedList = selectedDate.filter((place: any) => place.destinationId !== destinationId);
+    setSelectedDate([...updatedList]);
+    const destiList = updatedList.map((el: any) => {
+      return el.destinationId;
+    });
+    destinationDistance(destiList)
+      .then((response) => {
+        console.log(response.data.data);
+        const list = response.data.data;
+        const updatedDate = list.map((el) => {
+          return {
+            destinationImgUrl: el.destinationImgUrl,
+            destinationName: el.destinationName,
+            destinationType: el.destinationType,
+            nextDestinationDistance: el.nextDestinationDistance,
+            lat: el.point.latitude,
+            lng: el.point.longitude,
+            destinationId: el.point.destinationId,
+            markerimage: '',
+          };
+        });
+        markerSet(updatedDate);
+        setSelectedDate([...updatedDate]);
+        if (selectedTab == 3) setThirdDate([...updatedDate]);
+        else if (selectedTab == 2) setSecondDate([...updatedDate]);
+        else if (selectedTab == 1) setFirstDate([...updatedDate]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   useEffect(() => {
     const travelSaveInfo = {
       cityName: travelSaveStore.travel.cityName,
@@ -245,7 +287,7 @@ const EditCoursePage: React.FC = () => {
       .catch((err: any) => {
         console.error(err);
       });
-    // navigate('/my');
+    navigate('/mypage');
   };
   return (
     <StyledEngineProvider>
@@ -290,6 +332,7 @@ const EditCoursePage: React.FC = () => {
                           <CourseEditCard
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            onDelete={handleDelete}
                             course={place}
                             provided={provided}
                             image={place.markerImage}
@@ -305,8 +348,15 @@ const EditCoursePage: React.FC = () => {
               )}
             </Droppable>
           </DragDropContext>
-          <AddButton onClick={() => addButton()}>
-            <AddBoxIcon />
+          <AddButton>
+            {selectedDate.length < 8 ? (
+              <AddBoxOutlinedIcon
+                onClick={() => addButton()}
+                style={{ width: '35px', height: '35px', color: 'rgba(86, 108, 240, 0.8)' }}
+              />
+            ) : (
+              <></>
+            )}
           </AddButton>
           <Drawer
             anchor="bottom"
@@ -391,10 +441,10 @@ const EditBody = styled.div`
 `;
 
 const AddButton = styled(Box)`
-  width: 50px;
-  background-color: red;
+  cursor: pointer;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const ButtonBox = styled(Box)`
@@ -409,7 +459,8 @@ const ChooseButton = styled.button`
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
-  margin: 0px 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
   padding: 10px;
   border-radius: 8px;
   font-family: 'Pretendard', sans-serif;

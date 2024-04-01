@@ -5,6 +5,7 @@ import HeaderTabs from '../../components/common/HeaderTabs';
 import KakaoMap from '../../components/course/KakaoMap';
 import CourseCard from '../../components/course/CourseCard';
 import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
+import useUserInfo from '../../store/useUserStore';
 
 import styled from 'styled-components';
 import { StyledEngineProvider } from '@mui/styled-engine';
@@ -46,6 +47,13 @@ const BeforeConfirm = () => {
   const [key, setKey] = useState(0);
   const [size, setSize] = useState(courseInfo.length);
   const navigate = useNavigate();
+  const { userInfo } = useUserInfo();
+
+  useEffect(() => {
+    if (!userInfo || userInfo.userId === -1) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   useEffect(() => {
     getTravel({
@@ -215,7 +223,7 @@ const BeforeConfirm = () => {
       .catch((err: any) => {
         console.error(err);
       });
-    // navigate('/my');
+    navigate('/mypage');
   };
   return (
     <StyledEngineProvider>
