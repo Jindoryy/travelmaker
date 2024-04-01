@@ -18,8 +18,11 @@ const deleteDiary = (travelId: number) => {
 const updateExtraUserInfo = (data: UpdateExtraUserInfoRequest): Promise<AxiosResponse<UpdateExtraUserInfoResponse>> => {
   return oauthInstance.patch<UpdateExtraUserInfoResponse>('user/update-extra-info', data);
 }
+const getUserStatus = (): Promise<AxiosResponse<UserStatusResponse>> => {
+  return oauthInstance.get<UserStatusResponse>('user/status');
+};
 
-export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo };
+export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo, getUserStatus };
 interface ApiResponse<T> {
   status: string;
   data: T;
@@ -68,4 +71,14 @@ interface UpdateExtraUserInfoRequest {
 interface UpdateExtraUserInfoResponse {
   status: string;
   data: any;
+}
+
+interface UserStatusResponse {
+  status: string;
+  data: {
+    status: string;
+    birthCheck: boolean;
+    genderCheck: boolean;
+    diaryCheck: boolean;
+  };
 }
