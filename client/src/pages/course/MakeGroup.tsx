@@ -68,7 +68,8 @@ const MakeGroup = () => {
             <GroupResultFriend>
               김이름 #39283824
               <HighlightOffIcon 
-                fontSize="small" 
+                fontSize="small"
+                color="disabled"
                 style={{ cursor: 'pointer', position:'relative', top:'5px', left:'2px'}}/>
             </GroupResultFriend>
           </GroupResultContainer>
