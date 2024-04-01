@@ -4,6 +4,7 @@ import { MouseEventHandler, useState } from 'react';
 import { updateExtraUserInfo } from '../../utils/axios/axios-user';
 import useUserInfo from '../../store/useUserStore';
 import Swal from 'sweetalert2';
+import { RadioGroup, Radio, FormControlLabel } from '@mui/material';
 
 interface ExtraInfoModalProps {
   handleDisplayModal: (event?: MouseEvent) => void; // 이벤트 객체를 선택적으로 받도록 수정
@@ -57,14 +58,20 @@ const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) =
                   onChange={(e) => setBirthDate(e.target.value)}
                 />
                 <Label>성별</Label>
-                <ButtonGroup>
+                {/* <ButtonGroup>
                   <Button type="button" onClick={() => setGender('MALE')} gender="MALE">
                     남성
                   </Button>
                   <Button type="button" onClick={() => setGender('FEMALE')} gender="FEMALE">
                     여성
                   </Button>
-                </ButtonGroup>
+                </ButtonGroup> */}
+
+                <RadioGroup value={gender} onChange={(e) => setGender(e.target.value as 'MALE' | 'FEMALE' | '')}>
+                  <FormControlLabel value="MALE" control={<Radio />} label="남성" />
+                  <FormControlLabel value="FEMALE" control={<Radio />} label="여성" />
+                </RadioGroup>
+
                 <ButtonSubmit type="submit">제출</ButtonSubmit>
               </Form>
             </ModalBodyContainer>
@@ -113,10 +120,7 @@ const ModalContentContainer = styled.div`
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.25);
   box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
