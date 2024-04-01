@@ -87,8 +87,8 @@ const SitePictures = () => {
 
   const handleCheckboxChange =
     (destinationId: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
+      // likeDestination(userId, destinationId);
       if (event.target.checked) {
-        // likeDestination(userId, destinationId);
         try {
           // 좋아요 누른 경우 해당 destinationId를 likeDestination으로 전송
           const response = await likeDestination(userId, destinationId);
@@ -120,7 +120,7 @@ const SitePictures = () => {
 
   return (
     // <Box sx={{ width: 395 }}>
-    <Masonry columns={2} spacing={1}>
+    <Masonry columns={2} spacing={1} sequential>
       {/* basic에 있는 모든 목적지 이미지를 표시 */}
       {siteInfoList.data.destinationListResponseMap.basic.map((destination, index) => (
         <SiteItem key={index}>
@@ -148,16 +148,24 @@ const SitePictures = () => {
           {/* 뒷면 */}
           {index === flippedIndex && (
             <Back onClick={() => handleImageClick(index)}>
-              <BackText>
-                {destination.destinationName.length > 10
-                  ? destination.destinationName.slice(0, 9) + '...'
-                  : destination.destinationName}
-
-                <hr />
-                {destination.destinationContent.length > 50
-                  ? destination.destinationContent.slice(0, 50) + '...'
-                  : destination.destinationContent}
-              </BackText>
+              {destination.destinationContent ? ( // destinationContent가 존재하는 경우
+                <BackText>
+                  {destination.destinationName.length > 10
+                    ? destination.destinationName.slice(0, 9) + '...'
+                    : destination.destinationName}
+                  <hr />
+                  {destination.destinationContent.length > 50
+                    ? destination.destinationContent.slice(0, 50) + '...'
+                    : destination.destinationContent}
+                </BackText>
+              ) : (
+                // destinationContent가 null인 경우
+                <BackText>
+                  {destination.destinationName.length > 10
+                    ? destination.destinationName.slice(0, 9) + '...'
+                    : destination.destinationName}
+                </BackText>
+              )}
             </Back>
           )}
         </SiteItem>

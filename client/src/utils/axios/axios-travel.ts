@@ -255,9 +255,9 @@ const likeDestination = (
   userId: number,
   destinationId: number,
 ): Promise<AxiosResponse<LikeResponse>> => {
-  return instance.post<LikeResponse>('like', {
-    userId,
-    destinationId,
+  return oauthInstance.post<LikeResponse>('like', {
+    userId: userId,
+    destinationId: destinationId,
   });
 };
 

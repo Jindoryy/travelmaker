@@ -1,33 +1,44 @@
-import { AxiosResponse } from "axios";
-import { instance, oauthInstance } from "./axios-instance";
+import { AxiosResponse } from 'axios';
+import { instance, oauthInstance } from './axios-instance';
 
 const kakaoauthentication = (code: string): Promise<AxiosResponse<KakaoAuthResponse>> => {
-    return instance.post<KakaoAuthResponse>('login/oauth2/code/kakao', { code });
-}
+  return instance.post<KakaoAuthResponse>('login/oauth2/code/kakao', { code });
+};
 
 const getScheduleList = (): Promise<AxiosResponse<ScheduleResponse>> => {
   return oauthInstance.get<ScheduleResponse>('travel/list');
-}
+};
 
 const getDiaryList = (): Promise<AxiosResponse<DiaryListResponse>> => {
   return oauthInstance.get<DiaryListResponse>('diary/list');
-}
+};
 
 const getDiary = (diaryId: Number): Promise<AxiosResponse<DiaryResponse>> => {
   return oauthInstance.get<DiaryResponse>(`diary/${diaryId}`);
-}
+};
 
 const deleteDiary = (travelId: number) => {
-  return oauthInstance.delete(`travel/${travelId}`)
-}
-const updateExtraUserInfo = (data: UpdateExtraUserInfoRequest): Promise<AxiosResponse<UpdateExtraUserInfoResponse>> => {
+  return oauthInstance.delete(`travel/${travelId}`);
+};
+const updateExtraUserInfo = (
+  data: UpdateExtraUserInfoRequest,
+): Promise<AxiosResponse<UpdateExtraUserInfoResponse>> => {
   return oauthInstance.patch<UpdateExtraUserInfoResponse>('user/update-extra-info', data);
-}
+};
 const getUserStatus = (): Promise<AxiosResponse<UserStatusResponse>> => {
   return oauthInstance.get<UserStatusResponse>('user/status');
 };
 
-export { kakaoauthentication, getScheduleList, getDiaryList, getDiary, deleteDiary, updateExtraUserInfo, getUserStatus, UserStatusResponse };
+export {
+  kakaoauthentication,
+  getScheduleList,
+  getDiaryList,
+  getDiary,
+  deleteDiary,
+  updateExtraUserInfo,
+  getUserStatus,
+  UserStatusResponse,
+};
 
 interface ApiResponse<T> {
   status: string;
@@ -73,7 +84,7 @@ export interface DiaryData {
   name: string;
   startDate: string;
   endDate: string;
-  text : string;
+  text: string;
   imgUrls: string[];
 }
 
@@ -94,8 +105,24 @@ interface UserStatusResponse {
   status: string;
   data: {
     status: string;
-    birthCheck: boolean | null;
-    genderCheck: boolean | null;
+    afterCourseResponse: {
+      startDate: string;
+      travelId: number;
+      cityName: string;
+      imgUrl: string;
+    };
+    onCourseResponse: {
+      cityName: string;
+      startDate: string;
+      courseInfoList: [
+        {
+          destinationName: string;
+          destinationImgUrl: string;
+        },
+      ];
+    };
+    birthCheck: boolean;
+    genderCheck: boolean;
     diaryCheck: boolean;
   };
 }
