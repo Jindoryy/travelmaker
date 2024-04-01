@@ -15,5 +15,8 @@ interface ProvinceResponse {
 const getCourse = (): Promise<AxiosResponse<ProvinceResponse>> => {
     return instance.get<ProvinceResponse>('province/list');
 }
+const getRecommandCourse = (): Promise<AxiosResponse<ProvinceResponse>> => {
+    return instance.get<ProvinceResponse>('province/recommend');
+}
 
-export {getCourse };
+export { getCourse, getRecommandCourse };

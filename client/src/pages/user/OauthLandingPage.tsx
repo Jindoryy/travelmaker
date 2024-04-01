@@ -29,7 +29,7 @@ const OauthLandingPage = () => {
           const { userId, nickName, profileUrl, accessToken, refreshToken } = response.data.data;
           // 스토어에 사용자 정보 저장
           setUserInfo({ userId, nickName, profileUrl });
-          // LocalStorage에 사용자 정보 저장
+          // LocalStorage에 사용자 정보 저장 => Zustand persist를 사용하기 때문에 별도로 같은 키값으로 저장하면 에러발생
           // localStorage.setItem('userInfo', JSON.stringify({ userId, nickName, profileUrl }));
           // LocalStorage에 인증토큰,재발급토큰 저장
           localStorage.setItem('accessToken', accessToken);

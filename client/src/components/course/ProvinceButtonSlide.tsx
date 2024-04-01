@@ -4,7 +4,7 @@ import { Skeleton } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { getCourse } from '../../utils/axios/axios-course';
+import { getRecommandCourse } from '../../utils/axios/axios-course';
 import ProvinceSlideButton from '../../features/course/ProvinceSlideButton';
 
 interface Province {
@@ -70,7 +70,7 @@ const ProvinceButtonSlide = () => {
   };
 
   useEffect(() => {
-    getCourse()
+    getRecommandCourse()
       .then((response) => {
         if (response.status === 200 && response.data) {
           setProvinceContents(response.data.data);
@@ -125,7 +125,6 @@ const Box = styled.div`
 `;
 
 const GudieText = styled.div`
-  font-family: 'Black Han Sans', sans-serif;
   font-size: larger;
   padding: 0 0 10px 10px;
 `;
