@@ -35,6 +35,7 @@ const PageContainer = styled.div`
   min-height: 90vh;
   padding: 0;
   margin: 0;
+  overflow: auto;
 `;
 
 const FooterMargin = styled.div`
