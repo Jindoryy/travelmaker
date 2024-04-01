@@ -9,9 +9,14 @@ const getScheduleList = (): Promise<AxiosResponse<ScheduleResponse>> => {
   return oauthInstance.get<ScheduleResponse>('travel/list');
 }
 
-const getDiaryList = (): Promise<AxiosResponse<DiaryResponse>> => {
-  return oauthInstance.get<DiaryResponse>('diary/list');
+const getDiaryList = (): Promise<AxiosResponse<DiaryListResponse>> => {
+  return oauthInstance.get<DiaryListResponse>('diary/list');
 }
+
+const getDiary = (diaryId: Number): Promise<AxiosResponse<DiaryResponse>> => {
+  return oauthInstance.get<DiaryResponse>(`diary/${diaryId}`);
+}
+
 const deleteDiary = (travelId: number) => {
   return oauthInstance.delete(`travel/${travelId}`)
 }
@@ -22,7 +27,8 @@ const getUserStatus = (): Promise<AxiosResponse<UserStatusResponse>> => {
   return oauthInstance.get<UserStatusResponse>('user/status');
 };
 
-export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo, getUserStatus, UserStatusResponse };
+export { kakaoauthentication, getScheduleList, getDiaryList, getDiary, deleteDiary, updateExtraUserInfo, getUserStatus, UserStatusResponse };
+
 interface ApiResponse<T> {
   status: string;
   data: T;
@@ -30,7 +36,8 @@ interface ApiResponse<T> {
 
 type KakaoAuthResponse = ApiResponse<KakaoAuthData>;
 type ScheduleResponse = ApiResponse<ScheduleData[]>;
-type DiaryResponse = ApiResponse<DiaryData[]>;
+type DiaryListResponse = ApiResponse<DiaryListData[]>;
+type DiaryResponse = ApiResponse<DiaryData>;
 
 interface KakaoAuthData {
   userId: number;
@@ -54,12 +61,20 @@ interface ScheduleData {
   status: 'BEFORE_DIARY' | 'AFTER_DIARY';
 }
 
-interface DiaryData {
+interface DiaryListData {
   diaryId: number;
   name: string;
   startDate: string;
   endDate: string;
   imgUrls: string;
+}
+
+export interface DiaryData {
+  name: string;
+  startDate: string;
+  endDate: string;
+  text : string;
+  imgUrls: string[];
 }
 
 interface UpdateExtraUserInfoRequest {

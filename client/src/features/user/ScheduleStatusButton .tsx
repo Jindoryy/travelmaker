@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ScheduleStatusButton: React.FC<StatusProps> = ({ data }) => {
   const { travelId, status } = data;
+  console.log(travelId);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -15,10 +16,18 @@ const ScheduleStatusButton: React.FC<StatusProps> = ({ data }) => {
         });
         break;
       case '일기작성':
-        navigate(`/diary/write/${travelId}`);
+        navigate(`/diary/write`, {
+          state: {
+            travelId: travelId,
+          },
+        });
         break;
       case '일기보기':
-        navigate(`/diary/detail/${travelId}`);
+        navigate(`/diary/detail`, {
+          state: {
+            diaryId: travelId,
+          },
+        });
         break;
       default:
         console.error('상태값 props 에러, 체크 필요');

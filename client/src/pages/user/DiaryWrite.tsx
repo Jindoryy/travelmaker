@@ -1,7 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { getTravelDetailDiary } from '../../utils/axios/axios-travel';
+import { TravelDetailData } from '../../utils/axios/axios-travel';
+import { postDiaryWithFiles } from '../../utils/axios/axios-diary';
+import { useEffect, useState } from 'react';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -17,67 +21,124 @@ const VisuallyHiddenInput = styled('input')({
 
 const DiaryWrite = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location.state);
+  const { travelId } = location.state || {};
+  const [travelData, setTravelData] = useState<Partial<TravelDetailData>>({});
+  const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    getTravelDetailDiary(travelId)
+      .then((res) => {
+        setTravelData(res.data.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      if (event.target.files.length > 10) {
+        alert('최대 10개까지 업로드 가능합니다.');
+        event.target.value = '';
+        return;
+      }
+      setFiles(Array.from(event.target.files));
+    }
+  };
+
+  const handleSubmit = () => {
+    const diaryText = document.getElementById('text') as HTMLTextAreaElement;
+    const formData = new FormData();
+
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    const diaryAddRequestBlob = new Blob(
+      [
+        JSON.stringify({
+          travelId: travelId,
+          text: diaryText.value,
+        }),
+      ],
+      { type: 'application/json' },
+    );
+    formData.append('diaryAddRequest', diaryAddRequestBlob);
+    postDiaryWithFiles(formData)
+      .then((response) => {
+        console.log(response.data);
+        navigate('/mypage?tab=2');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <>
       <PageContainer>
         <TitleContainer>
-          <TitleCity>대구</TitleCity>
-          <TitleDate>2024.02.15 ~ 2024.02.17</TitleDate>
+          <TitleCity>{travelData.cityName}</TitleCity>
+          <TitleDate>
+            {travelData.startDate} ~ {travelData.endDate}
+          </TitleDate>
         </TitleContainer>
         <PhotoContainer>
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-          style={{backgroundColor: '#566CF0'}}
-        >
-          Upload file
-          <VisuallyHiddenInput type="file" />
-        </Button>
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            style={{ backgroundColor: '#566CF0' }}
+          >
+            Upload file
+            <VisuallyHiddenInput type="file" multiple onChange={handleFileChange} />
+          </Button>
         </PhotoContainer>
         <ContentContainer>
           <StyledTextarea placeholder="일기를 작성해보세요." id="text"></StyledTextarea>
         </ContentContainer>
         <ButtonBox>
-          <ChooseButton>작성</ChooseButton>
+          <ChooseButton onClick={handleSubmit}>작성</ChooseButton>
           <ChooseButtonBorder>목록</ChooseButtonBorder>
         </ButtonBox>
       </PageContainer>
     </>
   );
 };
+
+export default DiaryWrite;
+
 const PageContainer = styled.div`
-  width:412px;
+  width: 412px;
   min-height: 100%;
-  background-color:#eff1fe;
+  background-color: #eff1fe;
   font-size: 1.2rem;
   padding-top: 15px;
-  `;
-  const TitleContainer = styled.div`
+`;
+const TitleContainer = styled.div`
   background-color: white;
   margin: 0px 12px 20px;
   padding: 20px 30px;
   border-radius: 8px;
-  `;
-  const TitleCity = styled.div`
+`;
+const TitleCity = styled.div`
   font-weight: bold;
   margin-bottom: 5px;
-  `;
-  const TitleDate = styled.div`
+`;
+const TitleDate = styled.div`
   font-size: 1.1rem;
   color: #555;
-  `;
-  const PhotoContainer = styled.div`
+`;
+const PhotoContainer = styled.div`
   background-color: white;
   margin: 0px 12px 20px;
   width: 347px;
   padding: 20px 20px;
   border-radius: 8px;
-  `;
-  const ContentContainer = styled.div`
+`;
+const ContentContainer = styled.div`
   background-color: white;
   margin: 0px 12px 10px;
   padding: 20px 20px;
@@ -126,5 +187,3 @@ const ChooseButtonBorder = styled.button`
   font-size: 16px;
   cursor: pointer;
 `;
-
-export default DiaryWrite;
