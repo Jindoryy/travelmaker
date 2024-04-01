@@ -1,33 +1,25 @@
-import { AxiosResponse } from 'axios';
-import { instance, oauthInstance } from './axios-instance';
+import { AxiosResponse } from "axios";
+import { instance, oauthInstance } from "./axios-instance";
 
 const kakaoauthentication = (code: string): Promise<AxiosResponse<KakaoAuthResponse>> => {
-  return instance.post<KakaoAuthResponse>('login/oauth2/code/kakao', { code });
-};
+    return instance.post<KakaoAuthResponse>('login/oauth2/code/kakao', { code });
+}
 
 const getScheduleList = (): Promise<AxiosResponse<ScheduleResponse>> => {
   return oauthInstance.get<ScheduleResponse>('travel/list');
-};
+}
 
 const getDiaryList = (): Promise<AxiosResponse<DiaryResponse>> => {
   return oauthInstance.get<DiaryResponse>('diary/list');
-};
+}
 const deleteDiary = (travelId: number) => {
-  return oauthInstance.delete(`travel/${travelId}`);
-};
-const getUserStatus = (): Promise<AxiosResponse<UserStatusResponse>> => {
-  return oauthInstance.get<UserStatusResponse>('user/status');
-};
+  return oauthInstance.delete(`travel/${travelId}`)
+}
+const updateExtraUserInfo = (data: UpdateExtraUserInfoRequest): Promise<AxiosResponse<UpdateExtraUserInfoResponse>> => {
+  return oauthInstance.patch<UpdateExtraUserInfoResponse>('user/update-extra-info', data);
+}
 
-export {
-  kakaoauthentication,
-  getScheduleList,
-  getDiaryList,
-  deleteDiary,
-  getUserStatus,
-  UserStatusResponse,
-};
-
+export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo };
 interface ApiResponse<T> {
   status: string;
   data: T;
@@ -67,12 +59,13 @@ interface DiaryData {
   imgUrls: string;
 }
 
-interface UserStatusResponse {
+interface UpdateExtraUserInfoRequest {
+  userId: number;
+  gender: 'MALE' | 'FEMALE';
+  birth: string;
+}
+
+interface UpdateExtraUserInfoResponse {
   status: string;
-  data: {
-    status: string;
-    birthCheck: boolean;
-    genderCheck: boolean;
-    diaryCheck: boolean;
-  };
+  data: any;
 }
