@@ -6,6 +6,7 @@ import { getTravelDetailDiary } from '../../utils/axios/axios-travel';
 import { TravelDetailData } from '../../utils/axios/axios-travel';
 import { postDiaryWithFiles } from '../../utils/axios/axios-diary';
 import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -49,6 +50,15 @@ const DiaryWrite = () => {
   const handleSubmit = () => {
     const diaryText = document.getElementById('text') as HTMLTextAreaElement;
     const formData = new FormData();
+
+    if (files.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '일기에 추억을 담아 주세요!',
+      });
+      return;
+    }
 
     files.forEach((file) => {
       formData.append('files', file);
