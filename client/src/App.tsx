@@ -16,6 +16,7 @@ import ProvinceChoicePage from './pages/course/ProvinceChoicePage';
 import MyPage from './pages/user/MyPage';
 import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
+import MakeGroup from './pages/course/MakeGroup';
 
 function App() {
   const router = createBrowserRouter([
@@ -40,6 +41,11 @@ function App() {
             {
               path: 'alonetogether',
               element: <AloneTogetherChoice />,
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: 'makegroup',
+              element: <MakeGroup />,
               errorElement: <ErrorPage />,
             },
             {
