@@ -119,7 +119,7 @@ const Container = styled.div`
   margin-top: 30px;
   border-radius: 20px;
   background: white;
-  box-shadow: 3px 3px 2px gray;
+  box-shadow: 2px 2px 1px gray;
   flex-direction: column;
   font-family: 'Pretendard', sans-serif;
 `;
