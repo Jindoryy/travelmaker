@@ -2,16 +2,17 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cityDetail } from '../../utils/axios/axios-travel';
 import useUserInfo from '../../store/useUserStore';
+import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
 import styled from 'styled-components';
-import { Swiper as SwiperContainer, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 import 'swiper/css';
-import 'swiper/css/effect-cube';
-import 'swiper/css/pagination';
-import { EffectCube, Pagination } from 'swiper';
+import 'swiper/css/free-mode';
+
+import { FreeMode, Pagination } from 'swiper';
 
 interface City {
   cityId: number;
@@ -26,7 +27,8 @@ const CityChoice = () => {
   const [provinceId, setProvinceId] = useState(location.state?.provinceId);
   const [cityList, setCityList] = useState<City[]>([]);
   const { userInfo } = useUserInfo();
-
+  const travelSave = useTravelSave();
+  const travelCity = useTravelCity();
   useEffect(() => {
     if (!userInfo || userInfo.userId === -1) {
       navigate('/login');
@@ -54,9 +56,21 @@ const CityChoice = () => {
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
-
-  const choiceButton = (cityId: number) => {
-    //시티 선택 완료
+  const choiceButton = (cityId: number, cityName: string) => {
+    travelSave.setTravel({
+      cityName: cityName,
+      startDate: travelSave.travel.startDate,
+      endDate: travelSave.travel.endDate,
+      friendIdList: travelSave.travel.friendIdList,
+      transportation: travelSave.travel.transportation,
+      courseList: travelSave.travel.courseList,
+    });
+    travelCity.setTravelCity({
+      cityId: cityId,
+      city: cityName,
+      provinceId: travelCity.travelCity.provinceId,
+      province: travelCity.travelCity.province,
+    });
     navigate('/course/checksite', { state: { cityId: cityId } });
   };
   return (
@@ -77,21 +91,29 @@ const CityChoice = () => {
             : 'Loading...'}
         </CityTypography>
       </CityPaper>
-      <StyledSwiper
-        effect={'cube'}
-        grabCursor={true}
-        pagination={true}
-        modules={[EffectCube, Pagination]}
+      <Swiper
+        slidesPerView={1}
+        spaceBetween={10}
+        freeMode={true}
+        pagination={{
+          clickable: true,
+        }}
+        modules={[Pagination]}
         onSlideChange={(swiper) => handleStepChange(swiper.activeIndex)}
+        style={{ marginTop: '50px' }}
       >
         {cityList.map((city, index) => (
           <SwiperSlide key={index}>
             <SwipeImage src={city.cityUrl} alt={city.cityName} />
           </SwiperSlide>
         ))}
-      </StyledSwiper>
+      </Swiper>
       <ButtonBox>
-        <ChooseButton onClick={() => choiceButton(cityList[activeStep].cityId)}>선택</ChooseButton>
+        <ChooseButton
+          onClick={() => choiceButton(cityList[activeStep].cityId, cityList[activeStep].cityName)}
+        >
+          선택
+        </ChooseButton>
       </ButtonBox>
     </div>
   );
@@ -134,24 +156,16 @@ const CityTypography = styled.div`
   font-size: 25px;
 `;
 
-const StyledSwiper = styled(SwiperContainer)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 98%;
-  height: 450px;
-  margin: 3px 5px;
-  overflow: hidden;
-`;
-
 const SwipeImage = styled.img`
-  display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   margin: auto;
+  border-radius: 10px;
+  display: block;
+  width: 380px;
+  height: 500px;
+  object-fit: cover;
 `;
 
 const ButtonBox = styled(Box)`
@@ -167,7 +181,7 @@ const ChooseButton = styled.button`
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin: 10px;
-  margin-top: 50px;
+  margin-top: 80px;
   padding: 10px;
   border-radius: 8px;
   font-family: 'Pretendard', sans-serif;
