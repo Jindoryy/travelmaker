@@ -190,6 +190,7 @@ const NextPageButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   z-index: 10;
+  margin-bottom: 10px;
 `;
 
 export default CheckSite;
