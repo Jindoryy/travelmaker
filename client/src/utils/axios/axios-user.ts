@@ -22,7 +22,7 @@ const getUserStatus = (): Promise<AxiosResponse<UserStatusResponse>> => {
   return oauthInstance.get<UserStatusResponse>('user/status');
 };
 
-export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo, getUserStatus };
+export { kakaoauthentication, getScheduleList, getDiaryList, deleteDiary, updateExtraUserInfo, getUserStatus, UserStatusResponse };
 interface ApiResponse<T> {
   status: string;
   data: T;
