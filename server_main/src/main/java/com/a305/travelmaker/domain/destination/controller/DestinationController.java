@@ -12,13 +12,9 @@ import com.a305.travelmaker.global.common.exception.ErrorCode;
 import com.a305.travelmaker.global.common.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DestinationController {
 
   private final DestinationService destinationService;
-  private final TokenProvider tokenProvider;
 
   @Operation(summary = "장소 거리 조회", description = "장소들 간의 거리를 조회한다.")
   @GetMapping("/distance")
@@ -52,22 +47,26 @@ public class DestinationController {
   @Operation(summary = "CF 장소 목록", description = "CF 장소 목록 조회한다.")
   @GetMapping("/list")
   public SuccessResponse<DestinationCfListResponse> getDestinationList(
-  ) {
-
-//    String token = request.getHeader("Authorization").substring(7);
-//    Long userId = tokenProvider.getUserIdFromToken(token);
-
-    return new SuccessResponse<>(destinationService.findDestinationList(125L));
-  }
-
-  @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")
-  @GetMapping("/recommend")
-  public SuccessResponse<DestinationRecommendResponse> getDestinationRecommend(@RequestParam int cityId, @RequestParam(required = false) List<Long> friendIdList, @AuthenticationPrincipal UserDetail userDetail) {
+      @AuthenticationPrincipal UserDetail userDetail) {
     if (userDetail == null) {
       throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
     }
     Long userId = userDetail.getId();
 
-    return new SuccessResponse<>(destinationService.findDestinationRecommend(userId, cityId, friendIdList));
+    return new SuccessResponse<>(destinationService.findDestinationList(userId));
+  }
+
+  @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")
+  @GetMapping("/recommend")
+  public SuccessResponse<DestinationRecommendResponse> getDestinationRecommend(
+      @RequestParam int cityId, @RequestParam(required = false) List<Long> friendIdList,
+      @AuthenticationPrincipal UserDetail userDetail) {
+    if (userDetail == null) {
+      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+    }
+    Long userId = userDetail.getId();
+
+    return new SuccessResponse<>(
+        destinationService.findDestinationRecommend(userId, cityId, friendIdList));
   }
 }
