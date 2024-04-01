@@ -1,5 +1,7 @@
 package com.a305.travelmaker.domain.user.entity;
 
+import com.a305.travelmaker.domain.course.entity.Course;
+import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.user.dto.GenderStatus;
 import com.a305.travelmaker.domain.user.dto.UserRole;
 import com.a305.travelmaker.domain.user.dto.UserStatus;
@@ -8,6 +10,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +31,9 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Travel> travelList = new ArrayList<>();
 
     @Column(nullable = false)
     private Long kakaoId;
