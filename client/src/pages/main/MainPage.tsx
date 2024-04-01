@@ -69,32 +69,36 @@ const MainPage = () => {
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
 
-      {/* BEFORE COURSE */}
-      {/* <SitePicturesContainer>
-        <SitePicturesStyle>
-          <SitePictures />
-        </SitePicturesStyle>
-      </SitePicturesContainer> */}
+      {/* 상태에 따라서 컴포넌트 렌더링 */}
+      {userStatus?.data.status === 'BEFORE_COURSE' && (
+        <SitePicturesContainer>
+          <SitePicturesStyle>
+            <SitePictures />
+          </SitePicturesStyle>
+        </SitePicturesContainer>
+      )}
 
-      {/* AFTER COURSE */}
-      {/* 날씨 컴포넌트 */}
-      {/* <div>
-        <Container className="container">{weather && <Weather weather={weather} />}</Container>
-      </div> */}
-      {/* d-day */}
+      {userStatus?.data.status === 'AFTER_COURSE' && (
+        <div>
+          <Container className="container">{weather && <Weather weather={weather} />}</Container>
+          {/* d-day */}
+          {/* 내 코스보기 페이지로 이동 div */}
+          <StyledMyCourseListDiv>
+            <MyCourseListDiv />
+          </StyledMyCourseListDiv>
+          {/* memo */}
+        </div>
+      )}
 
-      {/* 내 코스보기 페이지로 이동 div */}
-      <StyledMyCourseListDiv>
-        <MyCourseListDiv />
-      </StyledMyCourseListDiv>
-      {/* memo */}
-
-      {/* ON COURSE */}
-      {/* 내 코스보기 페이지로 이동 div */}
-      {/* <StyledMyCourseListDiv>
-        <MyCourseListDiv />
-      </StyledMyCourseListDiv> */}
-      {/* course info */}
+      {userStatus?.data.status === 'ON_COURSE' && (
+        <div>
+          {/* 내 코스보기 페이지로 이동 div */}
+          <StyledMyCourseListDiv>
+            <MyCourseListDiv />
+          </StyledMyCourseListDiv>
+          {/* course info */}
+        </div>
+      )}
     </MainPageContainer>
   );
 };

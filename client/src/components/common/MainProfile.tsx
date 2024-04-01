@@ -31,7 +31,7 @@ const Profile = ({ userState }: { userState: string }) => {
     switch (userState) {
       case 'AFTER_COURSE':
         return require('../../assets/image/KissingCat.png'); // 이미지 가져오는 방식 수정
-      case 'BEFORE_COURSE':
+      case 'BEFORE_COURSE' || '':
         return require('../../assets/image/WorldMap.png'); // 이미지 가져오는 방식 수정
       default:
         return require('../../assets/image/AirplaneDeparture.png'); // 이미지 가져오는 방식 수정
