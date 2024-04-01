@@ -171,6 +171,32 @@ interface TravelSaveType {
 interface TravelSaveResponse {
   success: boolean;
 }
+
+//저장된 여행 조회하기
+interface TravelDetailPoint {
+  destinationId: number;
+  latitude: number;
+  longitude: number;
+}
+interface TravelDetailDestination {
+  point: TravelDetailPoint;
+  nextDestinationDistance: number;
+  destinationName: string;
+  destinationType: string;
+  destinationImgUrl: string;
+}
+interface TravelDetailData {
+  cityName: string;
+  startDate: string;
+  endDate: string;
+  transportation: string;
+  travelList: TravelDetailDestination[][];
+}
+interface TravelDetailResponse {
+  status: string;
+  data: TravelDetailData;
+}
+
 //시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
   return oauthInstance.get<CityResponse>(`city/${provinceId}`, {
@@ -246,8 +272,13 @@ const destinationDistance = (destinationsIdList: number[]) => {
 
 //여행 최종 저장하기
 const travelSave = (travelInfo: TravelSaveType) => {
-  console.log(travelInfo);
   return oauthInstance.post<TravelSaveResponse>('travel/info', travelInfo);
+};
+
+//저장된 여행 조회하기
+const getTravelDetail = (travelId: any) => {
+  let numberOfTravel = Number(travelId.travelId);
+  return oauthInstance.get<TravelDetailResponse>(`travel/${numberOfTravel}`);
 };
 
 export {
@@ -260,4 +291,5 @@ export {
   destinationArray,
   destinationsListDetail,
   travelSave,
+  getTravelDetail,
 };

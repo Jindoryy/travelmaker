@@ -35,7 +35,7 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.6",
-    "swiper": "^8.0.0",
+    "swiper": "^8.4.7",
     "web-vitals": "^2.1.4",
     "zustand": "^4.5.2"
   },
