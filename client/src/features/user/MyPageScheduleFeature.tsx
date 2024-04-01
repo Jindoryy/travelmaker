@@ -5,7 +5,7 @@ import { deleteDiary } from '../../utils/axios/axios-user';
 import Swal from 'sweetalert2';
 
 const MyPageScheduleFeature: React.FC<MyPageScheduleFeatureProps> = ({ data }) => {
-  const { travelId, cityName, startDate, endDate, friendNameList, imgUrl, status } = data;
+  const { travelId, cityName, startDate, endDate, friendNameList, imgUrl, status, diaryId } = data;
 
   const friends = friendNameList.join(', ');
   // 현재 날짜를 확인합니다.
@@ -67,7 +67,9 @@ const MyPageScheduleFeature: React.FC<MyPageScheduleFeatureProps> = ({ data }) =
         </TextDate>
         <TextFreind>{friends}</TextFreind>
         <ButtonPlace>
-          <ScheduleStatusButton data={{ travelId: travelId, status: buttonStatus }} />
+          <ScheduleStatusButton
+            data={{ travelId: travelId, status: buttonStatus, diaryId: diaryId }}
+          />
         </ButtonPlace>
       </TextContainer>
     </FeatureContainer>
@@ -84,6 +86,7 @@ interface SchedulerData {
   friendNameList: string[];
   imgUrl: string;
   status: 'BEFORE_DIARY' | 'AFTER_DIARY';
+  diaryId: number;
 }
 
 interface MyPageScheduleFeatureProps {
