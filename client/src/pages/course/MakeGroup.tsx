@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import Swal from 'sweetalert2';
 
 const MakeGroup = () => {
   const navigate = useNavigate();
@@ -34,7 +35,10 @@ const MakeGroup = () => {
         setSearchResult(filteredFriends);
       })
       .catch((err: Error) => {
-        alert('이름이나 태그를 다시 한 번 확인해주세요!');
+        Swal.fire({
+          icon: 'warning',
+          text: '이름이나 태그를 다시 한 번 확인해주세요!',
+        });
         console.error(err);
       });
   };
