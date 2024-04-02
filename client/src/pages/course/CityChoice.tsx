@@ -10,15 +10,24 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
-import 'swiper/css';
-import 'swiper/css/free-mode';
-
-import { FreeMode, Pagination } from 'swiper';
+import Slider from 'react-slick';
 
 interface City {
   cityId: number;
   cityName: string;
   cityUrl: string;
+}
+
+interface Province {
+  provinceId: number;
+  provinceName: string;
+  provinceUrl: string;
+}
+
+interface ArrowProps {
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
 const CityChoice = () => {
@@ -41,6 +50,50 @@ const CityChoice = () => {
     }
   }, [userInfo, navigate]);
 
+  function NextArrow(props: ArrowProps) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: 'block',
+          position: 'absolute',
+          top: '55%',
+          right: '15px',
+          zIndex: 1,
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+  function PrevArrow(props: ArrowProps) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: 'block',
+          position: 'absolute',
+          top: '55%',
+          left: '15px',
+          zIndex: 1,
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+  const settings = {
+    outline: false,
+    dots: false,
+    infinite: true,
+    autoplay: false,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
   useEffect(() => {
     if (provinceId) {
       getCity(provinceId);
@@ -97,17 +150,7 @@ const CityChoice = () => {
             : 'Loading...'}
         </CityTypography>
       </CityPaper>
-      <Swiper
-        slidesPerView={1}
-        spaceBetween={10}
-        freeMode={true}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Pagination]}
-        onSlideChange={(swiper) => handleStepChange(swiper.activeIndex)}
-        style={{ marginTop: '65px' }}
-      >
+      <Slider {...settings} afterChange={(swipe) => handleStepChange(swipe)}>
         {cityList.map((city, index) => (
           <SwiperSlide key={index}>
             {index < 3 ? (
@@ -123,7 +166,7 @@ const CityChoice = () => {
             <SwipeImage src={city.cityUrl} alt={city.cityName}></SwipeImage>
           </SwiperSlide>
         ))}
-      </Swiper>
+      </Slider>
       <ButtonBox>
         <ChooseButton
           onClick={() => choiceButton(cityList[activeStep].cityId, cityList[activeStep].cityName)}
@@ -144,6 +187,7 @@ const CityPaper = styled.div`
   background-color: ${(props) => props.theme.subtext};
   padding-top: 30px;
   position: relative;
+  margin-bottom: 50px;
 `;
 
 const CityLine = styled.div`

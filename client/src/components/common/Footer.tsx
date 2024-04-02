@@ -51,7 +51,7 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
         className={activeButton === 2 ? 'active' : undefined}
         onClick={() => {
           setActiveButton(2);
-          navigate('/');
+          navigate('/main');
         }}
       >
         <svg
