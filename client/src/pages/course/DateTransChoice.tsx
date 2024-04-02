@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTravelSave, useTravelInfo } from '../../store/useTravelStore';
+import useUserInfo from '../../store/useUserStore';
+import { getAlreadyConfirm } from '../../utils/axios/axios-travel';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import dayjs, { Dayjs } from 'dayjs';
@@ -18,7 +20,18 @@ const DateTransChoice = () => {
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const travelSaveStore = useTravelSave();
   const travelInfoStore = useTravelInfo();
+  const userInfo = useUserInfo();
 
+  useEffect(() => {
+    console.log(userInfo.userInfo.userId);
+    getAlreadyConfirm(userInfo.userInfo.userId)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   const transportations = [
     {
       image:
