@@ -103,7 +103,8 @@ public class UserService {
     // 여행 계획이 있는 경우
     else if (userStatus.equals(UserStatus.AFTER_COURSE)) {
 
-      Travel afterCourse = travelRepository.findNextTravelByUserId(userId, LocalDate.now());
+      Travel afterCourse = travelRepository.findFirstByUserIdAndStartDateGreaterThanEqualOrderByStartDateAsc(
+          userId, LocalDate.now());
 
       if (afterCourse != null) {
 
