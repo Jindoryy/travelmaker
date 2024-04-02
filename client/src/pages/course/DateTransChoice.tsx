@@ -19,6 +19,7 @@ const DateTransChoice = () => {
   const [selectedTab, setSelectedTab] = useState('');
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [savedDate, setSavedDate] = useState<any>([]);
   const travelSaveStore = useTravelSave();
   const travelInfoStore = useTravelInfo();
   const userInfo = useUserInfo();
@@ -28,6 +29,23 @@ const DateTransChoice = () => {
     getAlreadyConfirm(userInfo.userInfo.userId)
       .then((response) => {
         console.log(response.data);
+        const dates = response.data;
+        if (dates) {
+          const getSavedDate: string[] = [];
+          dates.map((dateObj: any) => {
+            const startDate = new Date(dateObj.startDate);
+            const endDate = new Date(dateObj.endDate);
+            const currentDate = new Date(startDate);
+        
+            while (currentDate <= endDate) {
+              getSavedDate.push(currentDate.toISOString().slice(0, 10));
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+          });
+          console.log(getSavedDate);
+          setSavedDate(getSavedDate);
+        }
+        
       })
       .catch((err) => {
         console.error(err);
@@ -138,6 +156,7 @@ const DateTransChoice = () => {
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
                   minDate={dayjs().startOf('day')}
+                  shouldDisableDate={(date) => savedDate.includes(date.format('YYYY-MM-DD'))}
                 />
               </DatePickerContainer>
               <DatePickerContainer>

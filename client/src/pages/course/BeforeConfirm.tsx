@@ -235,7 +235,7 @@ const BeforeConfirm = () => {
       .catch((err: any) => {
         console.error(err);
       });
-    window.location.replace('mypage');
+    navigate('/mypage')
   };
   if (selectedDate.length === 0) {
     return <LoadingComponent />;

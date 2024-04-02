@@ -12,12 +12,16 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
   const { userInfo } = useUserInfo();
   const location = useLocation();
   const isCoursePage = location.pathname.startsWith('/course');
+  const isMyPage = location.pathname.startsWith('/mypage');
+  const isDiaryPage = location.pathname.startsWith('/diary');
 
   useEffect(() => {
     if (isCoursePage) {
       setActiveButton(1);
-    } 
-  }, [isCoursePage]);
+    } else if (isMyPage || isDiaryPage) {
+      setActiveButton(3);
+    }
+  }, [isCoursePage, isMyPage, isDiaryPage]);
 
   const checkLoginAndNavigatetoMap = () => {
     if (userInfo.userId === -1 || userInfo.userId === undefined) {
