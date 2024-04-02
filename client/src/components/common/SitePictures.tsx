@@ -67,8 +67,8 @@ const SitePictures = () => {
   const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
   const location = useLocation();
   const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
-  // const userId = userInfo.userId; // userId 가져오기
-  const userId = 126;
+  const userId = userInfo.userId; // userId 가져오기
+  // const userId = 126;
   useEffect(() => {
     // 컴포넌트가 마운트될 때 한 번만 실행
     getSiteInfoList();
