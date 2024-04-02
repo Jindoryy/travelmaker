@@ -44,7 +44,6 @@ export default DDayDiv;
 
 const DDayContainer = styled.div`
   border-radius: 20px;
-
   margin: 5px;
   padding: 10px;
   text-align: center;

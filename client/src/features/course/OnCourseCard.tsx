@@ -38,7 +38,13 @@ const OnCourseCard = () => {
           <Swiper spaceBetween={30} slidesPerView={1} navigation pagination={{ clickable: true }}>
             {userStatus.data.onCourseResponse.courseInfoList.map((destination, index) => (
               <SwiperSlide key={index}>
-                <img src={destination.destinationImgUrl} alt={destination.destinationName} />
+                <OverlayContainer>
+                  <StyledImg
+                    src={destination.destinationImgUrl}
+                    alt={destination.destinationName}
+                  />
+                  <TextOverlay>{destination.destinationName}</TextOverlay>
+                </OverlayContainer>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -52,7 +58,7 @@ export default OnCourseCard;
 
 const OnCourseCards = styled.div`
   border-radius: 20px;
-  background-color: white;
+  height: auto;
   margin: 10px;
   padding: 10px;
 `;
@@ -73,9 +79,21 @@ const OverlayContainer = styled.div`
 
 const TextOverlay = styled.div`
   position: absolute;
-  top: 50%;
+  bottom: 50%; /* 예시로 설정한 위치입니다. 원하는 위치로 조정하세요. */
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
+  font-family: 'Pretendard';
+  font-weight: bold;
+  font-size: 32px;
   text-align: center;
   color: white;
+`;
+
+const StyledImg = styled.img`
+  max-width: 412px;
+  width: 380px;
+  height: 160px;
+  object-fit: cover;
+  /* height: auto; */
+  border-radius: 20px; /* 예시로 추가한 스타일 */
 `;
