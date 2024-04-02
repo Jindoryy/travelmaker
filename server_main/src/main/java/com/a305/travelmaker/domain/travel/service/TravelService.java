@@ -694,8 +694,9 @@ public class TravelService {
       destinationsIdList = new ArrayList<>();
       String[] destinationList = course.getDestinationList().split(",");
       for (String dId : destinationList) {
-
-        destinationsIdList.add(Integer.parseInt(dId));
+        if (!dId.isEmpty()) { // 빈 문자열인지 확인
+          destinationsIdList.add(Integer.parseInt(dId));
+        }
       }
 
       destinationDistanceResponses.add(destinationService.findDestinationDistance(
