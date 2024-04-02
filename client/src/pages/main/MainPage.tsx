@@ -4,6 +4,8 @@ import Profile from '../../components/common/MainProfile';
 import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
 import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
+import DDayDiv from '../../features/course/DDayDiv';
+import OnCourseCard from '../../features/course/OnCourseCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
@@ -59,9 +61,10 @@ const MainPage = () => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
     getUserStatus()
       .then((response) => {
-        console.log(response.data.data.birthCheck);
-        console.log(response.data.data.genderCheck);
-        console.log(response.data.data.diaryCheck);
+        // console.log(response.data.data.birthCheck);
+        // console.log(response.data.data.genderCheck);
+        // console.log(response.data.data.diaryCheck);
+        console.log(response.data.data.status);
         setUserStatus(response.data); // 상태를 업데이트
         if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
           setIsOpenModal(true);
@@ -90,37 +93,40 @@ const MainPage = () => {
       <StyledProfile>
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
-
       {/* 상태에 따라서 컴포넌트 렌더링 */}
-      {userStatus?.data.status === 'BEFORE_COURSE' && (
+      {/* {userStatus?.data.status === 'BEFORE_COURSE'&& (
         <SitePicturesContainer>
           <SitePicturesStyle>
             <SitePictures />
           </SitePicturesStyle>
         </SitePicturesContainer>
-      )}
-
-      {userStatus?.data.status === 'AFTER_COURSE' && (
-        <div>
-          <Container className="container">{weather && <Weather weather={weather} />}</Container>
-          {/* d-day */}
-          {/* 내 코스보기 페이지로 이동 div */}
-          <StyledMyCourseListDiv>
-            <MyCourseListDiv />
-          </StyledMyCourseListDiv>
-          {/* memo */}
-        </div>
-      )}
-
-      {userStatus?.data.status === 'ON_COURSE' && (
-        <div>
-          {/* 내 코스보기 페이지로 이동 div */}
-          <StyledMyCourseListDiv>
-            <MyCourseListDiv />
-          </StyledMyCourseListDiv>
-          {/* course info */}
-        </div>
-      )}
+      )} */}
+      {/* {userStatus?.data.status === 'AFTER_COURSE' && ( */}
+      {/* <div>
+        <Container className="container">{weather && <Weather weather={weather} />}</Container>
+      </div> */}
+      {/* d-day */}
+      {/* <StyledDDAY>
+        <DDayDiv></DDayDiv>
+      </StyledDDAY> */}
+      {/* 내 코스보기 페이지로 이동 div */}
+      {/* <StyledMyCourseListDiv>
+        <MyCourseListDiv />
+      </StyledMyCourseListDiv> */}
+      {/* memo */}
+      {/* )} */}
+      {/* {userStatus?.data.status === 'ON_COURSE' && (
+        <div> */}
+      {/* 내 코스보기 페이지로 이동 div */}
+      <StyledMyCourseListDiv>
+        <MyCourseListDiv />
+      </StyledMyCourseListDiv>
+      {/* course info */}
+      <StyledCourseCard>
+        <OnCourseCard></OnCourseCard>
+      </StyledCourseCard>
+      {/* </div>
+      )} */}
     </MainPageContainer>
   );
 };
@@ -195,6 +201,26 @@ const StyledMyCourseListDiv = styled.div`
   width: 412px;
   text-align: center;
   padding-top: 380px;
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+
+const StyledDDAY = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  /* padding-top: 380px; */
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+
+const StyledCourseCard = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  /* padding-top: 380px; */
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;
