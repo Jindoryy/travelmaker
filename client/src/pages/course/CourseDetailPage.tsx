@@ -32,12 +32,6 @@ const CourseDetailPage = () => {
   const [travelList, setTravelList] = useState<any>([[]]);
 
   useEffect(() => {
-    if (travelSave.travel.startDate === '' || travelSave.travel.endDate === '') {
-      navigate('/');
-    }
-  }, []);
-
-  useEffect(() => {
     if (!userInfo || userInfo.userId === -1) {
       navigate('/login');
     }
