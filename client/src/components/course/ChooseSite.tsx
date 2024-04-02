@@ -4,7 +4,7 @@ import { destinationDetail, destinationArray } from '../../utils/axios/axios-tra
 import HeaderTabs from '../../components/common/HeaderTabs';
 import ChooseSitePictures from './ChooseSitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useTravelInfo, useTravelSave } from '../../store/useTravelStore';
+import { useTravelCity, useTravelSave, useTravelInfo } from '../../store/useTravelStore';
 
 interface DestinationResponse {
   status: string;
@@ -24,7 +24,8 @@ const ChooseSite: React.FC<{
   const [selectedTab, setSelectedTab] = useState(1);
   const [destinationList, setDestinationList] = useState<any>([[]]);
   const travelSave = useTravelSave();
-  const [cityId, setCityId] = useState<any>(travelSave.travel.cityName);
+  const travelCity = useTravelCity();
+  const [cityId, setCityId] = useState<any>(travelCity.travelCity.cityId);
   const [allList, setAllList] = useState<any>([[]]);
   const [sightsList, setSightsList] = useState<any>([]);
   const [foodList, setFoodList] = useState<any>([]);
@@ -38,11 +39,10 @@ const ChooseSite: React.FC<{
     }
   }, []);
 
-  const getDestinationInfo = (cityId: string) => {
-    const numberId = Number(cityId);
-    destinationDetail(numberId)
+  const getDestinationInfo = (cityId: number) => {
+    const friendIds = travelSave.travel.friendIdList;
+    destinationDetail(cityId, friendIds)
       .then((response) => {
-        console.log(response.data.data);
         const newList = response.data.data.destinationRecommendList;
         getDivide(newList);
         getDestinationDetail(newList);
