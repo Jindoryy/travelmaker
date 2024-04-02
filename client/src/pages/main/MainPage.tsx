@@ -11,6 +11,7 @@ import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
 import ExtraInfoModal from '../../components/common/ExtraInfoModal';
 import DiaryAlert from '../../components/common/DiaryAlert';
+import useUserInfo from '../../store/useUserStore';
 
 interface WeatherData {
   name: string;
@@ -54,6 +55,8 @@ const MainPage = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
 
+  const { userInfo } = useUserInfo();
+
   const handleDisplayModal = useCallback(() => {
     setIsOpenModal((prev) => !prev);
   }, []);
@@ -64,23 +67,27 @@ const MainPage = () => {
 
   useEffect(() => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
-    getUserStatus()
-      .then((response) => {
-        console.log(response.data.data.status);
-        setUserStatus(response.data); // 상태를 업데이트
-        if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
-          setIsOpenModal(true);
-        } else if (response.data.data.diaryCheck === true) {
-          setIsOpenAlert(true);
-        } else {
-          setIsOpenModal(false);
-          setIsOpenAlert(false);
-        }
-      })
-      .catch((error) => {
-        console.error(error.message); // 오류 메시지 설정
-      });
-  }, []);
+    if (userInfo.userId !== -1) {
+      getUserStatus()
+        .then((response) => {
+          console.log(response.data.data.birthCheck);
+          console.log(response.data.data.genderCheck);
+          console.log(response.data.data.diaryCheck);
+          setUserStatus(response.data); // 상태를 업데이트
+          if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
+            setIsOpenModal(true);
+          } else if (response.data.data.diaryCheck === true) {
+            setIsOpenAlert(true);
+          } else {
+            setIsOpenModal(false);
+            setIsOpenAlert(false);
+          }
+        })
+        .catch((error) => {
+          console.error(error.message); // 오류 메시지 설정
+        });
+    }
+  }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
 
   return (
     // 고정
