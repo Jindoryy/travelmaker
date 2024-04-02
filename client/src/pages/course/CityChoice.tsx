@@ -29,11 +29,11 @@ const CityChoice = () => {
   const { userInfo } = useUserInfo();
   const travelSave = useTravelSave();
   const travelCity = useTravelCity();
-  useEffect(() => {
-    if (!userInfo || userInfo.userId === -1) {
-      navigate('/login');
-    }
-  }, [userInfo, navigate]);
+  // useEffect(() => {
+  //   if (!userInfo || userInfo.userId === -1) {
+  //     navigate('/login');
+  //   }
+  // }, [userInfo, navigate]);
 
   useEffect(() => {
     if (provinceId) {
@@ -100,7 +100,7 @@ const CityChoice = () => {
         }}
         modules={[Pagination]}
         onSlideChange={(swiper) => handleStepChange(swiper.activeIndex)}
-        style={{ marginTop: '50px' }}
+        style={{ marginTop: '25px' }}
       >
         {cityList.map((city, index) => (
           <SwiperSlide key={index}>
@@ -127,7 +127,6 @@ const CityPaper = styled.div`
   align-items: center;
   border: none;
   background-color: ${(props) => props.theme.subtext};
-  margin-top: 30px 0;
   padding-top: 30px;
   position: relative;
 `;
@@ -164,7 +163,7 @@ const SwipeImage = styled.img`
   border-radius: 10px;
   display: block;
   width: 380px;
-  height: 500px;
+  height: 450px;
   object-fit: cover;
 `;
 
@@ -181,7 +180,7 @@ const ChooseButton = styled.button`
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin: 10px;
-  margin-top: 80px;
+  margin-top: 50px;
   padding: 10px;
   border-radius: 8px;
   font-family: 'Pretendard', sans-serif;
