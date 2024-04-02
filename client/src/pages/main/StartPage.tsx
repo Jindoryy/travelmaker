@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useUserInfo from '../../store/useUserStore';
 import styled from 'styled-components';
 import { useTheme } from '@mui/material/styles';
 import MobileStepper from '@mui/material/MobileStepper';
@@ -11,6 +12,15 @@ const StartPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
+  
+  const { userInfo } = useUserInfo();
+
+  useEffect(() => {
+  
+    if (userInfo.userId !== -1) {
+      navigate('/main');
+    }
+  }, [userInfo, navigate]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

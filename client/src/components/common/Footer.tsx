@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { SVGProps } from 'react';
-import { To, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,10 +10,29 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
   const [activeButton, setActiveButton] = useState(2);
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
+  const location = useLocation();
+  const isCoursePage = location.pathname.startsWith('/course');
 
+  useEffect(() => {
+    if (isCoursePage) {
+      setActiveButton(1);
+    } 
+  }, [isCoursePage]);
+
+  const checkLoginAndNavigatetoMap = () => {
+    if (userInfo.userId === -1 || userInfo.userId === undefined) {
+      // userId가 -1이거나 undefined면 로그인 페이지로 이동
+      setActiveButton(0);
+      navigate('/login');
+    } else {
+      setActiveButton(1);
+      navigate('/course/datetrans');
+    }
+  }
   const checkLoginAndNavigate = () => {
     if (userInfo.userId === -1 || userInfo.userId === undefined) {
       // userId가 -1이거나 undefined면 로그인 페이지로 이동
+      setActiveButton(0);
       navigate('/login');
     } else {
       setActiveButton(3);
@@ -26,10 +45,7 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       <OneButton
         disableRipple
         className={activeButton === 1 ? 'active' : undefined}
-        onClick={() => {
-          setActiveButton(1);
-          navigate('/course/datetrans');
-        }}
+        onClick={() => { checkLoginAndNavigatetoMap() }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +123,7 @@ const FooterBox = styled(Box)`
   align-items: center;
   max-width: 412px;
   width: 100vw;
-  padding: 10px 0;
+  padding: 15px 0;
   margin: auto;
   position: fixed;
   bottom: 0;
