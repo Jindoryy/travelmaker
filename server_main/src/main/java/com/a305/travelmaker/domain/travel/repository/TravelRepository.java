@@ -16,11 +16,10 @@ public interface TravelRepository extends JpaRepository<Travel, Integer> {
   long countByUserIdAndStatusAndEndDateBetween(Long userId, DiaryStatus status, LocalDate start, LocalDate end);
   List<Travel> findByUserIdAndStatusAndStartDateBetween(Long userId, DiaryStatus status, LocalDate start, LocalDate end);
 
-  @Query("SELECT t FROM Travel t WHERE t.user.id = :userId AND t.startDate >= :today ORDER BY ABS(DATEDIFF(t.startDate, :today)) ASC")
-  Travel findNextTravelByUserId(Long userId, LocalDate today);
+  Travel findFirstByUserIdAndStartDateGreaterThanEqualOrderByStartDateAsc(Long userId, LocalDate today);
 
   @Query("SELECT t FROM Travel t WHERE t.user.id = :userId AND :today BETWEEN t.startDate AND t.endDate")
   Travel findSingleTravelByUserIdAndTodayBetweenStartDateAndEndDate(Long userId, LocalDate today);
 
-
+  Optional<Travel> findFirstByUserIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Long userId, LocalDate startDate, LocalDate endDate);
 }
