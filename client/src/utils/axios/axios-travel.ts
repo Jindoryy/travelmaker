@@ -232,11 +232,12 @@ const destinationsListDetail = (destinationIdList: number[] | undefined) => {
   });
 };
 
-//시 선택 완료
-const destinationDetail = (cityId: number) => {
+//시 선택 완료 -> 친구리스트, cityid넘기기
+const destinationDetail = (cityId: number, friendList: any) => {
   return oauthInstance.get<DestinationResponse>('destination/recommend', {
     params: {
       cityId: cityId,
+      friendIdList: friendList.join(','),
     },
   });
 };

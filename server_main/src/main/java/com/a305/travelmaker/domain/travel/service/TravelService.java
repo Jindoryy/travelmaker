@@ -29,6 +29,7 @@ import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
+import com.a305.travelmaker.domain.user.service.SchedulingService;
 import com.a305.travelmaker.global.common.dto.DestinationDistanceResponse;
 import com.a305.travelmaker.global.config.RestConfig;
 import com.a305.travelmaker.global.util.FileUtil;
@@ -45,9 +46,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +77,7 @@ public class TravelService {
   private final CourseRepository courseRepository;
   private final UserRepository userRepository;
   private final DiaryRepository diaryRepository;
+  private final SchedulingService schedulingService;
 
   @Value("${cloud.aws.s3.base-url}")
   private String baseUrl;
@@ -582,7 +586,11 @@ public class TravelService {
   @Transactional
   public void saveTravel(Long userId, TravelInfoRequest travelInfoRequest) {
 
-    // 여행 저장하면 코스 데이터는 무조건 생성.
+    // 해당 유저가 가진 여행 정보들 중에서 생성할려는 여행 정보와 일정이 중복되면 저장 못하게 하기
+    User user = userRepository.findById(userId).get();
+    boolean hasTravelInfo = travelRepository.existsByUserIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+            userId, travelInfoRequest.getStartDate(), travelInfoRequest.getEndDate());
+    if (hasTravelInfo) return;
 
     // 리스트 형태로 받아온 친구 ID를 String 형태로 바꿔서 ,로 구분해 저장
     String friends = null;
@@ -592,8 +600,6 @@ public class TravelService {
           .map(Object::toString)
           .collect(Collectors.joining(","));
     }
-
-    User user = userRepository.findById(userId).get();
 
     Travel travel = Travel.builder()
         .user(user)
@@ -607,6 +613,7 @@ public class TravelService {
     System.out.println(travel);
     travelRepository.save(travel);
 
+    // 여행 저장하면 코스 데이터는 무조건 생성.
     // 오늘 날짜 구하기
     LocalDate today = LocalDate.now();
 
@@ -626,6 +633,8 @@ public class TravelService {
               .build()
       );
     }
+
+    schedulingService.updateUsersBasedOnTravelDates();
   }
 
   public OnCourseResponse findTravelAfterDetail(Integer id) {
@@ -668,16 +677,16 @@ public class TravelService {
         .build();
   }
 
-  public boolean checkUserDiaryStatus(Long userId) {
-    LocalDate today = LocalDate.now();
-    LocalDate weekAgo = today.minusWeeks(1);
-
-    // 오늘 기준으로 일주일 전까지 탐색 유무만 체크하면 되므로 count
-    long count = travelRepository.countByUserIdAndStatusAndStartDateBetween(
-        userId, DiaryStatus.BEFORE_DIARY, today, weekAgo);
-
-    return count > 0;
-  }
+//  public boolean checkUserDiaryStatus(Long userId) {
+//    LocalDate today = LocalDate.now();
+//    LocalDate weekAgo = today.minusWeeks(1);
+//
+//    // 오늘 기준으로 일주일 전까지 탐색 유무만 체크하면 되므로 count
+//    long count = travelRepository.countByUserIdAndStatusAndEndDateBetween(
+//        userId, DiaryStatus.BEFORE_DIARY, today, weekAgo);
+//
+//    return count > 0;
+//  }
 
   public TravelInfoResponse findTravelInfo(Integer id) {
 
