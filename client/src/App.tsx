@@ -22,6 +22,7 @@ import DateTransChoice from './pages/course/DateTransChoice';
 import AloneTogetherChoice from './pages/course/AloneTogetherChoice';
 import MakeGroup from './pages/course/MakeGroup';
 import CourseDetailPage from './pages/course/CourseDetailPage';
+import LoadingComponent from './components/common/LoadingComponent';
 
 function App() {
   const router = createBrowserRouter([
@@ -121,6 +122,11 @@ function App() {
         {
           path: '/editcourse',
           element: <EditCoursePage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/test',
+          element: <LoadingComponent />,
           errorElement: <ErrorPage />,
         },
       ],

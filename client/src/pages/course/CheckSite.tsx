@@ -5,6 +5,7 @@ import HeaderTabs from '../../components/common/HeaderTabs';
 import CheckSitePictures from '../../components/course/CheckSitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTravelInfo, useTravelSave, useTravelCity } from '../../store/useTravelStore';
+import Swal from 'sweetalert2';
 
 interface DestinationResponse {
   status: string;
@@ -121,7 +122,10 @@ const CheckSite = () => {
       if (el.likes_flag) likes.push(el.destinationId);
     });
     if (likes.length < 3) {
-      alert('3개 이상 선택해주세요!');
+      Swal.fire({
+        icon: 'error',
+        text: '3개 이상 선택해주세요!',
+      });
       return;
     }
     travelSave.setTravel({

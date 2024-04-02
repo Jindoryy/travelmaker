@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { koKR } from '@mui/x-date-pickers/locales';
 import 'dayjs/locale/ko';
+import Swal from 'sweetalert2';
 
 const DateTransChoice = () => {
   const navigate = useNavigate();
@@ -92,10 +93,16 @@ const DateTransChoice = () => {
         console.log(travelInfoStore.travelInfo);
         navigate('/course/alonetogether');
       } else {
-        alert('이동수단을 골라주세요.');
+        Swal.fire({
+          icon: 'warning',
+          text: '이동수단을 골라주세요.',
+        });
       }
     } else {
-      alert('날짜를 선택해주세요.');
+      Swal.fire({
+        icon: 'warning',
+        text: '날짜를 선택해주세요.',
+      });
     }
   };
 

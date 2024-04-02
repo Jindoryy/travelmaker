@@ -12,6 +12,7 @@ import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import LoadingComponent from '../../components/common/LoadingComponent';
+import Swal from 'sweetalert2';
 
 //store에 저장된 여행 보내기
 interface TravelInfo {
@@ -225,13 +226,16 @@ const BeforeConfirm = () => {
     travelSave(travelSaveInfo)
       .then((response: any) => {
         if (response.status == 200) {
-          alert('여행을 저장했습니다!');
+          Swal.fire({
+            icon: 'success',
+            text: '여행을 성공적으로 저장했습니다!',
+          });
         }
       })
       .catch((err: any) => {
         console.error(err);
       });
-    navigate('/mypage');
+    window.location.replace('mypage');
   };
   if (selectedDate.length === 0) {
     return <LoadingComponent />;
