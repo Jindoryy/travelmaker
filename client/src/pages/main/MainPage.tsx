@@ -29,6 +29,7 @@ interface WeatherData {
 const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const navigate = useNavigate();
 
   // 위치 가져오기
   const getCurrentLocation = () => {
@@ -86,12 +87,18 @@ const MainPage = () => {
     <MainPageContainer>
       {isOpenAlert && <DiaryAlert handleDisplayAlert={handleDisplayAlert} />}
       {isOpenModal && <ExtraInfoModal handleDisplayModal={handleDisplayModal} />}
+      {/* 헤더로고 */}
       <LogoLargeContainer>
         <LogoContainer>
           <Logo src="/img/horizontallogo.png" alt="Logo" />
         </LogoContainer>
       </LogoLargeContainer>
-      <StyledProfile>
+      {/* 프로필 */}
+      <StyledProfile
+        onClick={() => {
+          navigate('/course/datetrans');
+        }}
+      >
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
       {userStatus?.data.status === 'BEFORE_COURSE' && (
@@ -115,8 +122,10 @@ const MainPage = () => {
           {/* memo */}
         </div>
       )}
+
       {userStatus?.data.status === 'ON_COURSE' && (
         <div>
+          <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* 내 코스보기 페이지로 이동 div */}
           <StyledMyCourseListDiv>
             <MyCourseListDiv />
@@ -139,12 +148,10 @@ const MainPageContainer = styled.div`
 `;
 
 const StyledProfile = styled.div`
-  padding-top: 35px;
-  position: fixed;
+  padding-top: 55px;
   top: 0;
   max-width: 412px;
   width: 100%;
-  z-index: 4;
 `;
 
 const SitePicturesStyle = styled.div`
@@ -155,9 +162,10 @@ const SitePicturesStyle = styled.div`
 `;
 
 const SitePicturesContainer = styled.div`
-  padding-top: 380px; /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+  /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
   background-color: #dde2fc;
   z-index: 0;
+  margin-bottom: 5px;
 `;
 
 const LogoLargeContainer = styled.div`
@@ -169,11 +177,16 @@ const LogoLargeContainer = styled.div`
 
 const LogoContainer = styled.div`
   position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   top: 0;
   z-index: 2;
   width: 100%;
   max-width: 412px;
+  height: 60px;
   background-color: #dde2fc;
+  margin-bottom: 5px;
 `;
 
 const Logo = styled.img`
@@ -188,7 +201,7 @@ const Container = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;
-  padding-top: 380px; /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;
@@ -198,7 +211,7 @@ const StyledMyCourseListDiv = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;
-  padding-top: 380px;
+
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;
