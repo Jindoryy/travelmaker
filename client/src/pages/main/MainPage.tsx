@@ -5,6 +5,7 @@ import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
 import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
 import DDayDiv from '../../features/course/DDayDiv';
+import OnCourseCard from '../../features/course/OnCourseCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
@@ -101,26 +102,29 @@ const MainPage = () => {
         </SitePicturesContainer>
       )} */}
       {/* {userStatus?.data.status === 'AFTER_COURSE' && ( */}
-      <div>
+      {/* <div>
         <Container className="container">{weather && <Weather weather={weather} />}</Container>
-      </div>
+      </div> */}
       {/* d-day */}
-      <StyledDDAY>
+      {/* <StyledDDAY>
         <DDayDiv></DDayDiv>
-      </StyledDDAY>
+      </StyledDDAY> */}
       {/* 내 코스보기 페이지로 이동 div */}
-      <StyledMyCourseListDiv>
+      {/* <StyledMyCourseListDiv>
         <MyCourseListDiv />
-      </StyledMyCourseListDiv>
+      </StyledMyCourseListDiv> */}
       {/* memo */}
       {/* )} */}
       {/* {userStatus?.data.status === 'ON_COURSE' && (
         <div> */}
       {/* 내 코스보기 페이지로 이동 div */}
-      {/* <StyledMyCourseListDiv>
-            <MyCourseListDiv />
-          </StyledMyCourseListDiv> */}
+      <StyledMyCourseListDiv>
+        <MyCourseListDiv />
+      </StyledMyCourseListDiv>
       {/* course info */}
+      <StyledCourseCard>
+        <OnCourseCard></OnCourseCard>
+      </StyledCourseCard>
       {/* </div>
       )} */}
     </MainPageContainer>
@@ -196,13 +200,23 @@ const StyledMyCourseListDiv = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;
-  /* padding-top: 380px; */
+  padding-top: 380px;
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;
 `;
 
 const StyledDDAY = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  /* padding-top: 380px; */
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+
+const StyledCourseCard = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;

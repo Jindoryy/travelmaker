@@ -29,10 +29,10 @@ const DDayDiv = () => {
     <DDayContainer>
       {userStatus && (
         <OverlayContainer>
-          <img src={userStatus.data.afterCourseResponse.imgUrl} alt="Course Image" />
+          <StyledImg src={userStatus.data.afterCourseResponse.imgUrl} alt="Course Image" />
           <TextOverlay>
-            <h1>{userStatus.data.afterCourseResponse.cityName}까지</h1>
-            {daysUntil !== null && <h2>D-{daysUntil}일</h2>}
+            <h1>{userStatus.data.afterCourseResponse.cityName}</h1>
+            {daysUntil !== null && <h1>D-{daysUntil}</h1>}
           </TextOverlay>
         </OverlayContainer>
       )}
@@ -44,14 +44,16 @@ export default DDayDiv;
 
 const DDayContainer = styled.div`
   border-radius: 20px;
-  background-color: white;
-  margin: 10px;
+
+  margin: 5px;
   padding: 10px;
+  text-align: center;
 `;
 
 const OverlayContainer = styled.div`
   position: relative;
   width: fit-content;
+  display: inline-block;
 `;
 
 const TextOverlay = styled.div`
@@ -59,6 +61,22 @@ const TextOverlay = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-family: 'Pretendard';
+  font-weight: bold;
+  font-size: 32px;
   text-align: center;
   color: white;
+  h1 {
+    display: inline-block;
+    margin-right: 10px;
+  }
+`;
+
+const StyledImg = styled.img`
+  max-width: 412px;
+  width: 380px;
+  height: 160px;
+  object-fit: cover;
+  /* height: auto; */
+  border-radius: 20px; /* 예시로 추가한 스타일 */
 `;

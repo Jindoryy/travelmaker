@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import './styles.css';
+// import 'swiper/css';
+// import 'swiper/css/navigation';
+// import './styles.css';
 // import required modules
 import { FreeMode, Pagination, Navigation } from 'swiper';
 
