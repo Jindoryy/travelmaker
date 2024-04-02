@@ -26,7 +26,6 @@ const ProfileContainer = styled.div`
   display: flex;
   width: 100%;
   height: 165px;
-  padding-left: 20px;
   background: white;
   /* border-radius: 20px;
   box-shadow: 3px 3px 2px gray; */

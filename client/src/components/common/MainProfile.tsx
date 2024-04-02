@@ -1,137 +1,63 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-interface ProfileProps {
-  scrolled: boolean;
-  scrollHeight: number;
-  fontSize: string;
-}
-
-interface ProfileImageProps {
-  size: string;
-}
-
 const Profile = ({ userState }: { userState: string }) => {
-  // userState props로 변경
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollHeight, setScrollHeight] = useState(0);
-
   const getProfileContent = () => {
     switch (userState) {
       case 'ON_COURSE':
-        return '즐거운 ㅇㅇ여행 ㅇ일차';
+        return '즐거운 여행중';
       case 'AFTER_COURSE':
         return '두근두근 기대되는 여행';
       default:
-        return '이런 곳은 어떠세요?';
+        return '나만의 여행 코스를 만들어봐요';
     }
   };
 
   const getProfileImage = () => {
     switch (userState) {
       case 'AFTER_COURSE':
-        return require('../../assets/image/KissingCat.png'); // 이미지 가져오는 방식 수정
-      case 'BEFORE_COURSE' || '':
-        return require('../../assets/image/WorldMap.png'); // 이미지 가져오는 방식 수정
+        return require('../../assets/image/KissingCat.png');
+      case 'ON_COURSE':
+        return require('../../assets/image/AirplaneDeparture.png');
       default:
-        return require('../../assets/image/AirplaneDeparture.png'); // 이미지 가져오는 방식 수정
-    }
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollHeight = document.documentElement.scrollTop;
-      console.log('currentScrollHeight:', currentScrollHeight); // 콘솔에 출력
-      setScrollHeight(currentScrollHeight);
-      setScrolled(currentScrollHeight > 0);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [scrollHeight]); // 의존성 배열 수정
-
-  const getProfileSize = () => {
-    if (scrollHeight > 200) {
-      return '100px';
-    } else if (scrollHeight > 100) {
-      return '150px';
-    } else if (scrollHeight > 50) {
-      return '200px';
-    } else {
-      return '250px';
-    }
-  };
-
-  const getProfileContentFontSize = () => {
-    if (scrollHeight > 200) {
-      return '16px';
-    } else if (scrollHeight > 100) {
-      return '18px';
-    } else if (scrollHeight > 50) {
-      return '20px';
-    } else {
-      return '22px';
+        return require('../../assets/image/Motorway.png');
     }
   };
 
   return (
-    <StyledProfileContainer
-      scrolled={scrolled}
-      scrollHeight={scrollHeight}
-      fontSize={getProfileContentFontSize()}
-    >
-      <StyledProfileImage src={getProfileImage()} alt="Profile" size={getProfileSize()} />
-      <StyledProfileContent
-        scrolled={scrolled}
-        scrollHeight={scrollHeight}
-        fontSize={getProfileContentFontSize()}
-      >
-        {getProfileContent()}
-      </StyledProfileContent>
+    <StyledProfileContainer>
+      <StyledProfileImage src={getProfileImage()} alt="Profile" />
+      <StyledProfileContent>{getProfileContent()}</StyledProfileContent>
     </StyledProfileContainer>
   );
 };
 
-const StyledProfileContainer = styled.div<ProfileProps>`
+const StyledProfileContainer = styled.div`
   background-color: white;
   color: #000;
   padding: 10px;
   margin: 10px;
-  max-width: 375px;
+  max-width: 365px;
   width: 100%;
   text-align: center;
-  border-radius: 15px;
-  transition: height 0.1s;
-  height: ${({ scrolled, scrollHeight }) => {
-    if (scrolled && scrollHeight >= 1000) {
-      return '120px';
-    } else {
-      return scrollHeight > 200
-        ? '120px'
-        : scrollHeight > 100
-          ? '200px'
-          : scrollHeight > 50
-            ? '250px'
-            : '300px';
-    }
-  }};
+  border-radius: 20px;
+  display: flex; /* flexbox 설정 */
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: space-between;
+  height: 80px;
 `;
 
-const StyledProfileContent = styled.p<ProfileProps>`
-  font-size: ${({ fontSize }) => fontSize};
+const StyledProfileContent = styled.p`
+  font-size: 20px;
   font-family: 'Pretendard';
   font-weight: bold;
-  transition: font-size 0.1s;
+  padding-right: 10px;
 `;
 
-const StyledProfileImage = styled.img<ProfileImageProps>`
+const StyledProfileImage = styled.img`
   max-width: 100%;
-  height: auto;
-  transition: height 0.1s;
-  height: ${({ size }) => size};
+  height: 60px;
+  padding-left: 5px;
 `;
 
 export default Profile;

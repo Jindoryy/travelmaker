@@ -56,6 +56,13 @@ public class DestinationController {
     return new SuccessResponse<>(destinationService.findDestinationList(userId));
   }
 
+  @Operation(summary = "CF 장소 목록 (비로그인)", description = "CF 장소 목록 비로그인으로 조회한다.")
+  @GetMapping("/list/non-login")
+  public SuccessResponse<DestinationCfListResponse> getDestinationListNonLogin() {
+
+    return new SuccessResponse<>(destinationService.findDestinationListNonLogin());
+  }
+
   @Operation(summary = "추천 리스트 조회", description = "추천 리스트를 조회한다.")
   @GetMapping("/recommend")
   public SuccessResponse<DestinationRecommendResponse> getDestinationRecommend(

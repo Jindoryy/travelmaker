@@ -8,9 +8,7 @@ import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
 import useUserInfo from '../../store/useUserStore';
 
 import styled from 'styled-components';
-import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 
 const CourseDetailPage = () => {
   const [selectedTab, setSelectedTab] = useState(1);

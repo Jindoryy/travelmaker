@@ -67,8 +67,8 @@ const SitePictures = () => {
   const [imageHeights, setImageHeights] = useState<number[]>([]); // 이미지의 높이를 상태로 관리
   const location = useLocation();
   const { userInfo } = useUserInfo(); // useUserInfo 스토어에서 userInfo 가져오기
-  // const userId = userInfo.userId; // userId 가져오기
-  const userId = 126;
+  const userId = userInfo.userId; // userId 가져오기
+  // const userId = 126;
   useEffect(() => {
     // 컴포넌트가 마운트될 때 한 번만 실행
     getSiteInfoList();
@@ -91,6 +91,13 @@ const SitePictures = () => {
       if (event.target.checked) {
         try {
           // 좋아요 누른 경우 해당 destinationId를 likeDestination으로 전송
+          const response = await likeDestination(userId, destinationId);
+        } catch (error) {
+          console.error('Error occurred while liking destination:', error);
+        }
+      } else {
+        try {
+          // 좋아요 취소
           const response = await likeDestination(userId, destinationId);
         } catch (error) {
           console.error('Error occurred while liking destination:', error);

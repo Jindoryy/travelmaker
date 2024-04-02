@@ -11,6 +11,7 @@ import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
 import ExtraInfoModal from '../../components/common/ExtraInfoModal';
 import DiaryAlert from '../../components/common/DiaryAlert';
+import useUserInfo from '../../store/useUserStore';
 
 interface WeatherData {
   name: string;
@@ -29,8 +30,9 @@ interface WeatherData {
 const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const navigate = useNavigate();
 
-  //위치 가져오기
+  // 위치 가져오기
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       let lat = position.coords.latitude;
@@ -45,88 +47,102 @@ const MainPage = () => {
     let data: WeatherData = await response.json();
     setWeather(data);
   };
+
   useEffect(() => {
     getCurrentLocation();
   }, []);
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
+
+  const { userInfo } = useUserInfo();
+
   const handleDisplayModal = useCallback(() => {
-    setIsOpenModal((prev) => (prev = !prev));
+    setIsOpenModal((prev) => !prev);
   }, []);
+
   const handleDisplayAlert = useCallback(() => {
-    setIsOpenAlert((prev) => (prev = !prev));
+    setIsOpenAlert((prev) => !prev);
   }, []);
 
   useEffect(() => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
-    getUserStatus()
-      .then((response) => {
-        // console.log(response.data.data.birthCheck);
-        // console.log(response.data.data.genderCheck);
-        // console.log(response.data.data.diaryCheck);
-        console.log(response.data.data.status);
-        setUserStatus(response.data); // 상태를 업데이트
-        if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
-          setIsOpenModal(true);
-        } else if (response.data.data.diaryCheck === true) {
-          setIsOpenAlert(true);
-        } else {
-          setIsOpenModal(false);
-          setIsOpenAlert(false);
-        }
-      })
-      .catch((error) => {
-        console.error(error.message); // 오류 메시지 설정
-      });
+    if (userInfo.userId !== -1) {
+      getUserStatus()
+        .then((response) => {
+          console.log(response.data.data.birthCheck);
+          console.log(response.data.data.genderCheck);
+          console.log(response.data.data.diaryCheck);
+          setUserStatus(response.data); // 상태를 업데이트
+          if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
+            setIsOpenModal(true);
+          } else if (response.data.data.diaryCheck === true) {
+            setIsOpenAlert(true);
+          } else {
+            setIsOpenModal(false);
+            setIsOpenAlert(false);
+          }
+        })
+        .catch((error) => {
+          console.error(error.message); // 오류 메시지 설정
+        });
+    }
   }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
 
   return (
-    //고정
+    // 고정
     <MainPageContainer>
       {isOpenAlert && <DiaryAlert handleDisplayAlert={handleDisplayAlert} />}
       {isOpenModal && <ExtraInfoModal handleDisplayModal={handleDisplayModal} />}
+      {/* 헤더로고 */}
       <LogoLargeContainer>
         <LogoContainer>
           <Logo src="/img/horizontallogo.png" alt="Logo" />
         </LogoContainer>
       </LogoLargeContainer>
-      <StyledProfile>
+      {/* 프로필 */}
+      <StyledProfile
+        onClick={() => {
+          navigate('/course/datetrans');
+        }}
+      >
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
-      {/* 상태에 따라서 컴포넌트 렌더링 */}
-      {/* {userStatus?.data.status === 'BEFORE_COURSE'&& (
+      {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
         <SitePicturesContainer>
           <SitePicturesStyle>
             <SitePictures />
           </SitePicturesStyle>
         </SitePicturesContainer>
-      )} */}
-      {/* {userStatus?.data.status === 'AFTER_COURSE' && ( */}
-      {/* <div>
-        <Container className="container">{weather && <Weather weather={weather} />}</Container>
-      </div> */}
-      {/* d-day */}
-      {/* <StyledDDAY>
-        <DDayDiv></DDayDiv>
-      </StyledDDAY> */}
-      {/* 내 코스보기 페이지로 이동 div */}
-      {/* <StyledMyCourseListDiv>
-        <MyCourseListDiv />
-      </StyledMyCourseListDiv> */}
-      {/* memo */}
-      {/* )} */}
-      {/* {userStatus?.data.status === 'ON_COURSE' && (
-        <div> */}
-      {/* 내 코스보기 페이지로 이동 div */}
-      <StyledMyCourseListDiv>
-        <MyCourseListDiv />
-      </StyledMyCourseListDiv>
-      {/* course info */}
-      <StyledCourseCard>
-        <OnCourseCard></OnCourseCard>
-      </StyledCourseCard>
-      {/* </div>
-      )} */}
+      )}
+      {userStatus?.data.status === 'AFTER_COURSE' && (
+        <div>
+          <Container className="container">{weather && <Weather weather={weather} />}</Container>
+          {/* d-day */}
+          <StyledDDAY>
+            <DDayDiv></DDayDiv>
+          </StyledDDAY>
+          {/* 내 코스보기 페이지로 이동 div */}
+          <StyledMyCourseListDiv>
+            <MyCourseListDiv />
+          </StyledMyCourseListDiv>
+          {/* memo */}
+        </div>
+      )}
+
+      {userStatus?.data.status === 'ON_COURSE' && (
+        <div>
+          <Container className="container">{weather && <Weather weather={weather} />}</Container>
+          {/* 내 코스보기 페이지로 이동 div */}
+          <StyledMyCourseListDiv>
+            <MyCourseListDiv />
+          </StyledMyCourseListDiv>
+          {/* course info */}
+          <StyledCourseCard>
+            <OnCourseCard></OnCourseCard>
+          </StyledCourseCard>
+        </div>
+      )}
     </MainPageContainer>
   );
 };
@@ -139,12 +155,10 @@ const MainPageContainer = styled.div`
 `;
 
 const StyledProfile = styled.div`
-  padding-top: 35px;
-  position: fixed;
+  padding-top: 55px;
   top: 0;
   max-width: 412px;
   width: 100%;
-  z-index: 4;
 `;
 
 const SitePicturesStyle = styled.div`
@@ -155,9 +169,10 @@ const SitePicturesStyle = styled.div`
 `;
 
 const SitePicturesContainer = styled.div`
-  padding-top: 380px; /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+  /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
   background-color: #dde2fc;
   z-index: 0;
+  margin-bottom: 5px;
 `;
 
 const LogoLargeContainer = styled.div`
@@ -169,14 +184,16 @@ const LogoLargeContainer = styled.div`
 
 const LogoContainer = styled.div`
   position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   top: 0;
-
-  /* transform: translateX(-50%); */
   z-index: 2;
   width: 100%;
   max-width: 412px;
-
+  height: 60px;
   background-color: #dde2fc;
+  margin-bottom: 5px;
 `;
 
 const Logo = styled.img`
@@ -191,16 +208,17 @@ const Container = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;
-  padding-top: 380px; /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;
 `;
+
 const StyledMyCourseListDiv = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;
-  padding-top: 380px;
+
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;

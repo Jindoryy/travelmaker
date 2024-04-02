@@ -39,11 +39,16 @@ const CityChoice = () => {
   const { userInfo } = useUserInfo();
   const travelSave = useTravelSave();
   const travelCity = useTravelCity();
-  // useEffect(() => {
-  //   if (!userInfo || userInfo.userId === -1) {
-  //     navigate('/login');
-  //   }
-  // }, [userInfo, navigate]);
+  useEffect(() => {
+    if (travelSave.travel.startDate === '' || travelSave.travel.endDate === '') {
+      navigate('/');
+    }
+  }, []);
+  useEffect(() => {
+    if (!userInfo || userInfo.userId === -1) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   function NextArrow(props: ArrowProps) {
     const { className, style, onClick } = props;

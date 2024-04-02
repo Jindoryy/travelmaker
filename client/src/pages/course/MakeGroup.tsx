@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findFriend } from '../../utils/axios/axios-travel';
 import { useTravelSave } from '../../store/useTravelStore';
@@ -16,7 +16,11 @@ const MakeGroup = () => {
   const [searchResult, setSearchResult] = useState<any>([]);
   const [groupList, setGroupList] = useState<any>([]);
   const travelSaveStore = useTravelSave();
-
+  useEffect(() => {
+    if (travelSaveStore.travel.startDate === '' || travelSaveStore.travel.endDate === '') {
+      navigate('/');
+    }
+  }, []);
   const searchNameTag = () => {
     //친구 검색 api
     findFriend(nameTag)
