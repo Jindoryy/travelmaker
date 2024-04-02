@@ -8,9 +8,7 @@ import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
 import useUserInfo from '../../store/useUserStore';
 
 import styled from 'styled-components';
-import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 
 const CourseDetailPage = () => {
   const [selectedTab, setSelectedTab] = useState(1);
@@ -32,6 +30,12 @@ const CourseDetailPage = () => {
   const [cityName, setCityName] = useState<string>();
   const [transportation, setTransportation] = useState<string>();
   const [travelList, setTravelList] = useState<any>([[]]);
+
+  useEffect(() => {
+    if (travelSave.travel.startDate === '' || travelSave.travel.endDate === '') {
+      navigate('/');
+    }
+  }, []);
 
   useEffect(() => {
     if (!userInfo || userInfo.userId === -1) {

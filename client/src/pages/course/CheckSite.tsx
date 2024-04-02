@@ -34,6 +34,12 @@ const CheckSite = () => {
   const { setTravelInfo } = useTravelInfo();
 
   useEffect(() => {
+    if (travelSave.travel.startDate === '' || travelSave.travel.endDate === '') {
+      navigate('/');
+    }
+  }, []);
+
+  useEffect(() => {
     if (cityId) {
       getDestinationInfo(cityId);
     }

@@ -101,7 +101,7 @@ const MainPage = () => {
       <StyledProfile>
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
-      {userStatus?.data.status === 'BEFORE_COURSE' && (
+      {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
         <SitePicturesContainer>
           <SitePicturesStyle>
             <SitePictures />
