@@ -7,6 +7,7 @@ import Layout from './pages/Layout';
 import MainPage from './pages/main/MainPage';
 import CheckStie from './pages/course/CheckSite';
 import LoginPage from './pages/user/LoginPage';
+import StartPage from './pages/main/StartPage';
 import ErrorPage from './pages/ErrorPage';
 import CityChoice from './pages/course/CityChoice';
 import BeforeConfirm from './pages/course/BeforeConfirm';
@@ -31,6 +32,11 @@ function App() {
       children: [
         {
           path: '/',
+          element: <StartPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: 'main',
           element: <MainPage />,
           errorElement: <ErrorPage />,
         },
