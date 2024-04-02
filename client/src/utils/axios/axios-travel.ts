@@ -196,6 +196,13 @@ interface TravelDetailResponse {
   status: string;
   data: TravelDetailData;
 }
+//친구 검색하기
+interface FriendFindType {
+  userId: number;
+  profileUrl: string;
+  nickname: string;
+  tag: number;
+}
 
 //시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
@@ -285,6 +292,15 @@ const getTravelDetailDiary = (travelId: Number) => {
   return oauthInstance.get<TravelDetailResponse>(`travel/${travelId}`);
 };
 
+//친구 검색하기
+const findFriend = (userInfo: string) => {
+  return oauthInstance.get<FriendFindType>('/user/search', {
+    params: {
+      condition: userInfo,
+    },
+  });
+};
+
 export {
   cityDetail,
   travelDetail,
@@ -298,4 +314,5 @@ export {
   getTravelDetail,
   getTravelDetailDiary,
   TravelDetailResponse,
+  findFriend,
 };

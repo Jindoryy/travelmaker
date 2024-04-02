@@ -62,6 +62,7 @@ const BeforeConfirm = () => {
       transportation: travelSaveStore.travel.transportation,
       destinationIdList: travelSaveStore.travel.courseList,
     });
+    console.log(travelSaveStore.travel);
   }, []);
 
   useEffect(() => {

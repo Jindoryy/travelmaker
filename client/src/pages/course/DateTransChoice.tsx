@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTravelSave, useTravelInfo } from '../../store/useTravelStore';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import dayjs, { Dayjs } from 'dayjs';
@@ -15,6 +16,8 @@ const DateTransChoice = () => {
   const [selectedTab, setSelectedTab] = useState('');
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const travelSaveStore = useTravelSave();
+  const travelInfoStore = useTravelInfo();
 
   const transportations = [
     {
@@ -53,21 +56,33 @@ const DateTransChoice = () => {
   };
 
   const saveButton = () => {
-    //기간, 이동수단 선택했는지 검사 후 저장
     if (startDate && endDate) {
-      const selectedTransportations = transportations.filter(transportation => selectedTab === transportation.alt);
+      const selectedTransportations = transportations.filter(
+        (transportation) => selectedTab === transportation.alt,
+      );
       if (selectedTransportations.length > 0) {
-        console.log(startDate.format('YYYY-MM-DD'));
-        console.log(endDate.format('YYYY-MM-DD'));
-        console.log(selectedTransportations[0].alt);
-        //여기서 store에 저장
-        
+        travelSaveStore.setTravel({
+          cityName: '',
+          startDate: startDate.format('YYYY-MM-DD'),
+          endDate: endDate.format('YYYY-MM-DD'),
+          friendIdList: [],
+          transportation: selectedTransportations[0].alt,
+          courseList: [],
+        });
+        travelInfoStore.setTravelInfo({
+          startDate: startDate.format('YYYY-MM-DD'),
+          endDate: endDate.format('YYYY-MM-DD'),
+          transportation: selectedTransportations[0].alt,
+          destinationIdList: [],
+        });
+        console.log(travelSaveStore.travel);
+        console.log(travelInfoStore.travelInfo);
         navigate('/course/alonetogether');
       } else {
-        console.log('빈값 있음');
+        alert('이동수단을 골라주세요.');
       }
     } else {
-      console.log('빈값 있음');
+      alert('날짜를 선택해주세요.');
     }
   };
 
@@ -90,11 +105,11 @@ const DateTransChoice = () => {
           </CalendarInfoContainer>
 
           <ThemeProvider theme={theme}>
-            <LocalizationProvider 
+            <LocalizationProvider
               dateAdapter={AdapterDayjs}
               adapterLocale="ko"
               localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
-              dateFormats={{month:'YYYY년 M월', year:'', normalDate:'YY/M/D'}}
+              dateFormats={{ month: 'YYYY년 M월', year: '', normalDate: 'YY/M/D' }}
             >
               <DatePickerContainer>
                 <MobileDatePicker
@@ -110,12 +125,13 @@ const DateTransChoice = () => {
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
                   minDate={startDate ? startDate : dayjs().startOf('day')}
-                  maxDate={startDate ? startDate.add(2, 'day') : dayjs().startOf('day').add(2, 'day')}
+                  maxDate={
+                    startDate ? startDate.add(2, 'day') : dayjs().startOf('day').add(2, 'day')
+                  }
                 />
               </DatePickerContainer>
             </LocalizationProvider>
           </ThemeProvider>
-          
         </CalendarContainer>
         <TransContainer>
           <TransInfoText>이동수단 선택</TransInfoText>
@@ -140,7 +156,7 @@ const DateTransChoice = () => {
   );
 };
 const PageContainer = styled.div`
-  width:412px;
+  width: 412px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -167,9 +183,9 @@ const CalendarInfoContainer = styled.div`
 const CalendarInfoText1 = styled.div`
   font-size: 24px;
   font-weight: bold;
-  margin-bottom:5px;
+  margin-bottom: 5px;
 `;
-  const CalendarInfoText2 = styled.div`
+const CalendarInfoText2 = styled.div`
   font-size: 16px;
   color: #555;
 `;
@@ -201,11 +217,10 @@ const TransChoiceContainer = styled.div`
   align-items: center;
   margin: 25px 0px 50px;
 `;
-  const TransChoice = styled.div`
+const TransChoice = styled.div`
   margin: 0px 8px;
   border-radius: 8px;
-  background-color: ${(props) =>
-    props.className === 'active' ? '#566cf038' : 'white'};
+  background-color: ${(props) => (props.className === 'active' ? '#566cf038' : 'white')};
   // border: 2px solid ${(props) => props.theme.main};
   width: 100px;
   height: 100px;
