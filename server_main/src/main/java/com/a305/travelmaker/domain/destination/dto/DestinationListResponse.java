@@ -16,5 +16,5 @@ public class DestinationListResponse {
   private String destinationContent;
   private String destinationName;
   private String destinationImgUrl;
-  private Boolean likes_flag;
+  private boolean likes_flag;
 }
