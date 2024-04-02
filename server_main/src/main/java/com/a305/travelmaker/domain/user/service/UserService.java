@@ -9,6 +9,7 @@ import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
 import com.a305.travelmaker.domain.travel.dto.AfterCourseResponse;
+import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
 import com.a305.travelmaker.domain.travel.dto.OnCourseResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
@@ -34,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
   private final UserRepository userRepository;
-  private final TravelService travelService;
+//  private final TravelService travelService;
   private final TravelRepository travelRepository;
   private final CityRepository cityRepository;
   private final DestinationRepository destinationRepository;
@@ -50,7 +51,11 @@ public class UserService {
     boolean birthCheck = user.getBirth() != null;
     boolean genderCheck = user.getGender() != null;
     // 유저 조회가 성공했으모로 diaryCheck에서는 유저 유효성 검증 안합니다.
-    boolean diaryCheck = travelService.checkUserDiaryStatus(userId);
+    LocalDate today = LocalDate.now();
+    LocalDate weekAgo = today.minusWeeks(1);
+    long count = travelRepository.countByUserIdAndStatusAndEndDateBetween(
+        userId, DiaryStatus.BEFORE_DIARY, today, weekAgo);
+    boolean diaryCheck = count > 0;
 
     AfterCourseResponse afterCourseResponse = null;
     OnCourseResponse onCourseResponse = null;
@@ -66,9 +71,6 @@ public class UserService {
 
         List<CourseInfo> courseInfoList = new ArrayList<>();
         List<Course> courseList = afterCourse.getCourseList();
-
-        // 오늘 날짜 구하기
-        LocalDate today = LocalDate.now();
 
         for (Course course : courseList) {
 
