@@ -8,8 +8,8 @@ import com.a305.travelmaker.domain.course.dto.CourseInfo;
 import com.a305.travelmaker.domain.course.entity.Course;
 import com.a305.travelmaker.domain.destination.entity.Destination;
 import com.a305.travelmaker.domain.destination.repository.DestinationRepository;
-import com.a305.travelmaker.domain.memo.repository.MemoRepository;
 import com.a305.travelmaker.domain.travel.dto.AfterCourseResponse;
+import com.a305.travelmaker.domain.travel.dto.DiaryStatus;
 import com.a305.travelmaker.domain.travel.dto.OnCourseResponse;
 import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
@@ -18,6 +18,7 @@ import com.a305.travelmaker.domain.user.dto.UserExtraInfoDto;
 import com.a305.travelmaker.domain.user.dto.UserFriendResponse;
 import com.a305.travelmaker.domain.user.dto.UserStatus;
 import com.a305.travelmaker.domain.user.dto.UserStatusResponse;
+import com.a305.travelmaker.domain.user.dto.UserTravelPlanDto;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.common.exception.CustomException;
@@ -28,18 +29,19 @@ import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
   private final UserRepository userRepository;
-  private final TravelService travelService;
+//  private final TravelService travelService;
   private final TravelRepository travelRepository;
   private final CityRepository cityRepository;
   private final DestinationRepository destinationRepository;
 
-
+  @Transactional
   public UserStatusResponse getUserStatus(Long userId) {
 
     // userId로 유저 조회, 미등록 유저시 404 반환
@@ -50,7 +52,11 @@ public class UserService {
     boolean birthCheck = user.getBirth() != null;
     boolean genderCheck = user.getGender() != null;
     // 유저 조회가 성공했으모로 diaryCheck에서는 유저 유효성 검증 안합니다.
-    boolean diaryCheck = travelService.checkUserDiaryStatus(userId);
+    LocalDate today = LocalDate.now();
+    LocalDate weekAgo = today.minusWeeks(1);
+    long count = travelRepository.countByUserIdAndStatusAndEndDateBetween(
+        userId, DiaryStatus.BEFORE_DIARY, today, weekAgo);
+    boolean diaryCheck = count > 0;
 
     AfterCourseResponse afterCourseResponse = null;
     OnCourseResponse onCourseResponse = null;
@@ -66,9 +72,6 @@ public class UserService {
 
         List<CourseInfo> courseInfoList = new ArrayList<>();
         List<Course> courseList = afterCourse.getCourseList();
-
-        // 오늘 날짜 구하기
-        LocalDate today = LocalDate.now();
 
         for (Course course : courseList) {
 
@@ -103,7 +106,8 @@ public class UserService {
     // 여행 계획이 있는 경우
     else if (userStatus.equals(UserStatus.AFTER_COURSE)) {
 
-      Travel afterCourse = travelRepository.findNextTravelByUserId(userId, LocalDate.now());
+      Travel afterCourse = travelRepository.findFirstByUserIdAndStartDateGreaterThanEqualOrderByStartDateAsc(
+          userId, LocalDate.now());
 
       if (afterCourse != null) {
 
@@ -207,4 +211,24 @@ public class UserService {
     }
     throw new CustomException(ErrorCode.SERVICE_ERROR);
   }
+
+
+
+
+  public List<UserTravelPlanDto> findUserTravelPlan(Long userId) {
+    LocalDate today = LocalDate.now();
+    List<Travel> travels = travelRepository.findTravelAfterToday(userId, today);
+
+    List<UserTravelPlanDto> userTravelPlans = new ArrayList<>();
+    for (Travel travel : travels) {
+      UserTravelPlanDto userTravelPlanDto = new UserTravelPlanDto();
+      userTravelPlanDto.setStartDate(travel.getStartDate());
+      userTravelPlanDto.setEndDate(travel.getEndDate());
+      userTravelPlans.add(userTravelPlanDto);
+    }
+
+    return userTravelPlans;
+  }
+
+
 }

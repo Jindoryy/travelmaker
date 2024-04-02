@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
@@ -29,11 +30,11 @@ const CityChoice = () => {
   const { userInfo } = useUserInfo();
   const travelSave = useTravelSave();
   const travelCity = useTravelCity();
-  useEffect(() => {
-    if (!userInfo || userInfo.userId === -1) {
-      navigate('/login');
-    }
-  }, [userInfo, navigate]);
+  // useEffect(() => {
+  //   if (!userInfo || userInfo.userId === -1) {
+  //     navigate('/login');
+  //   }
+  // }, [userInfo, navigate]);
 
   useEffect(() => {
     if (provinceId) {
@@ -100,11 +101,21 @@ const CityChoice = () => {
         }}
         modules={[Pagination]}
         onSlideChange={(swiper) => handleStepChange(swiper.activeIndex)}
-        style={{ marginTop: '50px' }}
+        style={{ marginTop: '65px' }}
       >
         {cityList.map((city, index) => (
           <SwiperSlide key={index}>
-            <SwipeImage src={city.cityUrl} alt={city.cityName} />
+            {index < 3 ? (
+              <IconContainer>
+                <LocalFireDepartmentIcon
+                  style={{ color: 'white', width: '30px', height: '30px' }}
+                />
+                <IconText>HOT</IconText>
+              </IconContainer>
+            ) : (
+              <></>
+            )}
+            <SwipeImage src={city.cityUrl} alt={city.cityName}></SwipeImage>
           </SwiperSlide>
         ))}
       </Swiper>
@@ -121,13 +132,11 @@ const CityChoice = () => {
 
 const CityPaper = styled.div`
   width: 100%;
-  height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   border: none;
   background-color: ${(props) => props.theme.subtext};
-  margin-top: 30px 0;
   padding-top: 30px;
   position: relative;
 `;
@@ -156,7 +165,33 @@ const CityTypography = styled.div`
   font-size: 25px;
 `;
 
+const IconContainer = styled.div`
+  position: fixed;
+  top: 10px;
+  z-index: 2;
+  margin-left: 15px;
+  display: flex;
+  align-items: flex-end;
+  width: 85px;
+  border: 1px solid #ff9075;
+  border-radius: 30px;
+  background-color: #ff9075;
+  margin-bottom: 10px;
+  padding: 2px;
+  padding-left: 5px;
+`;
+
+const IconText = styled.div`
+  height: 30px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+`;
+
 const SwipeImage = styled.img`
+  margin-top: 100px;
   justify-content: center;
   align-items: center;
   object-fit: cover;
@@ -164,7 +199,7 @@ const SwipeImage = styled.img`
   border-radius: 10px;
   display: block;
   width: 380px;
-  height: 500px;
+  height: 450px;
   object-fit: cover;
 `;
 
@@ -181,7 +216,7 @@ const ChooseButton = styled.button`
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin: 10px;
-  margin-top: 80px;
+  margin-top: 50px;
   padding: 10px;
   border-radius: 8px;
   font-family: 'Pretendard', sans-serif;

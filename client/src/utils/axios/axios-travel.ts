@@ -196,6 +196,13 @@ interface TravelDetailResponse {
   status: string;
   data: TravelDetailData;
 }
+//친구 검색하기
+interface FriendFindType {
+  userId: number;
+  profileUrl: string;
+  nickname: string;
+  tag: number;
+}
 
 //시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
@@ -225,11 +232,12 @@ const destinationsListDetail = (destinationIdList: number[] | undefined) => {
   });
 };
 
-//시 선택 완료
-const destinationDetail = (cityId: number) => {
+//시 선택 완료 -> 친구리스트, cityid넘기기
+const destinationDetail = (cityId: number, friendList: any) => {
   return oauthInstance.get<DestinationResponse>('destination/recommend', {
     params: {
       cityId: cityId,
+      friendIdList: friendList.join(','),
     },
   });
 };
@@ -255,9 +263,9 @@ const likeDestination = (
   userId: number,
   destinationId: number,
 ): Promise<AxiosResponse<LikeResponse>> => {
-  return instance.post<LikeResponse>('like', {
-    userId,
-    destinationId,
+  return oauthInstance.post<LikeResponse>('like', {
+    userId: userId,
+    destinationId: destinationId,
   });
 };
 
@@ -285,6 +293,15 @@ const getTravelDetailDiary = (travelId: Number) => {
   return oauthInstance.get<TravelDetailResponse>(`travel/${travelId}`);
 };
 
+//친구 검색하기
+const findFriend = (userInfo: string) => {
+  return oauthInstance.get<FriendFindType>('/user/search', {
+    params: {
+      condition: userInfo,
+    },
+  });
+};
+
 export {
   cityDetail,
   travelDetail,
@@ -298,4 +315,5 @@ export {
   getTravelDetail,
   getTravelDetailDiary,
   TravelDetailResponse,
+  findFriend,
 };

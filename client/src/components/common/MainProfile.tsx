@@ -1,40 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface ProfileProps {
   scrolled: boolean;
   scrollHeight: number;
   fontSize: string;
-  userState: string;
 }
 
 interface ProfileImageProps {
   size: string;
 }
 
-const Profile = ({ fontSize, userState }: ProfileProps) => {
+const Profile = ({ userState }: { userState: string }) => {
   // userState props로 변경
   const [scrolled, setScrolled] = useState(false);
   const [scrollHeight, setScrollHeight] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollHeight = window.scrollY;
-      setScrollHeight(currentScrollHeight);
-
-      if (currentScrollHeight > 0) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const getProfileContent = () => {
     switch (userState) {
@@ -50,13 +30,28 @@ const Profile = ({ fontSize, userState }: ProfileProps) => {
   const getProfileImage = () => {
     switch (userState) {
       case 'AFTER_COURSE':
-        return require('../../assets/image/KissingCat.png');
-      case 'BEFORE_COURSE':
-        return require('../../assets/image/WorldMap.png');
+        return require('../../assets/image/KissingCat.png'); // 이미지 가져오는 방식 수정
+      case 'BEFORE_COURSE' || '':
+        return require('../../assets/image/WorldMap.png'); // 이미지 가져오는 방식 수정
       default:
-        return require('../../assets/image/AirplaneDeparture.png');
+        return require('../../assets/image/AirplaneDeparture.png'); // 이미지 가져오는 방식 수정
     }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollHeight = document.documentElement.scrollTop;
+      console.log('currentScrollHeight:', currentScrollHeight); // 콘솔에 출력
+      setScrollHeight(currentScrollHeight);
+      setScrolled(currentScrollHeight > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrollHeight]); // 의존성 배열 수정
 
   const getProfileSize = () => {
     if (scrollHeight > 200) {
@@ -87,18 +82,15 @@ const Profile = ({ fontSize, userState }: ProfileProps) => {
       scrolled={scrolled}
       scrollHeight={scrollHeight}
       fontSize={getProfileContentFontSize()}
-      userState={userState}
     >
       <StyledProfileImage src={getProfileImage()} alt="Profile" size={getProfileSize()} />
       <StyledProfileContent
         scrolled={scrolled}
         scrollHeight={scrollHeight}
         fontSize={getProfileContentFontSize()}
-        userState={userState}
       >
         {getProfileContent()}
       </StyledProfileContent>
-      <br />
     </StyledProfileContainer>
   );
 };
@@ -117,15 +109,13 @@ const StyledProfileContainer = styled.div<ProfileProps>`
     if (scrolled && scrollHeight >= 1000) {
       return '120px';
     } else {
-      if (scrollHeight > 200) {
-        return '120px';
-      } else if (scrollHeight > 100) {
-        return '200px';
-      } else if (scrollHeight > 50) {
-        return '250px';
-      } else {
-        return '300px';
-      }
+      return scrollHeight > 200
+        ? '120px'
+        : scrollHeight > 100
+          ? '200px'
+          : scrollHeight > 50
+            ? '250px'
+            : '300px';
     }
   }};
 `;

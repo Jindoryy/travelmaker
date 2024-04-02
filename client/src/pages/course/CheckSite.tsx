@@ -41,7 +41,8 @@ const CheckSite = () => {
 
   const getDestinationInfo = (cityId: string) => {
     const numberId = Number(cityId);
-    destinationDetail(numberId)
+    const friendIds = travelSave.travel.friendIdList;
+    destinationDetail(numberId, friendIds)
       .then((response) => {
         console.log(response.data.data);
         const newList = response.data.data.destinationRecommendList;
@@ -113,6 +114,10 @@ const CheckSite = () => {
     cafeList.map((el: any) => {
       if (el.likes_flag) likes.push(el.destinationId);
     });
+    if (likes.length < 3) {
+      alert('3개 이상 선택해주세요!');
+      return;
+    }
     travelSave.setTravel({
       cityName: travelSave.travel.cityName,
       startDate: travelSave.travel.startDate,
@@ -189,7 +194,7 @@ const NextPageButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   z-index: 10;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 `;
 
 export default CheckSite;
