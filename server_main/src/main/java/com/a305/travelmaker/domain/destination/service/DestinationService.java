@@ -101,44 +101,6 @@ public class DestinationService {
     return destinationListResponseList;
   }
 
-  public DestinationCfListResponse findDestinationList(Long userId) {
-
-    Map<String, List<DestinationListResponse>> destinationListResponseMap = new HashMap<>();
-
-    Map<String, List<Integer>> likeCbfList = restConfig.restTemplate()
-        .getForObject(bigdataServerDomain + "/recommend/main-list/" + userId, HashMap.class);
-
-    for (Map.Entry<String, List<Integer>> entry : likeCbfList.entrySet()) {
-
-      String type = entry.getKey();
-      List<Integer> destinationIdList = entry.getValue(); // 장소 ID를 담는 리스트
-      List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
-
-      for (Integer id : destinationIdList) {
-
-        Destination destination = destinationRepository.findById(id).get();
-        Optional<Likes> likesOptional = likesRepository.findByUserIdAndDestinationId(userId, destination.getId());
-        Boolean likesFlag = likesOptional.map(Likes::getFlag).orElse(false);
-
-        DestinationListResponse destinationListResponse = DestinationListResponse.builder()
-            .destinationId(destination.getId())
-            .destinationName(destination.getName())
-            .destinationContent(destination.getContent())
-            .destinationImgUrl(destination.getImgUrl())
-            .likes_flag(likesFlag)
-            .build();
-
-        destinationListResponseList.add(destinationListResponse);
-      }
-
-      destinationListResponseMap.put(type, destinationListResponseList);
-    }
-
-    return DestinationCfListResponse.builder()
-        .destinationListResponseMap(destinationListResponseMap)
-        .build();
-  }
-
   public DestinationRecommendResponse findDestinationRecommend(
       Long userId,
       int cityId,
@@ -174,6 +136,76 @@ public class DestinationService {
 
     return DestinationRecommendResponse.builder()
         .DestinationRecommendList(destinationRecommendResponse)
+        .build();
+  }
+
+  public DestinationCfListResponse findDestinationList(Long userId) {
+
+    Map<String, List<DestinationListResponse>> destinationListResponseMap = new HashMap<>();
+
+    Map<String, List<Integer>> likeCbfList = restConfig.restTemplate()
+        .getForObject(bigdataServerDomain + "/recommend/main-list/" + userId, HashMap.class);
+
+    for (Map.Entry<String, List<Integer>> entry : likeCbfList.entrySet()) {
+
+      String type = entry.getKey();
+      List<Integer> destinationIdList = entry.getValue(); // 장소 ID를 담는 리스트
+      List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
+
+      for (Integer id : destinationIdList) {
+
+        Destination destination = destinationRepository.findById(id).get();
+        Optional<Likes> likesOptional = likesRepository.findByUserIdAndDestinationId(userId, destination.getId());
+        boolean likesFlag = likesOptional.map(Likes::getFlag).orElse(false);
+
+        if (likesFlag) {
+          likesFlag = true;
+        }
+
+        DestinationListResponse destinationListResponse = DestinationListResponse.builder()
+            .destinationId(destination.getId())
+            .destinationName(destination.getName())
+            .destinationContent(destination.getContent())
+            .destinationImgUrl(destination.getImgUrl())
+            .likes_flag(likesFlag)
+            .build();
+
+        destinationListResponseList.add(destinationListResponse);
+      }
+
+      destinationListResponseMap.put(type, destinationListResponseList);
+    }
+
+    return DestinationCfListResponse.builder()
+        .destinationListResponseMap(destinationListResponseMap)
+        .build();
+  }
+
+  public DestinationCfListResponse findDestinationListNonLogin() {
+
+    Map<String, List<DestinationListResponse>> destinationListResponseMap = new HashMap<>();
+
+    List<DestinationListResponse> destinationListResponseList = new ArrayList<>();
+
+    List<Destination> destinationList = destinationRepository.findRandom30Destinations(); // 장소 ID를 담는 리스트
+
+
+    for (Destination destination : destinationList) {
+
+      DestinationListResponse destinationListResponse = DestinationListResponse.builder()
+          .destinationId(destination.getId())
+          .destinationName(destination.getName())
+          .destinationContent(destination.getContent())
+          .destinationImgUrl(destination.getImgUrl())
+          .build();
+
+      destinationListResponseList.add(destinationListResponse);
+    }
+
+    destinationListResponseMap.put("basic", destinationListResponseList);
+
+    return DestinationCfListResponse.builder()
+        .destinationListResponseMap(destinationListResponseMap)
         .build();
   }
 }
