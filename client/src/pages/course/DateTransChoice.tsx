@@ -109,11 +109,12 @@ const DateTransChoice = () => {
               dateAdapter={AdapterDayjs}
               adapterLocale="ko"
               localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
-              dateFormats={{ month: 'YYYY년 M월', year: '', normalDate: 'YY/M/D' }}
+              dateFormats={{month:'M월', year:'YYYY년', normalDate:'YYYY년 M월 D일'}}
             >
               <DatePickerContainer>
                 <MobileDatePicker
                   label="여행 시작일"
+                  views={['year', 'month', 'day']}
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
                   minDate={dayjs().startOf('day')}
@@ -122,6 +123,7 @@ const DateTransChoice = () => {
               <DatePickerContainer>
                 <MobileDatePicker
                   label="여행 마지막일"
+                  views={['year', 'month', 'day']}
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
                   minDate={startDate ? startDate : dayjs().startOf('day')}
