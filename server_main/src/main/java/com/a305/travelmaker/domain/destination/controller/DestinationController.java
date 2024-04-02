@@ -48,10 +48,11 @@ public class DestinationController {
   @GetMapping("/list")
   public SuccessResponse<DestinationCfListResponse> getDestinationList(
       @AuthenticationPrincipal UserDetail userDetail) {
-    if (userDetail == null) {
-      throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+
+    Long userId = 1L;
+    if (userDetail != null) {
+      userId = userDetail.getId();
     }
-    Long userId = userDetail.getId();
 
     return new SuccessResponse<>(destinationService.findDestinationList(userId));
   }
