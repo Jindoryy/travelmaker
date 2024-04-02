@@ -493,7 +493,7 @@ public class TravelService {
       City city = cityRepository.findByName(travel.getCityName());
 
       List<String> friendsList = new ArrayList<>();
-      if (!travel.getFriends().isEmpty()) {
+      if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
 
         String friends = travel.getFriends();
         String[] friendsArray = friends.split(",");
