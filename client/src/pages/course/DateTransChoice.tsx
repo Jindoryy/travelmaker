@@ -109,7 +109,7 @@ const DateTransChoice = () => {
               dateAdapter={AdapterDayjs}
               adapterLocale="ko"
               localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
-              dateFormats={{month:'M월', year:'YYYY년', normalDate:'YYYY년 M월 D일'}}
+              dateFormats={{ month: 'M월', year: 'YYYY년', normalDate: 'YYYY년 M월 D일' }}
             >
               <DatePickerContainer>
                 <MobileDatePicker

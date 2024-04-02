@@ -86,12 +86,12 @@ const useTravelInfo = create<TravelInfoState & TravelInfoActions>((set) => ({
 
 //최종 여행 저장 변수
 const defaultTravelState = {
-  cityName: '강릉시',
-  startDate: '2024-03-20',
-  endDate: '2024-03-22',
-  friendIdList: [124, 125, 126],
-  transportation: 'CAR',
-  courseList: [125417, 125617, 125636, 133494, 132775],
+  cityName: '',
+  startDate: '',
+  endDate: '',
+  friendIdList: [],
+  transportation: '',
+  courseList: [],
 };
 
 const useTravelSave = create<TravelState & TravelActions>((set) => ({

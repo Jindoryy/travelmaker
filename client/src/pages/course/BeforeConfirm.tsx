@@ -51,6 +51,12 @@ const BeforeConfirm = () => {
   const { userInfo } = useUserInfo();
 
   useEffect(() => {
+    if (travelSaveStore.travel.startDate === '' || travelSaveStore.travel.endDate === '') {
+      navigate('/');
+    }
+  }, []);
+
+  useEffect(() => {
     if (!userInfo || userInfo.userId === -1) {
       navigate('/login');
     }
