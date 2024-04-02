@@ -17,6 +17,7 @@ import com.a305.travelmaker.domain.user.dto.UserExtraInfoDto;
 import com.a305.travelmaker.domain.user.dto.UserFriendResponse;
 import com.a305.travelmaker.domain.user.dto.UserStatus;
 import com.a305.travelmaker.domain.user.dto.UserStatusResponse;
+import com.a305.travelmaker.domain.user.dto.UserTravelPlanDto;
 import com.a305.travelmaker.domain.user.entity.User;
 import com.a305.travelmaker.domain.user.repository.UserRepository;
 import com.a305.travelmaker.global.common.exception.CustomException;
@@ -207,4 +208,24 @@ public class UserService {
     }
     throw new CustomException(ErrorCode.SERVICE_ERROR);
   }
+
+
+
+
+  public List<UserTravelPlanDto> findUserTravelPlan(Long userId) {
+    LocalDate today = LocalDate.now();
+    List<Travel> travels = travelRepository.findTravelAfterToday(userId, today);
+
+    List<UserTravelPlanDto> userTravelPlans = new ArrayList<>();
+    for (Travel travel : travels) {
+      UserTravelPlanDto userTravelPlanDto = new UserTravelPlanDto();
+      userTravelPlanDto.setStartDate(travel.getStartDate());
+      userTravelPlanDto.setEndDate(travel.getEndDate());
+      userTravelPlans.add(userTravelPlanDto);
+    }
+
+    return userTravelPlans;
+  }
+
+
 }
