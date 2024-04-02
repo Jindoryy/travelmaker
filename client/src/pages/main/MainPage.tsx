@@ -1,14 +1,51 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
+import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
+import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
 import ExtraInfoModal from '../../components/common/ExtraInfoModal';
 import DiaryAlert from '../../components/common/DiaryAlert';
 
+interface WeatherData {
+  name: string;
+  main: {
+    temp: number;
+    temp_max: number;
+    temp_min: number;
+  };
+  weather: {
+    id: number;
+    description: string;
+    icon: string;
+  }[];
+}
+
 const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+
+  //위치 가져오기
+  const getCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+      getWeatherByCurrentLocation(lat, lon);
+    });
+  };
+
+  const getWeatherByCurrentLocation = async (lat: number, lon: number) => {
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=07c8f80150954d942a79882827366bc7&units=metric`;
+    let response = await fetch(url);
+    let data: WeatherData = await response.json();
+    setWeather(data);
+  };
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const handleDisplayModal = useCallback(() => {
@@ -41,6 +78,7 @@ const MainPage = () => {
   }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
 
   return (
+    //고정
     <MainPageContainer>
       {isOpenAlert && <DiaryAlert handleDisplayAlert={handleDisplayAlert} />}
       {isOpenModal && <ExtraInfoModal handleDisplayModal={handleDisplayModal} />}
@@ -49,21 +87,40 @@ const MainPage = () => {
           <Logo src="/img/horizontallogo.png" alt="Logo" />
         </LogoContainer>
       </LogoLargeContainer>
-
       <StyledProfile>
-        <Profile
-          scrolled={false}
-          scrollHeight={0}
-          fontSize={''}
-          userState={userStatus?.data.status || ''}
-        />
+        <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
 
-      <SitePicturesContainer>
-        <SitePicturesStyle>
-          <SitePictures />
-        </SitePicturesStyle>
-      </SitePicturesContainer>
+      {/* 상태에 따라서 컴포넌트 렌더링 */}
+      {userStatus?.data.status === 'BEFORE_COURSE' && (
+        <SitePicturesContainer>
+          <SitePicturesStyle>
+            <SitePictures />
+          </SitePicturesStyle>
+        </SitePicturesContainer>
+      )}
+
+      {userStatus?.data.status === 'AFTER_COURSE' && (
+        <div>
+          <Container className="container">{weather && <Weather weather={weather} />}</Container>
+          {/* d-day */}
+          {/* 내 코스보기 페이지로 이동 div */}
+          <StyledMyCourseListDiv>
+            <MyCourseListDiv />
+          </StyledMyCourseListDiv>
+          {/* memo */}
+        </div>
+      )}
+
+      {userStatus?.data.status === 'ON_COURSE' && (
+        <div>
+          {/* 내 코스보기 페이지로 이동 div */}
+          <StyledMyCourseListDiv>
+            <MyCourseListDiv />
+          </StyledMyCourseListDiv>
+          {/* course info */}
+        </div>
+      )}
     </MainPageContainer>
   );
 };
@@ -121,6 +178,26 @@ const Logo = styled.img`
   height: auto; /* 비율 유지 */
   padding-left: 10px;
   max-width: 412px;
+`;
+
+const Container = styled.div`
+  // 스타일링을 여기에 추가하세요
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  padding-top: 380px; /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+const StyledMyCourseListDiv = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  padding-top: 380px;
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
 `;
 
 export default MainPage;
