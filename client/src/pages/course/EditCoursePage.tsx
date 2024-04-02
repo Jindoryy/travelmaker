@@ -17,6 +17,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import Drawer from '@mui/material/Drawer';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import Swal from 'sweetalert2';
 
 const EditCoursePage: React.FC = () => {
   const location = useLocation();
@@ -124,7 +125,10 @@ const EditCoursePage: React.FC = () => {
 
   const addButton = () => {
     if (selectedDate.length >= 8) {
-      alert('장소는 하루에 8개까지 선택 가능합니다.');
+      Swal.fire({
+        icon: 'warning',
+        text: '장소는 하루에 8개까지 선택 가능합니다.',
+      });
     } else setIsDrawerOpen(true);
   };
 
@@ -287,7 +291,10 @@ const EditCoursePage: React.FC = () => {
     travelSave(travelSaveInfo)
       .then((response: any) => {
         if (response.status == 200) {
-          alert('여행을 저장했습니다!');
+          Swal.fire({
+            icon: 'success',
+            text: '여행을 저장했습니다!',
+          });
         }
       })
       .catch((err: any) => {
