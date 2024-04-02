@@ -70,6 +70,7 @@ interface ScheduleData {
   friendNameList: string[];
   imgUrl: string;
   status: 'BEFORE_DIARY' | 'AFTER_DIARY';
+  diaryId: number;
 }
 
 interface DiaryListData {

@@ -6,10 +6,18 @@ import { DiaryData, getDiary } from '../../utils/axios/axios-user';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+};
+
 const DiaryDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.state);
   const { diaryId } = location.state || {};
   const [diaryData, setDiaryData] = useState<Partial<DiaryData>>({});
   const [imgUrls, setImgUrls] = useState<string[]>([]);
@@ -32,20 +40,6 @@ const DiaryDetail = () => {
     navigate('/mypage?tab=2');
   };
 
-  const imageUrls = [
-    'https://a.cdn-hotels.com/gdcs/production167/d236/59edd556-2e3f-4fa8-a97d-32efc0c18c6d.jpg?impolicy=fcrop&w=800&h=533&q=medium',
-    'https://www.noblesse.com/shop/data/m/editor_new/2021/06/25/a2408f2530eb39c321.jpg',
-  ];
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-  };
-
   return (
     <>
       <PageContainer>
@@ -56,11 +50,7 @@ const DiaryDetail = () => {
           </TitleDate>
         </TitleContainer>
         <PhotoContainer>
-          <Slider {...settings}>
-            {imgUrls.map((imageUrl, index) => (
-              <StyledImage key={index} src={imageUrl} alt={`photo_${index}`} />
-            ))}
-          </Slider>
+          <SlideShow imgUrls={imgUrls} />
         </PhotoContainer>
         <ContentContainer>
           <div>{diaryData.text}</div>
@@ -73,6 +63,30 @@ const DiaryDetail = () => {
     </>
   );
 };
+
+interface SlideShowProps {
+  imgUrls: string[];
+}
+
+const SlideShow: React.FC<SlideShowProps> = ({ imgUrls }) => {
+  // URL 배열을 기반으로 조건부 렌더링
+  if (imgUrls.length === 1) {
+    // URL이 하나만 있는 경우 단일 이미지 렌더링
+    return <StyledImage src={imgUrls[0]} alt="Slide" />;
+  } else {
+    // 여러 URL이 있는 경우 슬라이더 컴포넌트 렌더링
+    return (
+      <Slider {...settings}>
+        {imgUrls.map((imageUrl, index) => (
+          <div key={index}>
+            <StyledImage src={imageUrl} alt={`photo_${index}`} />
+          </div>
+        ))}
+      </Slider>
+    );
+  }
+};
+
 const PageContainer = styled.div`
   width: 412px;
   min-height: 100%;
@@ -144,7 +158,7 @@ const ChooseButtonBorder = styled.button`
 `;
 
 const StyledImage = styled.img`
-  width: 320px;
+  width: 350px;
   height: 200px;
   object-fit: cover;
   object-position: center bottom;

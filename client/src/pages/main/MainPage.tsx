@@ -4,6 +4,8 @@ import Profile from '../../components/common/MainProfile';
 import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
 import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
+import DDayDiv from '../../features/course/DDayDiv';
+import OnCourseCard from '../../features/course/OnCourseCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getUserStatus, UserStatusResponse } from '../../utils/axios/axios-user';
@@ -28,7 +30,7 @@ const MainPage = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
   const [weather, setWeather] = useState<WeatherData | null>(null);
 
-  //위치 가져오기
+  // 위치 가져오기
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       let lat = position.coords.latitude;
@@ -43,29 +45,31 @@ const MainPage = () => {
     let data: WeatherData = await response.json();
     setWeather(data);
   };
+
   useEffect(() => {
     getCurrentLocation();
   }, []);
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
+
   const handleDisplayModal = useCallback(() => {
-    setIsOpenModal((prev) => (prev = !prev));
+    setIsOpenModal((prev) => !prev);
   }, []);
+
   const handleDisplayAlert = useCallback(() => {
-    setIsOpenAlert((prev) => (prev = !prev));
+    setIsOpenAlert((prev) => !prev);
   }, []);
 
   useEffect(() => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
     getUserStatus()
       .then((response) => {
-        console.log(response.data.data.birthCheck);
-        console.log(response.data.data.genderCheck);
-        console.log(response.data.data.diaryCheck);
+        console.log(response.data.data.status);
         setUserStatus(response.data); // 상태를 업데이트
         if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
           setIsOpenModal(true);
-        } else if (response.data.data.diaryCheck === false) {
+        } else if (response.data.data.diaryCheck === true) {
           setIsOpenAlert(true);
         } else {
           setIsOpenModal(false);
@@ -75,10 +79,10 @@ const MainPage = () => {
       .catch((error) => {
         console.error(error.message); // 오류 메시지 설정
       });
-  }, []); // 컴포넌트가 처음 렌더링될 때 한 번만 실행됨
+  }, []);
 
   return (
-    //고정
+    // 고정
     <MainPageContainer>
       {isOpenAlert && <DiaryAlert handleDisplayAlert={handleDisplayAlert} />}
       {isOpenModal && <ExtraInfoModal handleDisplayModal={handleDisplayModal} />}
@@ -90,8 +94,6 @@ const MainPage = () => {
       <StyledProfile>
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
-
-      {/* 상태에 따라서 컴포넌트 렌더링 */}
       {userStatus?.data.status === 'BEFORE_COURSE' && (
         <SitePicturesContainer>
           <SitePicturesStyle>
@@ -99,11 +101,13 @@ const MainPage = () => {
           </SitePicturesStyle>
         </SitePicturesContainer>
       )}
-
       {userStatus?.data.status === 'AFTER_COURSE' && (
         <div>
           <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* d-day */}
+          <StyledDDAY>
+            <DDayDiv></DDayDiv>
+          </StyledDDAY>
           {/* 내 코스보기 페이지로 이동 div */}
           <StyledMyCourseListDiv>
             <MyCourseListDiv />
@@ -111,7 +115,6 @@ const MainPage = () => {
           {/* memo */}
         </div>
       )}
-
       {userStatus?.data.status === 'ON_COURSE' && (
         <div>
           {/* 내 코스보기 페이지로 이동 div */}
@@ -119,6 +122,9 @@ const MainPage = () => {
             <MyCourseListDiv />
           </StyledMyCourseListDiv>
           {/* course info */}
+          <StyledCourseCard>
+            <OnCourseCard></OnCourseCard>
+          </StyledCourseCard>
         </div>
       )}
     </MainPageContainer>
@@ -164,12 +170,9 @@ const LogoLargeContainer = styled.div`
 const LogoContainer = styled.div`
   position: fixed;
   top: 0;
-
-  /* transform: translateX(-50%); */
   z-index: 2;
   width: 100%;
   max-width: 412px;
-
   background-color: #dde2fc;
 `;
 
@@ -190,11 +193,32 @@ const Container = styled.div`
   z-index: 0;
   padding-bottom: 5px;
 `;
+
 const StyledMyCourseListDiv = styled.div`
   max-width: 412px;
   width: 412px;
   text-align: center;
   padding-top: 380px;
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+
+const StyledDDAY = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  /* padding-top: 380px; */
+  background-color: #dde2fc;
+  z-index: 0;
+  padding-bottom: 5px;
+`;
+
+const StyledCourseCard = styled.div`
+  max-width: 412px;
+  width: 412px;
+  text-align: center;
+  /* padding-top: 380px; */
   background-color: #dde2fc;
   z-index: 0;
   padding-bottom: 5px;

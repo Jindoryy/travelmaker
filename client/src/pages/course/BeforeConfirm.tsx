@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 //store에 저장된 여행 보내기
 interface TravelInfo {
@@ -62,6 +63,7 @@ const BeforeConfirm = () => {
       transportation: travelSaveStore.travel.transportation,
       destinationIdList: travelSaveStore.travel.courseList,
     });
+    console.log(travelSaveStore.travel);
   }, []);
 
   useEffect(() => {
@@ -225,43 +227,47 @@ const BeforeConfirm = () => {
       });
     navigate('/mypage');
   };
-  return (
-    <StyledEngineProvider>
-      <BoxContainer>
-        <HeaderTabs
-          selectedTab={selectedTab}
-          onTabChange={handleTabChange}
-          size={size}
-          letters={letters}
-        />
-        <CourseMap>
-          <TravelHeader>
-            <HeaderTitle>{travelCity.city}</HeaderTitle>
-            <HeaderDate>
-              {travelSaveStore.travel.startDate} ~ {travelSaveStore.travel.endDate}
-            </HeaderDate>
-          </TravelHeader>
-          <TravelMap key={key}>
-            <KakaoMap dateCourse={selectedDate} />
-          </TravelMap>
-        </CourseMap>
-        <EditBody>
-          <EditButton disableRipple onClick={() => editButton()}>
-            편집
-          </EditButton>
-        </EditBody>
-        <CourseBody>
-          {selectedDate &&
-            selectedDate.map((place: any, index: number) => (
-              <CourseCard key={index} course={place} />
-            ))}
-          <ButtonBox>
-            <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
-          </ButtonBox>
-        </CourseBody>
-      </BoxContainer>
-    </StyledEngineProvider>
-  );
+  if (selectedDate.length === 0) {
+    return <LoadingComponent />;
+  } else {
+    return (
+      <StyledEngineProvider>
+        <BoxContainer>
+          <HeaderTabs
+            selectedTab={selectedTab}
+            onTabChange={handleTabChange}
+            size={size}
+            letters={letters}
+          />
+          <CourseMap>
+            <TravelHeader>
+              <HeaderTitle>{travelCity.city}</HeaderTitle>
+              <HeaderDate>
+                {travelSaveStore.travel.startDate} ~ {travelSaveStore.travel.endDate}
+              </HeaderDate>
+            </TravelHeader>
+            <TravelMap key={key}>
+              <KakaoMap dateCourse={selectedDate} />
+            </TravelMap>
+          </CourseMap>
+          <EditBody>
+            <EditButton disableRipple onClick={() => editButton()}>
+              편집
+            </EditButton>
+          </EditBody>
+          <CourseBody>
+            {selectedDate &&
+              selectedDate.map((place: any, index: number) => (
+                <CourseCard key={index} course={place} />
+              ))}
+            <ButtonBox>
+              <ChooseButton onClick={() => saveButton()}>일정 저장</ChooseButton>
+            </ButtonBox>
+          </CourseBody>
+        </BoxContainer>
+      </StyledEngineProvider>
+    );
+  }
 };
 
 const BoxContainer = styled(Box)`

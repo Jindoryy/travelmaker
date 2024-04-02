@@ -5,17 +5,17 @@ import { deleteDiary } from '../../utils/axios/axios-user';
 import Swal from 'sweetalert2';
 
 const MyPageScheduleFeature: React.FC<MyPageScheduleFeatureProps> = ({ data }) => {
-  const { travelId, cityName, startDate, endDate, friendNameList, imgUrl, status } = data;
+  const { travelId, cityName, startDate, endDate, friendNameList, imgUrl, status, diaryId } = data;
 
   const friends = friendNameList.join(', ');
   // 현재 날짜를 확인합니다.
   const currentDate = new Date();
-  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
 
   let buttonStatus: '코스보기' | '일기작성' | '일기보기' = '코스보기';
 
   // 조건에 따라 buttonStatus 값을 업데이트합니다.
-  if (currentDate >= startDateObj) {
+  if (currentDate >= endDateObj) {
     if (status === 'BEFORE_DIARY') {
       buttonStatus = '일기작성';
     } else if (status === 'AFTER_DIARY') {
@@ -67,7 +67,9 @@ const MyPageScheduleFeature: React.FC<MyPageScheduleFeatureProps> = ({ data }) =
         </TextDate>
         <TextFreind>{friends}</TextFreind>
         <ButtonPlace>
-          <ScheduleStatusButton data={{ travelId: travelId, status: buttonStatus }} />
+          <ScheduleStatusButton
+            data={{ travelId: travelId, status: buttonStatus, diaryId: diaryId }}
+          />
         </ButtonPlace>
       </TextContainer>
     </FeatureContainer>
@@ -84,6 +86,7 @@ interface SchedulerData {
   friendNameList: string[];
   imgUrl: string;
   status: 'BEFORE_DIARY' | 'AFTER_DIARY';
+  diaryId: number;
 }
 
 interface MyPageScheduleFeatureProps {
@@ -140,6 +143,7 @@ const TextFreind = styled.div`
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 12px;
+  height: 14px;
 `;
 
 const ButtonPlace = styled.div`
