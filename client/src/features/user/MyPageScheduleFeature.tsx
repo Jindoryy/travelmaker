@@ -143,6 +143,7 @@ const TextFreind = styled.div`
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 12px;
+  height: 14px;
 `;
 
 const ButtonPlace = styled.div`
