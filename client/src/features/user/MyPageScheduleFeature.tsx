@@ -10,12 +10,12 @@ const MyPageScheduleFeature: React.FC<MyPageScheduleFeatureProps> = ({ data }) =
   const friends = friendNameList.join(', ');
   // 현재 날짜를 확인합니다.
   const currentDate = new Date();
-  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
 
   let buttonStatus: '코스보기' | '일기작성' | '일기보기' = '코스보기';
 
   // 조건에 따라 buttonStatus 값을 업데이트합니다.
-  if (currentDate >= startDateObj) {
+  if (currentDate >= endDateObj) {
     if (status === 'BEFORE_DIARY') {
       buttonStatus = '일기작성';
     } else if (status === 'AFTER_DIARY') {

@@ -28,7 +28,7 @@ const MainPage = () => {
         setUserStatus(response.data); // 상태를 업데이트
         if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
           setIsOpenModal(true);
-        } else if (response.data.data.diaryCheck === false) {
+        } else if (response.data.data.diaryCheck === true) {
           setIsOpenAlert(true);
         } else {
           setIsOpenModal(false);
