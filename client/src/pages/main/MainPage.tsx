@@ -72,9 +72,6 @@ const MainPage = () => {
     if (userInfo.userId !== -1) {
       getUserStatus()
         .then((response) => {
-          // console.log(response.data.data.birthCheck);
-          // console.log(response.data.data.genderCheck);
-          // console.log(response.data.data.diaryCheck);
           setUserStatus(response.data); // 상태를 업데이트
           if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
             setIsOpenModal(true);

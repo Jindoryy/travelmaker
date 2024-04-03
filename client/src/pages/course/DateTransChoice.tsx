@@ -81,7 +81,6 @@ const DateTransChoice = () => {
       updatedDisable = savedDate;
     }
     setSavedDate(updatedDisable);
-    console.log(updatedDisable);
   }, [startDate]);
 
   useEffect(() => {

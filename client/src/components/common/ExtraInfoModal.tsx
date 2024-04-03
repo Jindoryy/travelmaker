@@ -37,11 +37,14 @@ const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) =
       return;
     }
 
-    const data = { userId: userInfo.userId, gender: gender as 'MALE' | 'FEMALE', birth: birthDate.format('YYYY-MM-DD') };
+    const data = {
+      userId: userInfo.userId,
+      gender: gender as 'MALE' | 'FEMALE',
+      birth: birthDate.format('YYYY-MM-DD'),
+    };
 
     updateExtraUserInfo(data)
       .then((response) => {
-        console.log(response.data); // 응답 로그 출력
         handleDisplayModal(); // 모달 닫기
       })
       .catch((error) => {
@@ -69,7 +72,9 @@ const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) =
             <ModalTitle>추가 정보 입력</ModalTitle>
             <ModalBodyContainer>
               <Form onSubmit={handleSubmit}>
-                <FormLabel id="birth-calendar" style={{marginBottom:'-5px'}}>생년월일</FormLabel>
+                <FormLabel id="birth-calendar" style={{ marginBottom: '-5px' }}>
+                  생년월일
+                </FormLabel>
                 {/* <Input
                   type="date"
                   value={birthDate}
@@ -78,23 +83,28 @@ const ExtraInfoModal: React.FC<ExtraInfoModalProps> = ({ handleDisplayModal }) =
                 /> */}
 
                 <ThemeProvider theme={theme}>
-                  <LocalizationProvider 
+                  <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale="ko"
                     localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
-                    dateFormats={{month:'M월', year:'YYYY년', normalDate:'YYYY년 M월 D일'}}
+                    dateFormats={{ month: 'M월', year: 'YYYY년', normalDate: 'YYYY년 M월 D일' }}
                   >
-                      <MobileDatePicker
-                        views={['year', 'month', 'day']}
-                        value={birthDate}
-                        onChange={(newValue) => setBirthDate(newValue)}
-                        sx={{ mb: 1 }}
-                      />
+                    <MobileDatePicker
+                      views={['year', 'month', 'day']}
+                      value={birthDate}
+                      onChange={(newValue) => setBirthDate(newValue)}
+                      sx={{ mb: 1 }}
+                    />
                   </LocalizationProvider>
                 </ThemeProvider>
 
-                <FormLabel id="gender-radio" style={{marginBottom:'-12px'}}>성별</FormLabel>
-                <RadioGroup value={gender} onChange={(e) => setGender(e.target.value as 'MALE' | 'FEMALE' | '')}>
+                <FormLabel id="gender-radio" style={{ marginBottom: '-12px' }}>
+                  성별
+                </FormLabel>
+                <RadioGroup
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value as 'MALE' | 'FEMALE' | '')}
+                >
                   <FormControlLabel value="MALE" control={<Radio />} label="남성" />
                   <FormControlLabel value="FEMALE" control={<Radio />} label="여성" />
                 </RadioGroup>

@@ -18,8 +18,6 @@ interface WeatherData {
 }
 
 const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
-  // console.log(weather);
-
   const weatherDescKo = [
     { id: 201, description: '가벼운 비를 동반한 천둥구름' },
     { id: 200, description: '비를 동반한 천둥구름' },

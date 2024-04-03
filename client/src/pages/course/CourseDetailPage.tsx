@@ -42,7 +42,6 @@ const CourseDetailPage = () => {
       try {
         const travelId = location.state;
         const response = await getTravelDetail(travelId);
-        console.log(response.data);
         const data = response.data.data;
         setCityName(data.cityName);
         setEndDate(data.endDate);

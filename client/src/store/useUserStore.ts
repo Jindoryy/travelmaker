@@ -5,7 +5,7 @@ interface UserInfo {
   userId: number;
   profileUrl: string;
   nickName: string;
-  tag : number;
+  tag: number;
 }
 
 interface UserInfoState {
@@ -22,9 +22,7 @@ const useUserInfo = create(
       userInfo: initialState,
       // 사용자 정보 설정 함수
       setUserInfo: (userInfo) => {
-        console.log('setUserInfo 호출 전 상태:', userInfo);
         set({ userInfo });
-        console.log('setUserInfo 호출 후 상태:', userInfo);
       },
       // 사용자 정보 초기화 함수
       clearUserInfo: () => {

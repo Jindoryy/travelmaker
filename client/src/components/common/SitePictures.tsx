@@ -107,7 +107,6 @@ const SitePictures = () => {
   const getSiteInfoList = () => {
     siteListDetail()
       .then((response) => {
-        // console.log(response.data);
         const siteListResponse: SiteListProps = {
           status: response.data.status,
           data: response.data.data,
