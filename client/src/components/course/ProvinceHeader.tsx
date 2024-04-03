@@ -8,11 +8,11 @@ const ProvinceHeader = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
-  // useEffect(() => {
-  // if (!userInfo || userInfo.userId === -1) {
-  //   navigate('/login');
-  // }
-  // }, [userInfo, navigate]);
+  useEffect(() => {
+  if (!userInfo || userInfo.userId === -1) {
+    navigate('/login');
+  }
+  }, [userInfo, navigate]);
   const { nickName } = userInfo;
 
   const getProfileImage = () => {
@@ -45,7 +45,7 @@ const ProfileContainer = styled.div`
 
 const TextContainer = styled.div`
   width: 70%;
-  padding: 40px 0 0 20px;
+  padding: 30px 0 0 20px;
   display: flex;
   flex-direction: column;
 `;
@@ -58,12 +58,12 @@ const ProfileImage = styled.img`
 const ProfileText = styled.div`
   font-family: 'Black Han Sans', sans-serif;
   font-size: larger;
+  margin-bottom: 0px;
 `;
 
 const ProfileHighLightText = styled(ProfileText)`
   word-break: keep-all;
   font-size: xx-large;
-  margin-bottom: 10px;
 `;
 
 export default ProvinceHeader;

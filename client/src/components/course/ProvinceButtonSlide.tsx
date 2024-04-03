@@ -87,11 +87,11 @@ const ProvinceButtonSlide = () => {
 
   return (
     <ListContainer>
-      <GudieText>
+      <GuideText>
         <LocalFireDepartmentIcon style={{ color: '#FF9075' }} />
         추천 지역
         <LocalFireDepartmentIcon style={{ color: '#FF9075' }} />
-      </GudieText>
+      </GuideText>
       {loading || provinceContents.length === 0 ? (
         <>
           <Skeleton variant="rectangular" width={210} height={118} />
@@ -129,12 +129,12 @@ const Box = styled.div`
   box-sizing: border-box;
 `;
 
-const GudieText = styled.div`
+const GuideText = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 20px;
   font-weight: bold;
   padding: 0 0 10px 10px;
-  vertical-align: bottom;
-  display: flex;
   text-align: center;
 `;
 

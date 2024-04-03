@@ -118,7 +118,7 @@ const MainPage = () => {
         </BeforeCourse>
       )}
       {userStatus?.data.status === 'AFTER_COURSE' && (
-        <>
+        <AfterCourse>
           <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* d-day */}
           <StyledDDAY>
@@ -130,7 +130,7 @@ const MainPage = () => {
           </StyledMyCourseListDiv>
           {/* memo */}
           <MyMemoButton travelId={userStatus?.data.afterCourseResponse.travelId}></MyMemoButton>
-        </>
+        </AfterCourse>
       )}
 
       {userStatus?.data.status === 'ON_COURSE' && (
@@ -159,7 +159,7 @@ const MainPageContainer = styled.div`
   padding-left: 10px;
   padding-right: 10px;
   background-color: #dde2fc;
-  padding-bottom: 30px;
+  padding-bottom: 50px;
 `;
 // 로고헤더
 const LogoLargeContainer = styled.div`
@@ -197,6 +197,14 @@ const BeforeCourse = styled.div`
   justify-content: center;
   align-items: center;
 `
+
+const AfterCourse = styled.div`
+width: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+`
 // 장소 리스트(좋아요가능)
 const SitePicturesStyle = styled.div`
   margin: 10px;
@@ -216,31 +224,46 @@ const SitePicturesContainer = styled.div`
 //날씨
 const Container = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   background-color: #dde2fc;
-  z-index: 0;
 `;
 //코스짜기 페이지로 이동
 const StyledMyCourseListDiv = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   background-color: #dde2fc;
   z-index: 0;
 `;
 //디데이
 const StyledDDAY = styled.div`
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
   text-align: center;
-  width: 100%;
   background-color: #dde2fc;
   z-index: 0;
 `;
 //여행중 코스 정보 카드
 const StyledCourseCard = styled.div`
+  width: 100%;  
+  height: auto;
   text-align: center;
-  /* padding-top: 380px; */
+  padding-top: 10px;
   background-color: #dde2fc;
-  z-index: 0;
   padding-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  padding-left: 1px;
+
 `;
 
 export default MainPage;

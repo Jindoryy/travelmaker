@@ -29,7 +29,7 @@ const Profile = ({ userState }: { userState: string }) => {
       <StyledProfileImage src={getProfileImage()} alt="Profile" />
       <StyledProfileContent>
         {getProfileContent()}
-      <StyledText>코스를 짜러 가볼까요?</StyledText>
+      <StyledText>새로운 코스를 짜러 가볼까요?</StyledText>
         </StyledProfileContent>
     </StyledProfileContainer>
   );
@@ -43,30 +43,32 @@ const StyledProfileContainer = styled.div`
   height: 90px;
   cursor: pointer;
   padding: 20px;
-  padding-bottom: 25px;
+  margin-left: 5px;
   display: flex;
   align-items: center;
   text-align: center;
   position: relative;
-`;
-
-const StyledProfileContent = styled.p`
+  `;
+  
+  const StyledProfileContent = styled.p`
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+  line-height: 20px;  
   width: 100%;
+  margin-top: 5px;
 `;
 
 const StyledProfileImage = styled.img`
   max-width: 100%;
-  /* width: 100px; */
-  height: 80px;
+  width: 100px;
+  height: 100px;
   padding-left: 5px;
 `;
 
 const StyledText = styled.div`
   width: 100%;
-  font-size: 14px;
+  font-size: 12px;
   font-align: flex-start;
   margin-top: 5px;
 `

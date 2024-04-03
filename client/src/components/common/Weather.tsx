@@ -121,10 +121,18 @@ const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
 export default Weather;
 
 const WeatherBoxContainer = styled.div`
+height: 20px;
+width: 85%;
   border-radius: 15px;
   background-color: white;
-  margin: 10px;
-  padding: 10px;
+  margin: 0px 5px 5px 5px;
+  padding: 20px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  position: relative;
   .weather-data {
     display: flex;
     align-items: center;

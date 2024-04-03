@@ -32,7 +32,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
-  height: 100%;
+  height: 100vh;
   min-height: 100vh;
   width: 100%;
   padding: 0;

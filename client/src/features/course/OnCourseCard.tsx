@@ -109,11 +109,7 @@ export default OnCourseCard;
 const OnCourseCards = styled.div`
   width: 96%;
   border-radius: 15px;
-  height: 400px;
-  /* margin: 10px; */
-  /* padding: 10px; */
-  padding-left: 3%;
-  /* padding-right: 3%; */
+  padding-bottom: 10px;
 `;
 
 const SliderContainer = styled.div`

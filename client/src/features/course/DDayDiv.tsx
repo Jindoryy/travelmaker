@@ -43,12 +43,13 @@ const DDayContainer = styled.div`
   width: 100%;
   border-radius: 15px;
   text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 const OverlayContainer = styled.div`
   width: 100%;
-  
-  display: inline-block;
+  position: relative;
 `;
 
 const TextOverlay = styled.div`
@@ -67,8 +68,8 @@ const TextOverlay = styled.div`
 `;
 
 const StyledImg = styled.img`
-  width: 90%;
-  height: 160px;
+  width: 95%;
+  height: 200px;
   object-fit: cover;
   border-radius: 15px;
 `;
