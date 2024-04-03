@@ -48,12 +48,13 @@ const MyMemoButton: React.FC<MyMemoButtonProps> = ({ travelId }) => {
 export default MyMemoButton;
 
 const MemoButton = styled.div`
-  border-radius: 20px;
+  border-radius: 15px;
   background-color: white;
   margin: 10px;
   padding: 20px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 
   img {
     width: 50px; /* 이미지 너비 조정 */

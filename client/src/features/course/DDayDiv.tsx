@@ -40,15 +40,14 @@ const DDayDiv = () => {
 export default DDayDiv;
 
 const DDayContainer = styled.div`
-  border-radius: 20px;
-  margin: 5px;
-  padding: 10px;
+  width: 100%;
+  border-radius: 15px;
   text-align: center;
 `;
 
 const OverlayContainer = styled.div`
+  width: 100%;
   position: relative;
-  width: fit-content;
   display: inline-block;
 `;
 
@@ -68,10 +67,8 @@ const TextOverlay = styled.div`
 `;
 
 const StyledImg = styled.img`
-  max-width: 412px;
-  width: 380px;
+  width: 80%;
   height: 160px;
   object-fit: cover;
-  /* height: auto; */
-  border-radius: 20px; /* 예시로 추가한 스타일 */
+  border-radius: 15px;
 `;

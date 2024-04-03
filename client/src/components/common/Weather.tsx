@@ -121,7 +121,7 @@ const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
 export default Weather;
 
 const WeatherBoxContainer = styled.div`
-  border-radius: 20px;
+  border-radius: 15px;
   background-color: white;
   margin: 10px;
   padding: 10px;
