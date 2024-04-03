@@ -152,6 +152,8 @@ const Container = styled.div`
   background: white;
   box-shadow: 2px 2px 1px gray;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const WaveSVG: React.FC<WaveSVGProps> = ({ color, backgroundColor }) => (
@@ -196,6 +198,7 @@ const Tab = styled.button<TabProps>`
 `;
 
 const ScheduleContainer = styled.div`
+  width: 80%;
   display: flex;
   flex-direction: column;
   padding: 0 30px;

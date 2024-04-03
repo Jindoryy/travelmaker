@@ -36,7 +36,7 @@ const StyledProfileContainer = styled.div`
   background-color: white;
   color: #000;
   margin: 10px;
-  border-radius: 20px;
+  border-radius: 15px;
   height: 110px;
   cursor: pointer;
   padding: 20px;
