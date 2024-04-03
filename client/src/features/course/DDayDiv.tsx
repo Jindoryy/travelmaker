@@ -10,9 +10,6 @@ const DDayDiv = () => {
     // getUserStatus 함수를 이용하여 사용자 상태를 가져옴
     getUserStatus()
       .then((response) => {
-        console.log(response.data.data.afterCourseResponse.startDate);
-        console.log(response.data.data.afterCourseResponse.cityName);
-        console.log(response.data.data.afterCourseResponse.imgUrl);
         setUserStatus(response.data); // 상태를 업데이트
         const startDate = new Date(response.data.data.afterCourseResponse.startDate);
         const today = new Date();

@@ -170,8 +170,8 @@ const CheckSite = () => {
             가고 싶은 장소에
             <CheckBoxIcon
               style={{
-                width: '12px',
-                height: '12px',
+                width: '20px',
+                height: '20px',
                 textAlign: 'center',
                 margin: '0px 3px',
                 color: '#FFC65C',
@@ -202,26 +202,29 @@ const CheckSite = () => {
 
 const StyledHeaderTabs = styled.div`
   position: fixed;
+  padding-left: 10px;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   background-color: white;
 `;
 
 const HeaderInfo = styled.div`
   position: fixed;
   width: 412px;
-  height: 15px;
-  text-align: center;
+  height: 25px;
+  text-align: flex-start;
+  line-height: 20px;
   top: 65px;
   background-color: white;
   font-family: 'Pretendard', sans-serif;
-  font-size: 12px;
+  font-size: 15px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-left: 15px;
 `;
 const MainPageContainer = styled.div`
-  margin-top: 20px;
+  padding-top: 30px;
   display: flex;
   max-width: 412px;
   width: 100vw;

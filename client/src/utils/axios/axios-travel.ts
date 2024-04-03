@@ -282,7 +282,6 @@ const nonLoginsiteList = () => {
 
 // 장소조회(장소선택 페이지)
 const destinationArray = (destinationsIdList: number[] | undefined) => {
-  console.log(destinationsIdList);
   if (!destinationsIdList) return Promise.reject('destinationsIdList is undefined');
   return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {

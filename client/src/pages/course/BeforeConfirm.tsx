@@ -70,7 +70,6 @@ const BeforeConfirm = () => {
       transportation: travelSaveStore.travel.transportation,
       destinationIdList: travelSaveStore.travel.courseList,
     });
-    console.log(travelSaveStore.travel);
   }, []);
 
   useEffect(() => {
@@ -82,7 +81,6 @@ const BeforeConfirm = () => {
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
       .then((response) => {
-        console.log(response.data.data.travelList);
         const travelLists = response.data.data.travelList;
         if (travelLists.length >= 4) {
           const lists = travelLists.slice(0, 3);
@@ -158,8 +156,6 @@ const BeforeConfirm = () => {
   const letters = ['1일차', '2일차', '3일차'];
 
   const editButton = () => {
-    console.log('edit');
-    console.log(courseInfo);
     navigate('/editcourse', {
       state: {
         firstDate: firstDate,

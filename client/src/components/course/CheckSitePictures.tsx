@@ -153,6 +153,7 @@ const SiteImage = styled.img<{ isFlipped: boolean }>`
   transform: ${({ isFlipped }) =>
     isFlipped ? 'rotateY(180deg)' : 'rotateY(0)'}; // 클릭 시 뒤집힌 이미지의 회전
   transition: transform 0.5s ease; // 부드러운 애니메이션 효과 추가
+  z-index: 0;
 `;
 
 const Back = styled.div`
@@ -164,6 +165,7 @@ const Back = styled.div`
   padding: 10px;
   margin-right: -6px;
   margin-bottom: -20px;
+  margin-top: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   backface-visibility: hidden; // 뒷면 텍스트가 앞면에 보이지 않도록 함
   display: flex;
