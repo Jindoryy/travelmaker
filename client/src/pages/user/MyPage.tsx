@@ -31,8 +31,7 @@ const PageContainer = styled.div`
   width: 412px;
   flex-direction: column;
   align-items: center;
-  height: 100%;
-  min-height: 90vh;
+  height: auto;
   padding: 0;
   margin: 0;
   overflow: auto;

@@ -210,6 +210,7 @@ interface DateDetail {
   endDate: string;
 }
 interface DateResponse {
+  map: any;
   datedata: DateDetail[];
 }
 //시티 리스트 가져오기

@@ -22,6 +22,7 @@ const ContainerBox = styled(Box)`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  font-family: 'Pretendard', sans-serif;
 `;
 
 const OutletBox = styled(Box)`

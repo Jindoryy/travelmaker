@@ -208,6 +208,10 @@ const DiaryContainer = styled.div`
   margin-bottom: 20px;
 `;
 const EmptyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin: 40px auto;
 `;
 const EmptyText = styled.div`
@@ -215,6 +219,7 @@ const EmptyText = styled.div`
   text-align: center;
 `;
 const EmptyButton = styled.div`
+  line-height: 22px;
   text-align: center;
   width: 130px;
   height: 20px;

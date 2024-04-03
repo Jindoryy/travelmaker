@@ -19,15 +19,30 @@ const DateTransChoice = () => {
   const [selectedTab, setSelectedTab] = useState('');
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [savedDate, setSavedDate] = useState<any>([]);
+  const [disableDate, setDisableDate] = useState<any>([]);
   const travelSaveStore = useTravelSave();
   const travelInfoStore = useTravelInfo();
   const userInfo = useUserInfo();
 
   useEffect(() => {
-    console.log(userInfo.userInfo.userId);
     getAlreadyConfirm(userInfo.userInfo.userId)
       .then((response) => {
-        console.log(response.data);
+        const dates = response.data;
+        if (dates) {
+          const getSavedDate: string[] = [];
+          dates.map((dateObj: any) => {
+            const startDate = new Date(dateObj.startDate);
+            const endDate = new Date(dateObj.endDate);
+            const currentDate = new Date(startDate);
+
+            while (currentDate <= endDate) {
+              getSavedDate.push(currentDate.toISOString().slice(0, 10));
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+          });
+          setSavedDate(getSavedDate);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -89,8 +104,6 @@ const DateTransChoice = () => {
           transportation: selectedTransportations[0].alt,
           destinationIdList: [],
         });
-        console.log(travelSaveStore.travel);
-        console.log(travelInfoStore.travelInfo);
         navigate('/course/alonetogether');
       } else {
         Swal.fire({
@@ -138,6 +151,7 @@ const DateTransChoice = () => {
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
                   minDate={dayjs().startOf('day')}
+                  shouldDisableDate={(date) => savedDate.includes(date.format('YYYY-MM-DD'))}
                 />
               </DatePickerContainer>
               <DatePickerContainer>
@@ -150,6 +164,11 @@ const DateTransChoice = () => {
                   maxDate={
                     startDate ? startDate.add(2, 'day') : dayjs().startOf('day').add(2, 'day')
                   }
+                  shouldDisableDate={(date) => {
+                    const nextDay = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
+                    const nextNextDay = dayjs(startDate).add(2, 'day').format('YYYY-MM-DD');
+                    return savedDate.includes(nextDay) || savedDate.includes(nextNextDay);
+                  }}
                 />
               </DatePickerContainer>
             </LocalizationProvider>

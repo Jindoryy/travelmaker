@@ -300,7 +300,7 @@ const EditCoursePage: React.FC = () => {
       .catch((err: any) => {
         console.error(err);
       });
-    window.location.replace('/mypage');
+    navigate('/mypage');
   };
   return (
     <BoxContainer>

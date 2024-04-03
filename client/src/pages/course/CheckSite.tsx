@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import LoadingComponent from '../../components/common/LoadingComponent';
 import styled from 'styled-components';
 import { destinationDetail, destinationArray } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import CheckSitePictures from '../../components/course/CheckSitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTravelInfo, useTravelSave, useTravelCity } from '../../store/useTravelStore';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Swal from 'sweetalert2';
 
 interface DestinationResponse {
@@ -31,6 +33,7 @@ const CheckSite = () => {
   const [foodList, setFoodList] = useState<any>([]);
   const [cafeList, setCafeList] = useState<any>([]);
   const [likeList, SetLikeList] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
 
   const { setTravelInfo } = useTravelInfo();
 
@@ -51,7 +54,6 @@ const CheckSite = () => {
     const friendIds = travelSave.travel.friendIdList;
     destinationDetail(numberId, friendIds)
       .then((response) => {
-        console.log(response.data.data);
         const newList = response.data.data.destinationRecommendList;
         getDivide(newList);
         getDestinationDetail(newList);
@@ -60,6 +62,7 @@ const CheckSite = () => {
         console.error('Error:', error);
       });
   };
+
   const getDivide = (newList: any) => {
     if (!newList) return;
     setAllList([[...newList.sights], [...newList.food], [...newList.cafe]]);
@@ -103,6 +106,7 @@ const CheckSite = () => {
         console.error(err);
       });
   };
+
   const handleTabChange = (tabNumber: number) => {
     setSelectedTab(tabNumber);
   };
@@ -149,6 +153,19 @@ const CheckSite = () => {
           onTabChange={handleTabChange}
           size={3}
         />
+        <HeaderInfo>
+          가고 싶은 장소에
+          <CheckBoxIcon
+            style={{
+              width: '12px',
+              height: '12px',
+              textAlign: 'center',
+              margin: '0px 3px',
+              color: '#FFC65C',
+            }}
+          />
+          해주세요!
+        </HeaderInfo>
       </StyledHeaderTabs>
 
       <SitePicturesContainer>
@@ -170,8 +187,21 @@ const StyledHeaderTabs = styled.div`
   background-color: white;
 `;
 
+const HeaderInfo = styled.div`
+  position: fixed;
+  width: 412px;
+  height: 15px;
+  text-align: center;
+  top: 65px;
+  background-color: white;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const MainPageContainer = styled.div`
-  margin-top: 15px;
+  margin-top: 20px;
   display: flex;
   max-width: 412px;
   width: 100vw;
@@ -194,8 +224,8 @@ const SitePicturesContainer = styled.div`
 `;
 // 추가된 버튼에 대한 스타일 지정
 const NextPageButton = styled.button`
-  position: absolute; /* 버튼의 위치를 조정하기 위해 필요 */
-  bottom: 13%;
+  position: fixed; /* 버튼의 위치를 조정하기 위해 필요 */
+  bottom: 0;
   width: 380px;
   border: none;
   padding: 10px 20px;
@@ -204,7 +234,7 @@ const NextPageButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   z-index: 10;
-  margin-bottom: 30px;
+  margin-bottom: 100px;
 `;
 
 export default CheckSite;
