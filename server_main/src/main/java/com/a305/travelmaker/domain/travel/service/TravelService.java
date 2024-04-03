@@ -530,7 +530,7 @@ public class TravelService {
   public void removeTravel(Integer id) {
 
     Travel travel = travelRepository.findById(id).get();
-
+    System.out.println(travel);
     for (Diary diary : travel.getDiaryList()) {
       for (File file : diary.getFileList()) {
 
@@ -538,7 +538,19 @@ public class TravelService {
       }
     }
 
+    schedulingService.updateUserStatusBeforeCourse(travel.getUser().getId());
+    if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
+
+      String[] friends = travel.getFriends().split(",");
+      for (String friendId : friends) {
+        schedulingService.updateUserStatusBeforeCourse(Long.parseLong(friendId));
+      }
+    }
+
     travelRepository.delete(travel);
+
+    schedulingService.updateUsersBasedOnTravelDates();
+
   }
 
 
