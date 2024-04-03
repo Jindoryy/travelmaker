@@ -108,7 +108,7 @@ const MainPage = () => {
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
       {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
-        <BeforeCourse >
+        <BeforeCourse>
           <ServiceInfo></ServiceInfo>
           <SitePicturesContainer>
             <SitePicturesStyle>
@@ -129,7 +129,9 @@ const MainPage = () => {
             <MyCourseListDiv />
           </StyledMyCourseListDiv>
           {/* memo */}
-          <MyMemoButton travelId={userStatus?.data.afterCourseResponse.travelId}></MyMemoButton>
+          <ButtonBox>
+            <MyMemoButton travelId={userStatus?.data.afterCourseResponse.travelId}></MyMemoButton>
+          </ButtonBox>
         </AfterCourse>
       )}
 
@@ -196,15 +198,15 @@ const BeforeCourse = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const AfterCourse = styled.div`
-width: 100%;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 // 장소 리스트(좋아요가능)
 const SitePicturesStyle = styled.div`
   margin: 10px;
@@ -244,17 +246,17 @@ const StyledMyCourseListDiv = styled.div`
 `;
 //디데이
 const StyledDDAY = styled.div`
-width: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   background-color: #dde2fc;
   z-index: 0;
 `;
 //여행중 코스 정보 카드
 const StyledCourseCard = styled.div`
-  width: 100%;  
+  width: 100%;
   height: auto;
   text-align: center;
   padding-top: 10px;
@@ -263,7 +265,14 @@ const StyledCourseCard = styled.div`
   display: flex;
   justify-content: center;
   padding-left: 1px;
-
+`;
+const ButtonBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 export default MainPage;

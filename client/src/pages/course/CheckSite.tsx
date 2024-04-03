@@ -227,6 +227,7 @@ const HeaderInfo = styled.div`
 `;
 const MainPageContainer = styled.div`
   padding-top: 30px;
+  margin-bottom: 30px;
   display: flex;
   width: 100%;
   flex-direction: column;

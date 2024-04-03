@@ -15,7 +15,7 @@ const DDayDiv = () => {
         const today = new Date();
         const differenceInTime = startDate.getTime() - today.getTime();
         const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-        setDaysUntil(differenceInDays);
+        setDaysUntil(differenceInDays - 1);
       })
       .catch((error) => {
         console.error(error.message); // 오류 메시지 설정

@@ -32,7 +32,7 @@ const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
     } else {
       loadDiaries();
     }
-  }, [activeTab]);
+  }, [activeTab, schedules]);
 
   const loadSchedules = () => {
     getScheduleList()
