@@ -5,7 +5,7 @@ const MyPageHeader = ({ userInfo }: MyPageHeaderProps) => {
     <>
       <ProfileContainer>
         <ProfileImage src={userInfo.profileUrl} />
-        <ProfileText>{userInfo.nickName} </ProfileText>
+        <ProfileName>{userInfo.nickName} </ProfileName>
         <ProfileText>#{userInfo.tag} </ProfileText>
       </ProfileContainer>
     </>
@@ -34,6 +34,7 @@ const ProfileContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 10px;
 `;
 
 const ProfileImage = styled.img`
@@ -44,8 +45,13 @@ const ProfileImage = styled.img`
   object-fit: cover;
 `;
 
-const ProfileText = styled.div`
+const ProfileName = styled.div`
   font-family: sans-serif;
   font-size: larger;
   font-weight: 600;
+`;
+const ProfileText = styled.div`
+  font-family: sans-serif;
+  font-size: normal;
+  font-weight: 300;
 `;
