@@ -21,9 +21,11 @@ public interface TravelRepository extends JpaRepository<Travel, Integer> {
   @Query("SELECT t FROM Travel t WHERE t.user.id = :userId AND :today BETWEEN t.startDate AND t.endDate")
   Travel findSingleTravelByUserIdAndTodayBetweenStartDateAndEndDate(Long userId, LocalDate today);
 
-
-  @Query("SELECT t FROM Travel t WHERE t.user.id = :userId AND t.endDate > :today")
+  @Query("SELECT t FROM Travel t WHERE (t.user.id = :userId OR CONCAT(',', t.friends, ',') LIKE CONCAT('%,', :userId, ',%')) AND t.endDate >= :today")
   List<Travel> findTravelAfterToday(Long userId, LocalDate today);
+
+//  @Query("SELECT t FROM Travel t WHERE t.user.id = :userId AND t.endDate > :today")
+//  List<Travel> findTravelAfterToday(Long userId, LocalDate today);
 
   boolean existsByUserIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Long userId, LocalDate startDate, LocalDate endDate);
 
