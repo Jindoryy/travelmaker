@@ -29,6 +29,29 @@ const getUserStatus = (): Promise<AxiosResponse<UserStatusResponse>> => {
   return oauthInstance.get<UserStatusResponse>('user/status');
 };
 
+const getMemoList = (
+  travelId: number,
+): Promise<AxiosResponse<{ data: { id: number; travelId: number; memo: string }[] }>> => {
+  return instance.get<{ data: { id: number; travelId: number; memo: string }[] }>(
+    `Memo/list/${travelId}`,
+  );
+};
+
+const deleteMemoList = (memoId: number) => {
+  return instance.delete(`Memo/${memoId}`);
+};
+
+const createMemoList = (
+  travelId: number,
+  memo: string,
+): Promise<AxiosResponse<CreateMemoResponse>> => {
+  return instance.post<CreateMemoResponse>(`Memo`);
+};
+
+const updateMemoList = (memoId: number) => {
+  return instance.put(`Memo/${memoId}`);
+};
+
 export {
   kakaoauthentication,
   getScheduleList,
@@ -37,6 +60,10 @@ export {
   deleteDiary,
   updateExtraUserInfo,
   getUserStatus,
+  getMemoList,
+  deleteMemoList,
+  createMemoList,
+  updateMemoList,
   UserStatusResponse,
 };
 
@@ -127,3 +154,18 @@ interface UserStatusResponse {
     diaryCheck: boolean;
   };
 }
+
+interface CreateMemoResponse {
+  id: number;
+  travelId: number;
+  memo: string;
+}
+
+// interface GetMemoResponse {
+//   data: {
+//     id: number;
+//     travelId: number;
+//     memo: string;
+//   };
+//   [];
+// }

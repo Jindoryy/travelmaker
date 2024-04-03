@@ -57,6 +57,7 @@ const StyledProfileContent = styled.p`
 
 const StyledProfileImage = styled.img`
   max-width: 100%;
+  /* width: 100px; */
   height: 80px;
   padding-left: 5px;
 `;

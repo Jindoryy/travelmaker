@@ -5,6 +5,7 @@ import ServiceInfo from '../../components/common/ServiceInfo';
 import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
 import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
+import MyMemoButton from '../../features/user/MyMemoButton';
 import DDayDiv from '../../features/course/DDayDiv';
 import OnCourseCard from '../../features/course/OnCourseCard';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -131,6 +132,7 @@ const MainPage = () => {
             <MyCourseListDiv />
           </StyledMyCourseListDiv>
           {/* memo */}
+          <MyMemoButton></MyMemoButton>
         </div>
       )}
 

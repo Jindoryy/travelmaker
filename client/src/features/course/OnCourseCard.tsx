@@ -19,6 +19,55 @@ interface ArrowProps {
 const OnCourseCard = () => {
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
 
+  function NextArrow(props: ArrowProps) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: 'block',
+          position: 'absolute',
+          top: '50%',
+          right: '30px',
+          zIndex: 1,
+          transform: 'translateY(-50%)',
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  function PrevArrow(props: ArrowProps) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: 'block',
+          position: 'absolute',
+          top: '50%',
+          left: '5px',
+          zIndex: 1,
+          transform: 'translateY(-50%)',
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 800,
+    autoplay: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
+
   useEffect(() => {
     getUserStatus()
       .then((response) => {
@@ -30,17 +79,6 @@ const OnCourseCard = () => {
   }, []);
 
   const renderSlider = (courseList: CourseInfo[]) => {
-    const settings = {
-      dots: false,
-      infinite: true,
-      speed: 800,
-      autoplay: true,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      nextArrow: <NextArrow />,
-      prevArrow: <PrevArrow />,
-    };
-
     return (
       <SliderContainer>
         <Slider {...settings}>
@@ -71,7 +109,7 @@ export default OnCourseCard;
 const OnCourseCards = styled.div`
   width: 400px;
   border-radius: 20px;
-  height: auto;
+  height: 400px;
   /* margin: 10px; */
   /* padding: 10px; */
   padding-left: 3%;
@@ -79,11 +117,11 @@ const OnCourseCards = styled.div`
 `;
 
 const SliderContainer = styled.div`
-  width: 412px;
+  width: 408px;
   height: 100%;
   .slick-slide img {
     width: 100%;
-    height: auto;
+    height: 300px;
   }
 `;
 
@@ -115,41 +153,3 @@ const StyledImg = styled.img`
   object-fit: cover;
   border-radius: 20px;
 `;
-
-function NextArrow(props: ArrowProps) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: 'block',
-        position: 'absolute',
-        top: '50%',
-        right: '30px',
-        zIndex: 1,
-        transform: 'translateY(-50%)',
-      }}
-      onClick={onClick}
-    />
-  );
-}
-
-function PrevArrow(props: ArrowProps) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: 'block',
-        position: 'absolute',
-        top: '50%',
-        left: '5px',
-        zIndex: 1,
-        transform: 'translateY(-50%)',
-      }}
-      onClick={onClick}
-    />
-  );
-}
