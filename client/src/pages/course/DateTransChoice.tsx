@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTravelSave, useTravelInfo } from '../../store/useTravelStore';
+import useUserInfo from '../../store/useUserStore';
+import { getAlreadyConfirm } from '../../utils/axios/axios-travel';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import dayjs, { Dayjs } from 'dayjs';
@@ -10,15 +12,42 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { koKR } from '@mui/x-date-pickers/locales';
 import 'dayjs/locale/ko';
+import Swal from 'sweetalert2';
 
 const DateTransChoice = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState('');
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [savedDate, setSavedDate] = useState<any>([]);
+  const [disableDate, setDisableDate] = useState<any>([]);
   const travelSaveStore = useTravelSave();
   const travelInfoStore = useTravelInfo();
+  const userInfo = useUserInfo();
 
+  useEffect(() => {
+    getAlreadyConfirm(userInfo.userInfo.userId)
+      .then((response) => {
+        const dates = response.data;
+        if (dates) {
+          const getSavedDate: string[] = [];
+          dates.map((dateObj: any) => {
+            const startDate = new Date(dateObj.startDate);
+            const endDate = new Date(dateObj.endDate);
+            const currentDate = new Date(startDate);
+
+            while (currentDate <= endDate) {
+              getSavedDate.push(currentDate.toISOString().slice(0, 10));
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+          });
+          setSavedDate(getSavedDate);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   const transportations = [
     {
       image:
@@ -75,14 +104,18 @@ const DateTransChoice = () => {
           transportation: selectedTransportations[0].alt,
           destinationIdList: [],
         });
-        console.log(travelSaveStore.travel);
-        console.log(travelInfoStore.travelInfo);
         navigate('/course/alonetogether');
       } else {
-        alert('이동수단을 골라주세요.');
+        Swal.fire({
+          icon: 'warning',
+          text: '이동수단을 골라주세요.',
+        });
       }
     } else {
-      alert('날짜를 선택해주세요.');
+      Swal.fire({
+        icon: 'warning',
+        text: '날짜를 선택해주세요.',
+      });
     }
   };
 
@@ -109,7 +142,7 @@ const DateTransChoice = () => {
               dateAdapter={AdapterDayjs}
               adapterLocale="ko"
               localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
-              dateFormats={{month:'M월', year:'YYYY년', normalDate:'YYYY년 M월 D일'}}
+              dateFormats={{ month: 'M월', year: 'YYYY년', normalDate: 'YYYY년 M월 D일' }}
             >
               <DatePickerContainer>
                 <MobileDatePicker
@@ -118,6 +151,7 @@ const DateTransChoice = () => {
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
                   minDate={dayjs().startOf('day')}
+                  shouldDisableDate={(date) => savedDate.includes(date.format('YYYY-MM-DD'))}
                 />
               </DatePickerContainer>
               <DatePickerContainer>
@@ -130,6 +164,11 @@ const DateTransChoice = () => {
                   maxDate={
                     startDate ? startDate.add(2, 'day') : dayjs().startOf('day').add(2, 'day')
                   }
+                  shouldDisableDate={(date) => {
+                    const nextDay = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
+                    const nextNextDay = dayjs(startDate).add(2, 'day').format('YYYY-MM-DD');
+                    return savedDate.includes(nextDay) || savedDate.includes(nextNextDay);
+                  }}
                 />
               </DatePickerContainer>
             </LocalizationProvider>

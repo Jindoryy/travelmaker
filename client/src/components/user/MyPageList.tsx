@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { getScheduleList, getDiaryList } from '../../utils/axios/axios-user';
 import MyPageScheduleFeature from '../../features/user/MyPageScheduleFeature';
 import MyPageDiaryFeature from '../../features/user/MyPageDiaryFeature';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('tab1');
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [diaries, setDiaries] = useState<Diary[]>([]);
@@ -69,16 +70,29 @@ const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
         </TabContainer>
         {activeTab === 'tab1' ? (
           <ScheduleContainer>
-            {schedules.map((schedule) => (
-              <MyPageScheduleFeature key={schedule.travelId} data={schedule} />
-            ))}
+            {schedules.length === 0 ? (
+              <EmptyContainer>
+                <EmptyText>등록된 일정이 없습니다.</EmptyText>
+                <EmptyButton onClick={() => navigate('/course/datetrans')}>여행 만들러 가기</EmptyButton>
+              </EmptyContainer>
+            ) : (
+              schedules.map((schedule) => (
+                <MyPageScheduleFeature key={schedule.travelId} data={schedule} />
+              ))
+            )}
           </ScheduleContainer>
         ) : (
-          <DiaryContainer>
-            {diaries.map((diary) => (
-              <MyPageDiaryFeature key={diary.diaryId} data={diary} />
-            ))}
-          </DiaryContainer>
+          diaries.length === 0 ? (
+            <EmptyContainer>
+              <EmptyText>등록된 일기가 없습니다.</EmptyText>
+            </EmptyContainer>
+          ) : (
+            <DiaryContainer>
+              {diaries.map((diary) => (
+                <MyPageDiaryFeature key={diary.diaryId} data={diary} />
+              ))}
+            </DiaryContainer>
+          )
         )}
       </Container>
     </>
@@ -129,6 +143,7 @@ const Container = styled.div`
   display: flex;
   width: 370px;
   height: auto;
+  min-height: 390px;
   margin-top: 30px;
   border-radius: 20px;
   background: white;
@@ -192,3 +207,30 @@ const DiaryContainer = styled.div`
   padding: 0 30px;
   margin-bottom: 20px;
 `;
+const EmptyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 40px auto;
+`;
+const EmptyText = styled.div`
+  margin-bottom: 10px;
+  text-align: center;
+`;
+const EmptyButton = styled.div`
+  line-height: 22px;
+  text-align: center;
+  width: 130px;
+  height: 20px;
+  color: ${(props) => props.theme.main};
+  background-color: ${(props) => props.theme.subtext};
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 22px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+`;
+

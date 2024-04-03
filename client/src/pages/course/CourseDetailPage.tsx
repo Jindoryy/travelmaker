@@ -8,9 +8,7 @@ import { useTravelCity, useTravelSave } from '../../store/useTravelStore';
 import useUserInfo from '../../store/useUserStore';
 
 import styled from 'styled-components';
-import { StyledEngineProvider } from '@mui/styled-engine';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 
 const CourseDetailPage = () => {
   const [selectedTab, setSelectedTab] = useState(1);
@@ -129,7 +127,7 @@ const CourseDetailPage = () => {
     courseInfo.forEach((el: any) => {
       let number = 1;
       el.forEach((ele: any) => {
-        if (number >= 7) return;
+        if (number >= 9) return;
         let color = '';
         if (ele.destinationType == 'sights') color = 'orange';
         else if (ele.destinationType == 'food') color = 'pink';

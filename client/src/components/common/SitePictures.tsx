@@ -95,6 +95,13 @@ const SitePictures = () => {
         } catch (error) {
           console.error('Error occurred while liking destination:', error);
         }
+      } else {
+        try {
+          // 좋아요 취소
+          const response = await likeDestination(userId, destinationId);
+        } catch (error) {
+          console.error('Error occurred while liking destination:', error);
+        }
       }
     };
   const getSiteInfoList = () => {

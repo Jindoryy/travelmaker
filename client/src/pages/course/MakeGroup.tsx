@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findFriend } from '../../utils/axios/axios-travel';
 import { useTravelSave } from '../../store/useTravelStore';
+import useUserInfo from '../../store/useUserStore';
 import Box from '@mui/material/Box';
 import styled from 'styled-components';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -9,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import Swal from 'sweetalert2';
 
 const MakeGroup = () => {
   const navigate = useNavigate();
@@ -16,7 +18,13 @@ const MakeGroup = () => {
   const [searchResult, setSearchResult] = useState<any>([]);
   const [groupList, setGroupList] = useState<any>([]);
   const travelSaveStore = useTravelSave();
+  const { userInfo } = useUserInfo();
 
+  useEffect(() => {
+    if (travelSaveStore.travel.startDate === '' || travelSaveStore.travel.endDate === '') {
+      navigate('/');
+    }
+  }, []);
   const searchNameTag = () => {
     //친구 검색 api
     findFriend(nameTag)
@@ -25,12 +33,15 @@ const MakeGroup = () => {
         const searchResult = response.data.data;
         const filteredFriends = searchResult.filter((friend: any) => {
           const groupUserIds = groupList.map((groupItem: any) => groupItem.userId);
-          return !groupUserIds.includes(friend.userId);
+          return !groupUserIds.includes(friend.userId) && friend.userId != userInfo.userId;
         });
         setSearchResult(filteredFriends);
       })
       .catch((err: Error) => {
-        alert('이름이나 태그를 다시 한 번 확인해주세요!');
+        Swal.fire({
+          icon: 'warning',
+          text: '이름이나 태그를 다시 한 번 확인해주세요!',
+        });
         console.error(err);
       });
   };
@@ -56,7 +67,7 @@ const MakeGroup = () => {
         const searchResult = response.data.data;
         const filteredFriends = searchResult.filter((friend: any) => {
           const groupUserIds = list.map((groupItem: any) => groupItem.userId);
-          return !groupUserIds.includes(friend.userId);
+          return !groupUserIds.includes(friend.userId) && friend.userId != userInfo.userId;
         });
         setSearchResult(filteredFriends);
       })
@@ -95,7 +106,6 @@ const MakeGroup = () => {
           <SearchInput>
             <TextField
               sx={{
-                width: '31ch',
                 '& fieldset': { border: 'none' },
                 boxShadow: '0.5px 1px 1px gray',
                 borderRadius: '10px',
@@ -174,7 +184,8 @@ const MakeGroup = () => {
 };
 
 const PageContainer = styled.div`
-  width: 412px;
+  max-width: 412px;
+  width: 95%;
   padding: 25px 0px 0px;
   font-size: 1.2rem;
 `;

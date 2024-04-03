@@ -204,6 +204,15 @@ interface FriendFindType {
   tag: number;
 }
 
+//여행 날짜 조회하기
+interface DateDetail {
+  startDate: string;
+  endDate: string;
+}
+interface DateResponse {
+  map: any;
+  datedata: DateDetail[];
+}
 //시티 리스트 가져오기
 const cityDetail = (provinceId: number) => {
   return oauthInstance.get<CityResponse>(`city/${provinceId}`, {
@@ -302,6 +311,14 @@ const findFriend = (userInfo: string) => {
   });
 };
 
+//여행조회해서 달력에 표시해 줄 api 연결하기
+const getAlreadyConfirm = (userId: number) => {
+  return instance.get<DateResponse>('/user/afterToday', {
+    params: {
+      userId: userId,
+    },
+  });
+};
 export {
   cityDetail,
   travelDetail,
@@ -316,4 +333,5 @@ export {
   getTravelDetailDiary,
   TravelDetailResponse,
   findFriend,
+  getAlreadyConfirm,
 };
