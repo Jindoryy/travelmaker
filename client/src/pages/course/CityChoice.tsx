@@ -209,7 +209,6 @@ const CityTypography = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 25px;
 `;
@@ -268,7 +267,6 @@ const ChooseButton = styled.button`
   margin-top: 50px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;

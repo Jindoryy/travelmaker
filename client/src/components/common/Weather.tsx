@@ -140,7 +140,6 @@ const WeatherBoxContainer = styled.div`
       margin-left: 10px;
     }
     h3 {
-      font-family: 'Pretendard';
       font-weight: bold;
       font-size: 15px;
       margin-right: 10px;

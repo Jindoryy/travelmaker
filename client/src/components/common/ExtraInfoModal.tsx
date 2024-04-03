@@ -218,7 +218,7 @@ const ButtonSubmit = styled.button`
   margin: 10px 0px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
+  font-family: sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;

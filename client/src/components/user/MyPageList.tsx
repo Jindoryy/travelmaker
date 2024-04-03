@@ -23,6 +23,10 @@ const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
   }, [location.search]);
 
   useEffect(() => {
+    loadSchedules();
+  }, []);
+
+  useEffect(() => {
     if (activeTab === 'tab1') {
       loadSchedules();
     } else {
@@ -73,7 +77,9 @@ const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
             {schedules.length === 0 ? (
               <EmptyContainer>
                 <EmptyText>등록된 일정이 없습니다.</EmptyText>
-                <EmptyButton onClick={() => navigate('/course/datetrans')}>여행 만들러 가기</EmptyButton>
+                <EmptyButton onClick={() => navigate('/course/datetrans')}>
+                  여행 만들러 가기
+                </EmptyButton>
               </EmptyContainer>
             ) : (
               schedules.map((schedule) => (
@@ -81,18 +87,16 @@ const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
               ))
             )}
           </ScheduleContainer>
+        ) : diaries.length === 0 ? (
+          <EmptyContainer>
+            <EmptyText>등록된 일기가 없습니다.</EmptyText>
+          </EmptyContainer>
         ) : (
-          diaries.length === 0 ? (
-            <EmptyContainer>
-              <EmptyText>등록된 일기가 없습니다.</EmptyText>
-            </EmptyContainer>
-          ) : (
-            <DiaryContainer>
-              {diaries.map((diary) => (
-                <MyPageDiaryFeature key={diary.diaryId} data={diary} />
-              ))}
-            </DiaryContainer>
-          )
+          <DiaryContainer>
+            {diaries.map((diary) => (
+              <MyPageDiaryFeature key={diary.diaryId} data={diary} />
+            ))}
+          </DiaryContainer>
         )}
       </Container>
     </>
@@ -141,15 +145,13 @@ interface Diary {
 
 const Container = styled.div`
   display: flex;
-  width: 370px;
+  width: 95%;
   height: auto;
-  min-height: 390px;
   margin-top: 30px;
   border-radius: 20px;
   background: white;
   box-shadow: 2px 2px 1px gray;
   flex-direction: column;
-  font-family: 'Pretendard', sans-serif;
 `;
 
 const WaveSVG: React.FC<WaveSVGProps> = ({ color, backgroundColor }) => (
@@ -228,9 +230,7 @@ const EmptyButton = styled.div`
   padding: 10px;
   border: 1px solid;
   border-radius: 22px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
 `;
-

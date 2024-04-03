@@ -76,7 +76,6 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
       columns={2}
       spacing={1}
       style={{
-        maxWidth: '412px',
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -177,7 +176,6 @@ const BackText = styled.p`
   font-size: 12px;
   font-weight: bold;
   color: black;
-  font-family: 'Pretendard';
   text-align: center; // 가운데 정렬
   padding: 10px;
   padding-left: 15px;

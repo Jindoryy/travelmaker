@@ -50,7 +50,6 @@ const CourseListContainer = styled.div`
   position: relative;
 
   .greytext {
-    font-family: 'Pretendard';
     color: grey;
     /* font-weight: bold; */
     text-align: left;
@@ -59,7 +58,6 @@ const CourseListContainer = styled.div`
     margin-right: 10px;
   }
   .boldtext {
-    /* font-family: 'Pretendard'; */
     font-weight: bold;
     font-size: 18px;
     margin-right: 20px;

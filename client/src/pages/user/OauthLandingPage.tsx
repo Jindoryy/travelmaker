@@ -93,7 +93,6 @@ const TextContainer = styled.div`
 const TextSpan = styled.span`
   display: block;
   font-weight: bold;
-  font-family: 'Pretendard', sans-serif;
   margin-top: 10px;
 `;
 export default OauthLandingPage;

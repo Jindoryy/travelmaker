@@ -155,7 +155,6 @@ const CardDetail = styled(Box)`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    font-family: 'Pretendard';
     margin-left: 10px;
   }
 `;
@@ -170,7 +169,6 @@ const DetailHeader = styled(Box)`
 const DetailCategory = styled(Box)`
   && {
     width: 90%;
-    font-family: 'Pretendard';
     font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.main};
@@ -181,7 +179,6 @@ const DetailCategory = styled(Box)`
 const DetailTitle = styled(Box)`
   && {
     width: 95%;
-    font-family: 'Pretendard';
     font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
@@ -192,7 +189,6 @@ const DetailTitle = styled(Box)`
 const DetailTime = styled(Box)`
   && {
     width: 70%;
-    font-family: 'Pretendard';
     font-size: 12px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};

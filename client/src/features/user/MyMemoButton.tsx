@@ -62,7 +62,6 @@ const MemoButton = styled.div`
     margin-left: 10px;
   }
   .greytext {
-    font-family: 'Pretendard';
     color: #898989;
     /* font-weight: bold; */
     text-align: left;
@@ -71,7 +70,6 @@ const MemoButton = styled.div`
     margin-right: 10px;
   }
   .boldtext {
-    font-family: 'Pretendard';
     font-weight: bold;
     font-size: 20px;
     margin-right: 20px;

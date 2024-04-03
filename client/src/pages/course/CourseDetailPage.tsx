@@ -193,7 +193,6 @@ const TravelHeader = styled.div`
   justify-content: center;
   margin: 5px;
   padding: 5px;
-  font-family: 'Pretendard';
 `;
 
 const HeaderTitle = styled.div`

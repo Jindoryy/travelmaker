@@ -252,7 +252,6 @@ const ChooseButton = styled.button`
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;
@@ -267,7 +266,6 @@ const ChooseButtonBorder = styled.button`
   padding: 10px;
   border: 1px solid;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
