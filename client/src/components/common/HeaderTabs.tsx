@@ -19,7 +19,7 @@ const HeaderTabs = ({ selectedTab, letters, onTabChange, size }: any) => {
 };
 
 const HeaderBox = styled.div`
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: row;
   align-items: center;

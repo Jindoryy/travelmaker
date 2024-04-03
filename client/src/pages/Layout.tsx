@@ -23,7 +23,7 @@ const ContainerBox = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   font-family: 'Pretendard';
   letter-spacing: -1px;

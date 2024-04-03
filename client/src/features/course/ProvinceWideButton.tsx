@@ -26,7 +26,7 @@ const ProvinceWideButton: React.FC<ImageProps> = ({ content }) => {
 };
 
 const Container = styled.div`
-  width: 370px;
+  width: 93%;
   height: 80px;
   position: relative;
   margin-bottom: 10px;

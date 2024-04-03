@@ -281,11 +281,10 @@ const BoxContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  max-width: 412px;
+  width: 100%;
 `;
 
 const CourseMap = styled.div`
-  max-width: 400px;
   width: 95%;
   display: flex;
   flex-direction: column;
@@ -352,7 +351,7 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 330px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
@@ -363,5 +362,6 @@ const ChooseButton = styled.button`
   font-size: 16px;
   border: none;
   cursor: pointer;
+  margin-bottom: 30px;
 `;
 export default BeforeConfirm;

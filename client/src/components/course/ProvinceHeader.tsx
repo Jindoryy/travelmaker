@@ -61,6 +61,7 @@ const ProfileText = styled.div`
 `;
 
 const ProfileHighLightText = styled(ProfileText)`
+  word-break: keep-all;
   font-size: xx-large;
   margin-bottom: 10px;
 `;

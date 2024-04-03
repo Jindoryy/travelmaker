@@ -64,7 +64,7 @@ const ProvinceButtonSlide = () => {
     infinite: true,
     speed: 800,
     autoplay: true,
-    slidesToShow: 2.5,
+    slidesToShow: 2.2,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -112,7 +112,7 @@ const ProvinceButtonSlide = () => {
 };
 
 const ListContainer = styled.div`
-  width: 390px;
+  width: 95%;
   height: 245px;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 1);
@@ -123,9 +123,9 @@ const ListContainer = styled.div`
 `;
 
 const Box = styled.div`
-  width: 100%;
+  width: 90%;
   height: 240px;
-  padding-left: 85px;
+  padding-left: 30px;
   box-sizing: border-box;
 `;
 

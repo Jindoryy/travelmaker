@@ -158,19 +158,21 @@ const ChooseSite: React.FC<{
 const StyledHeaderTabs = styled.div`
   position: fixed;
   top: 30%;
-  z-index: 1;
+  padding-left: 5px;
+  z-index: 2;
   background-color: white;
+  display: flex;
+  justify-content: center;
 `;
 
 const MainPageContainer = styled.div`
   margin-top: 100px;
   display: flex;
-  max-width: 412px;
   width: 100%;
   height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 const SitePicturesStyle = styled.div`

@@ -50,7 +50,7 @@ const ListContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 410px;
+  width: 95%;
   flex-direction: column;
   margin: 0 auto;
   padding-top: 30px;

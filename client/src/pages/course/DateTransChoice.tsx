@@ -25,29 +25,29 @@ const DateTransChoice = () => {
   const travelInfoStore = useTravelInfo();
   const userInfo = useUserInfo();
 
-  useEffect(() => {
-    getAlreadyConfirm(userInfo.userInfo.userId)
-      .then((response) => {
-        const dates = response.data;
-        if (dates) {
-          const getSavedDate: string[] = [];
-          dates.map((dateObj: any) => {
-            const startDate = new Date(dateObj.startDate);
-            const endDate = new Date(dateObj.endDate);
-            const currentDate = new Date(startDate);
+  // useEffect(() => {
+  //   getAlreadyConfirm(userInfo.userInfo.userId)
+  //     .then((response) => {
+  //       const dates = response.data;
+  //       if (dates) {
+  //         const getSavedDate: string[] = [];
+  //         dates.map((dateObj: any) => {
+  //           const startDate = new Date(dateObj.startDate);
+  //           const endDate = new Date(dateObj.endDate);
+  //           const currentDate = new Date(startDate);
 
-            while (currentDate <= endDate) {
-              getSavedDate.push(currentDate.toISOString().slice(0, 10));
-              currentDate.setDate(currentDate.getDate() + 1);
-            }
-          });
-          setSavedDate(getSavedDate);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  //           while (currentDate <= endDate) {
+  //             getSavedDate.push(currentDate.toISOString().slice(0, 10));
+  //             currentDate.setDate(currentDate.getDate() + 1);
+  //           }
+  //         });
+  //         setSavedDate(getSavedDate);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // }, []);
   const transportations = [
     {
       image:
@@ -207,13 +207,17 @@ const DateTransChoice = () => {
   );
 };
 const PageContainer = styled.div`
-  height: 100%;
+  width: 90%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 const CalendarContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -229,7 +233,7 @@ const CalendarInfoContainer = styled.div`
   background-color: #566cf038;
   padding: 10px;
   display: inline-block;
-  width: 380px;
+  width: 95%;
   border-radius: 8px 8px 0px 0px;
 `;
 const CalendarInfoText1 = styled.div`
@@ -245,6 +249,7 @@ const DatePickerContainer = styled.div`
   margin-bottom: 20px;
 `;
 const TransContainer = styled.div`
+  width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -254,16 +259,18 @@ const TransContainer = styled.div`
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 `;
 const TransInfoText = styled.div`
+  width: 95%;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
   background-color: #566cf038;
   padding: 10px;
   display: inline-block;
-  width: 380px;
+
   border-radius: 8px 8px 0px 0px;
 `;
 const TransChoiceContainer = styled.div`
+  width: 95%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -287,7 +294,7 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 330px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};

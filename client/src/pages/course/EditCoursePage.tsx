@@ -317,8 +317,8 @@ const EditCoursePage: React.FC = () => {
         </TravelMap>
       </CourseMap>
       <EditBody>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable
+        <DragDropContexts onDragEnd={handleDragEnd}>
+          <Droppables
             droppableId={`course-edit-droppable-${selectedTab}`}
             key={`course-edit-droppable-${selectedTab}`}
           >
@@ -326,7 +326,7 @@ const EditCoursePage: React.FC = () => {
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 {selectedDate &&
                   selectedDate.map((place: any, index: number) => (
-                    <Draggable
+                    <Draggables
                       key={place.destinationId ? place.destinationId.toString() : index.toString()}
                       draggableId={
                         place.destinationId ? place.destinationId.toString() : index.toString()
@@ -346,13 +346,13 @@ const EditCoursePage: React.FC = () => {
                           size={selectedDate.length - 1}
                         />
                       )}
-                    </Draggable>
+                    </Draggables>
                   ))}
                 {provided.placeholder}
               </div>
             )}
-          </Droppable>
-        </DragDropContext>
+          </Droppables>
+        </DragDropContexts>
         <AddButton>
           {selectedDate.length < 8 ? (
             <AddBoxOutlinedIcon
@@ -387,8 +387,7 @@ const EditCoursePage: React.FC = () => {
 };
 
 const BoxContainer = styled(Box)`
-  max-width: 412px;
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -396,8 +395,7 @@ const BoxContainer = styled(Box)`
 `;
 
 const CourseMap = styled.div`
-  max-width: 400px;
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -416,7 +414,7 @@ const TravelHeader = styled.div`
 `;
 
 const HeaderTitle = styled.div`
-  width: 100%;
+  width: 95%;
   font-size: 20px;
   font-weight: bold;
   padding: 2px;
@@ -434,8 +432,7 @@ const TravelMap = styled.div`
 `;
 
 const EditBody = styled.div`
-  max-width: 412px;
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -443,6 +440,18 @@ const EditBody = styled.div`
   background-color: #f7f8fa;
   margin: 10px;
   padding: 10px;
+`;
+
+const DragDropContexts = styled(DragDropContext)`
+  width: 100%;
+`;
+
+const Droppables = styled(Droppable)`
+  width: 100%;
+`;
+
+const Draggables = styled(Draggable)`
+  width: 100%;
 `;
 
 const AddButton = styled(Box)`
@@ -460,12 +469,12 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 330px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin-top: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 10px;
   border-radius: 8px;
   font-weight: 600;

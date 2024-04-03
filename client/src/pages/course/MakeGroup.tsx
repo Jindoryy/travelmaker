@@ -25,6 +25,7 @@ const MakeGroup = () => {
       navigate('/');
     }
   }, []);
+
   const searchNameTag = () => {
     //친구 검색 api
     findFriend(nameTag)
@@ -183,16 +184,14 @@ const MakeGroup = () => {
 };
 
 const PageContainer = styled.div`
-  max-width: 412px;
   width: 95%;
-  padding: 25px 0px 0px;
+  padding: 20px 10px;
   font-size: 1.2rem;
 `;
 
 const SearchContainer = styled.div`
   display: flex;
   justify-content: space-between;
-
   margin-bottom: 30px;
 `;
 
@@ -206,7 +205,6 @@ const SearchInput = styled.div`
 
 const SearchCancle = styled.div`
   width: 40px;
-
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -271,7 +269,7 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 330px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
