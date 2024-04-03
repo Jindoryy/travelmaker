@@ -76,7 +76,6 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
       columns={2}
       spacing={1}
       style={{
-        maxWidth: '412px',
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',

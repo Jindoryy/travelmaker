@@ -145,9 +145,8 @@ interface Diary {
 
 const Container = styled.div`
   display: flex;
-  width: 370px;
+  width: 95%;
   height: auto;
-  min-height: 390px;
   margin-top: 30px;
   border-radius: 20px;
   background: white;

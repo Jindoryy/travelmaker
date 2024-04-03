@@ -185,7 +185,6 @@ const Logo = styled.img`
 `;
 // 프로필
 const StyledProfile = styled.div`
-  max-width: 412px;
   padding-left: 3px;
   width: 100%;
 `;
@@ -205,8 +204,6 @@ const SitePicturesContainer = styled.div`
 //날씨
 const Container = styled.div`
   // 스타일링을 여기에 추가하세요
-  max-width: 412px;
-  width: 412px;
   text-align: center;
 
   background-color: #dde2fc;
@@ -214,8 +211,6 @@ const Container = styled.div`
 `;
 //코스짜기 페이지로 이동
 const StyledMyCourseListDiv = styled.div`
-  max-width: 412px;
-  width: 412px;
   text-align: center;
 
   background-color: #dde2fc;
@@ -224,8 +219,6 @@ const StyledMyCourseListDiv = styled.div`
 `;
 //디데이
 const StyledDDAY = styled.div`
-  max-width: 412px;
-  width: 412px;
   text-align: center;
   /* padding-top: 380px; */
   background-color: #dde2fc;
@@ -233,8 +226,6 @@ const StyledDDAY = styled.div`
 `;
 //여행중 코스 정보 카드
 const StyledCourseCard = styled.div`
-  max-width: 412px;
-  width: 412px;
   text-align: center;
   /* padding-top: 380px; */
   background-color: #dde2fc;
