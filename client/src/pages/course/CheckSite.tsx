@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import LoadingComponent from '../../components/common/LoadingComponent';
 import styled from 'styled-components';
 import { destinationDetail, destinationArray } from '../../utils/axios/axios-travel';
 import HeaderTabs from '../../components/common/HeaderTabs';
 import CheckSitePictures from '../../components/course/CheckSitePictures';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTravelInfo, useTravelSave, useTravelCity } from '../../store/useTravelStore';
+import LoadingComponent from '../../components/common/LoadingComponent';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Swal from 'sweetalert2';
 
@@ -33,7 +33,7 @@ const CheckSite = () => {
   const [foodList, setFoodList] = useState<any>([]);
   const [cafeList, setCafeList] = useState<any>([]);
   const [likeList, SetLikeList] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { setTravelInfo } = useTravelInfo();
 
@@ -41,6 +41,15 @@ const CheckSite = () => {
     if (travelSave.travel.startDate === '' || travelSave.travel.endDate === '') {
       navigate('/');
     }
+  }, []);
+
+  useEffect(() => {
+    // 5초 후에 로딩 상태 변경
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -146,36 +155,47 @@ const CheckSite = () => {
 
   return (
     <MainPageContainer>
-      <StyledHeaderTabs>
-        <HeaderTabs
-          selectedTab={selectedTab}
-          letters={letters}
-          onTabChange={handleTabChange}
-          size={3}
-        />
-        <HeaderInfo>
-          가고 싶은 장소에
-          <CheckBoxIcon
-            style={{
-              width: '12px',
-              height: '12px',
-              textAlign: 'center',
-              margin: '0px 3px',
-              color: '#FFC65C',
-            }}
+      <LoadingComponents isLoading={isLoading}>
+        <LoadingComponent />
+      </LoadingComponents>
+      <HiddenDuringLoading isLoading={isLoading}>
+        <StyledHeaderTabs>
+          <HeaderTabs
+            selectedTab={selectedTab}
+            letters={letters}
+            onTabChange={handleTabChange}
+            size={3}
           />
-          해주세요!
-        </HeaderInfo>
-      </StyledHeaderTabs>
+          <HeaderInfo>
+            가고 싶은 장소에
+            <CheckBoxIcon
+              style={{
+                width: '12px',
+                height: '12px',
+                textAlign: 'center',
+                margin: '0px 3px',
+                color: '#FFC65C',
+              }}
+            />
+            해주세요!
+          </HeaderInfo>
+        </StyledHeaderTabs>
 
-      <SitePicturesContainer>
-        <SitePicturesStyle>
-          {selectedTab === 1 && <CheckSitePictures array={sightsList} />}
-          {selectedTab === 2 && <CheckSitePictures array={foodList} />}
-          {selectedTab === 3 && <CheckSitePictures array={cafeList} />}
-        </SitePicturesStyle>
-        <NextPageButton onClick={goToNextPage}>완료</NextPageButton>
-      </SitePicturesContainer>
+        <SitePicturesContainer>
+          <SitePicturesStyle>
+            <TabContent isVisible={selectedTab === 1}>
+              <CheckSitePictures array={sightsList} />
+            </TabContent>
+            <TabContent isVisible={selectedTab === 2}>
+              <CheckSitePictures array={foodList} />
+            </TabContent>
+            <TabContent isVisible={selectedTab === 3}>
+              <CheckSitePictures array={cafeList} />
+            </TabContent>
+          </SitePicturesStyle>
+          <NextPageButton onClick={goToNextPage}>완료</NextPageButton>
+        </SitePicturesContainer>
+      </HiddenDuringLoading>
     </MainPageContainer>
   );
 };
@@ -235,6 +255,31 @@ const NextPageButton = styled.button`
   cursor: pointer;
   z-index: 10;
   margin-bottom: 100px;
+`;
+
+interface TabContentProps {
+  isLoading: boolean;
+}
+
+const LoadingComponents = styled.div<TabContentProps>`
+  /* 로딩 컴포넌트 스타일. 로딩 상태가 아닐 때 숨김 */
+  display: ${(props) => (props.isLoading ? 'block' : 'none')};
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+`;
+
+const HiddenDuringLoading = styled.div<TabContentProps>`
+  visibility: ${(props) => (props.isLoading ? 'hidden' : 'visible')};
+  /* 로딩 중에는 내용을 숨김 */
+`;
+
+interface ContentProps {
+  isVisible: boolean;
+}
+
+const TabContent = styled.div<ContentProps>`
+  display: ${(props) => (props.isVisible ? 'block' : 'none')};
 `;
 
 export default CheckSite;
