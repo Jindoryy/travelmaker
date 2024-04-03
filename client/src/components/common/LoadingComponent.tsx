@@ -26,12 +26,15 @@ const Overlay = styled.div`
 `;
 
 const StyledImage = styled.img`
-  width: 410px;
+  width: 95%;
   object-fit: cover;
 `;
 
 const LoadingText = styled.div`
-  width: 410px;
+  width: 95%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 22px;
 `;
 
 const getImage = () => {

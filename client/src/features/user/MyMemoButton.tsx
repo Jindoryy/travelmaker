@@ -48,9 +48,10 @@ const MyMemoButton: React.FC<MyMemoButtonProps> = ({ travelId }) => {
 export default MyMemoButton;
 
 const MemoButton = styled.div`
+  width: 85%;
   border-radius: 15px;
   background-color: white;
-  margin: 10px;
+  margin: 5px;
   padding: 20px;
   display: flex;
   align-items: center;

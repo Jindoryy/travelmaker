@@ -18,7 +18,6 @@ const MyMemoList = ({ travelId, ...props }: MyMemoListProps) => {
   const [newMemo, setNewMemo] = useState<string>('');
 
   useEffect(() => {
-    console.log(travelId);
     getMemoList(travelId)
       .then((response) => {
         const getMemo = response.data;
@@ -74,10 +73,7 @@ const MyMemoList = ({ travelId, ...props }: MyMemoListProps) => {
     setMemos(updatedMemo);
   };
 
-  useEffect(() => {
-    console.log('메모변경');
-    console.log(memos);
-  }, [memos]);
+  useEffect(() => {}, [memos]);
 
   return (
     <CenteredContainer>
