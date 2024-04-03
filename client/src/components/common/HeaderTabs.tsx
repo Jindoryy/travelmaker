@@ -37,7 +37,6 @@ const OneButton = styled.button`
   background-color: ${(props) =>
     props.className === 'active' ? 'rgba(86, 108, 240, 0.8)' : '#f2f4f6'};
   color: ${(props) => (props.className === 'active' ? 'white' : '#B1AFAF')};
-  font-family: 'Pretendard';
   font-size: 16px;
   font-weight: bold;
   border: none;

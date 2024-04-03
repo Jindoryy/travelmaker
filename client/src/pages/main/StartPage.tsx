@@ -114,7 +114,7 @@ const Logo = styled.div`
 `;
 
 const Title = styled.div`
-  font-family: 'Pretendard';
+  font-family: 'IBM Plex Sans KR';
   font-size: 18px;
   line-height: 30px;
   font-weight: bold;
@@ -135,11 +135,11 @@ const ContentDetail = styled.div`
 
 const Step = styled.div`
   margin-top: 20px;
-  width: 90%;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px;
 `;
 
 const StepContent = styled.div`
@@ -173,7 +173,7 @@ const Description = styled.p`
   font-size: 16px;
   line-height: 20px;
   margin-bottom: 10px;
-  font-family: 'Pretendard';
+  font-family: 'IBM Plex Sans KR';
   word-break: keep-all;
 `;
 
@@ -201,6 +201,8 @@ const StartButton = styled.button`
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 90px;
+  cursor: pointer;
+  font-family: 'IBM Plex Sans KR';
 `;
 
 export default StartPage;

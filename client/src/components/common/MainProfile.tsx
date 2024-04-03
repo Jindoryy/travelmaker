@@ -50,7 +50,6 @@ const StyledProfileContainer = styled.div`
 
 const StyledProfileContent = styled.p`
   font-size: 22px;
-  font-family: 'Pretendard';
   font-weight: bold;
   text-align: center;
   width: 100%;

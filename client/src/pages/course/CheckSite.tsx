@@ -216,7 +216,6 @@ const HeaderInfo = styled.div`
   line-height: 20px;
   top: 65px;
   background-color: white;
-  font-family: 'Pretendard', sans-serif;
   font-size: 15px;
   display: flex;
   align-items: flex-start;
