@@ -56,7 +56,6 @@ const EditCoursePage: React.FC = () => {
   const letters = ['1일차', '2일차', '3일차'];
 
   const handleDragEnd = (result: DropResult) => {
-    console.log(result.destination);
     if (!result.destination) {
       return;
     }
@@ -77,7 +76,6 @@ const EditCoursePage: React.FC = () => {
   const getDistance = (courseList: any, destinationList: number[]) => {
     destinationDistance(destinationList)
       .then((response) => {
-        console.log(response.data.data);
         const list = response.data.data;
         const distanceLists = list.map((el: any) => {
           return el.nextDestinationDistance;
@@ -162,10 +160,8 @@ const EditCoursePage: React.FC = () => {
     });
     if (selectedDestinationId != null) destinationList.push(selectedDestinationId);
     setDestinationIdList(destinationList);
-    console.log(destinationList);
     destinationDistance(destinationList)
       .then((response) => {
-        console.log(response.data.data);
         const list = response.data.data;
         const updatedDate = list.map((el) => {
           return {
@@ -198,7 +194,6 @@ const EditCoursePage: React.FC = () => {
     });
     destinationDistance(destiList)
       .then((response) => {
-        console.log(response.data.data);
         const list = response.data.data;
         const updatedDate = list.map((el) => {
           return {

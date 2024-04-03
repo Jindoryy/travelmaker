@@ -77,7 +77,6 @@ const MakeGroup = () => {
       });
   };
   const saveButton = () => {
-    console.log(groupList);
     const idList = groupList.map((el: any) => {
       return el.userId;
     });

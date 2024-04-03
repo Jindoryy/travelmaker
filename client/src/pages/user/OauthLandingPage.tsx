@@ -25,7 +25,6 @@ const OauthLandingPage = () => {
       kakaoauthentication(code)
         .then((response) => {
           // 요청 성공 시 로직
-          console.log(response.data); // 서버 응답 확인
           const { userId, nickName, profileUrl, tag, accessToken, refreshToken } =
             response.data.data;
           // 스토어에 사용자 정보 저장
@@ -37,15 +36,7 @@ const OauthLandingPage = () => {
           localStorage.setItem('refreshToken', refreshToken);
           // 스토어와 로컬 스토리지에서 사용자 정보를 읽어와 콘솔에 출력
           // 저장된 정보 및 토큰 확인
-          console.log(
-            '로컬 스토리지에 저장된 사용자 정보:',
-            JSON.parse(localStorage.getItem('userInfo') || '{}'),
-          );
-          console.log('로컬 스토리지에 저장된 액세스 토큰:', localStorage.getItem('accessToken'));
-          console.log(
-            '로컬 스토리지에 저장된 리프레시 토큰:',
-            localStorage.getItem('refreshToken'),
-          );
+
           navigate('/');
         })
         .catch((error) => {

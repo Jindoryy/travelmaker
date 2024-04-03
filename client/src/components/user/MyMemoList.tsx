@@ -12,7 +12,6 @@ const MyMemoList = (props: SVGProps<SVGSVGElement>) => {
     getMemoList(travelId)
       .then((response) => {
         setMemos(response.data.data);
-        console.log(memos);
       })
       .catch((error) => {
         console.error('메모를 불러오는 중 오류가 발생했습니다:', error);

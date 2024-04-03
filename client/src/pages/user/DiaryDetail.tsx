@@ -26,7 +26,6 @@ const DiaryDetail = () => {
     getDiary(diaryId)
       .then((res) => {
         setDiaryData(res.data.data);
-        console.log(res.data.data.imgUrls);
         setImgUrls(res.data.data.imgUrls);
       })
       .catch((err) => console.error(err));

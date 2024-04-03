@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const ScheduleStatusButton: React.FC<StatusProps> = ({ data }) => {
   const { travelId, status, diaryId } = data;
-  console.log(travelId);
   const navigate = useNavigate();
 
   const handleClick = () => {

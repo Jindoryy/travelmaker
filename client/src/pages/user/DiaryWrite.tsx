@@ -24,7 +24,6 @@ const VisuallyHiddenInput = styled('input')({
 const DiaryWrite = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.state);
   const { travelId } = location.state || {};
   const [travelData, setTravelData] = useState<Partial<TravelDetailData>>({});
   const [files, setFiles] = useState<File[]>([]);
@@ -106,7 +105,6 @@ const DiaryWrite = () => {
     formData.append('diaryAddRequest', diaryAddRequestBlob);
     postDiaryWithFiles(formData)
       .then((response) => {
-        console.log(response.data);
         navigate('/mypage?tab=2');
       })
       .catch((error) => {
