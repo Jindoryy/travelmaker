@@ -113,7 +113,7 @@ const OnCourseCards = styled.div`
   /* margin: 10px; */
   /* padding: 10px; */
   padding-left: 3%;
-  padding-right: 3%;
+  /* padding-right: 3%; */
 `;
 
 const SliderContainer = styled.div`
