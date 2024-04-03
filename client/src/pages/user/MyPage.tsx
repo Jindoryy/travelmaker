@@ -28,10 +28,10 @@ const PageContainer = styled.div`
   box-sizing: border-box;
   background-color: #eff1fe;
   display: flex;
-  width: 412px;
+  width: 100%;
   flex-direction: column;
   align-items: center;
-  height: auto;
+  height: 100vh;
   padding: 0;
   margin: 0;
   overflow: auto;
