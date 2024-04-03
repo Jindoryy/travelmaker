@@ -38,7 +38,7 @@ const ServiceInfo = (props: SVGProps<SVGSVGElement>) => {
 export default ServiceInfo;
 
 const CourseListContainer = styled.div`
-  border-radius: 20px;
+  border-radius: 15px;
   background-color: #fefdd5;
   margin: 10px;
   padding: 20px;
@@ -46,11 +46,11 @@ const CourseListContainer = styled.div`
   padding-bottom: 25px;
   display: flex;
   align-items: center;
+  justify-content: center;
   text-align: center;
   position: relative;
 
   .greytext {
-    font-family: 'Pretendard';
     color: grey;
     /* font-weight: bold; */
     text-align: left;
@@ -59,7 +59,6 @@ const CourseListContainer = styled.div`
     margin-right: 10px;
   }
   .boldtext {
-    /* font-family: 'Pretendard'; */
     font-weight: bold;
     font-size: 18px;
     margin-right: 20px;

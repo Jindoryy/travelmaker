@@ -28,33 +28,31 @@ const CourseCard = ({ course }: any) => {
   }, [course]);
 
   return (
-    
-        <CardContainer key={course}>
-          <NumberCircle>
-            <CircleImage src={course.markerImage} />
-          </NumberCircle>
-          <CardBox>
-            <CardDetail>
-              <DetailDesc>
-                <DetailCategory>
-                  {course.destinationType === 'sights'
-                    ? '명소'
-                    : course.destinationType === 'food'
-                    ? '식당'
-                    : '카페'}
-                </DetailCategory>
-                <DetailTitle>{course.destinationName}</DetailTitle>
-              </DetailDesc>
-              {course.nextDestinationDistance ? (
-                <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime>
-              ) : (
-                <></>
-              )}
-            </CardDetail>
-            <CardImage src={course.destinationImgUrl}></CardImage>
-          </CardBox>
-        </CardContainer>
-
+    <CardContainer key={course}>
+      <NumberCircle>
+        <CircleImage src={course.markerImage} />
+      </NumberCircle>
+      <CardBox>
+        <CardDetail>
+          <DetailDesc>
+            <DetailCategory>
+              {course.destinationType === 'sights'
+                ? '명소'
+                : course.destinationType === 'food'
+                  ? '식당'
+                  : '카페'}
+            </DetailCategory>
+            <DetailTitle>{course.destinationName}</DetailTitle>
+          </DetailDesc>
+          {course.nextDestinationDistance ? (
+            <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime>
+          ) : (
+            <></>
+          )}
+        </CardDetail>
+        <CardImage src={course.destinationImgUrl}></CardImage>
+      </CardBox>
+    </CardContainer>
   );
 };
 
@@ -99,7 +97,6 @@ const CardDetail = styled(Box)`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-family: 'Pretendard';
     padding: 15px;
   }
 `;
@@ -109,7 +106,6 @@ const DetailDesc = styled(Box)``;
 const DetailCategory = styled(Box)`
   && {
     width: 90%;
-    font-family: 'Pretendard';
     font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.main};
@@ -120,7 +116,6 @@ const DetailCategory = styled(Box)`
 const DetailTitle = styled(Box)`
   && {
     width: 90%;
-    font-family: 'Pretendard';
     font-size: 20px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
@@ -132,7 +127,6 @@ const DetailTitle = styled(Box)`
 const DetailTime = styled(Box)`
   && {
     width: 90%;
-    font-family: 'Pretendard';
     font-size: 12px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};

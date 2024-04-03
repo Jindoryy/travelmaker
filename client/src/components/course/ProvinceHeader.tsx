@@ -53,6 +53,7 @@ const ProfileImage = styled.img`
   flex-basis: 1;
   max-width: 100px;
   object-fit: contain;
+  padding: 20px 20px 0px 0px;
 `;
 const ProfileText = styled.div`
   font-family: 'Black Han Sans', sans-serif;
@@ -60,6 +61,7 @@ const ProfileText = styled.div`
 `;
 
 const ProfileHighLightText = styled(ProfileText)`
+  word-break: keep-all;
   font-size: xx-large;
   margin-bottom: 10px;
 `;

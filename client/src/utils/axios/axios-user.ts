@@ -42,10 +42,9 @@ const deleteMemoList = (memoId: number) => {
 };
 
 const createMemoList = (
-  travelId: number,
-  memo: string,
+  requestBody: CreateMemoRequestBody,
 ): Promise<AxiosResponse<CreateMemoResponse>> => {
-  return instance.post<CreateMemoResponse>(`Memo`);
+  return instance.post<CreateMemoResponse>('Memo', requestBody);
 };
 
 const updateMemoList = (memoId: number) => {
@@ -65,6 +64,7 @@ export {
   createMemoList,
   updateMemoList,
   UserStatusResponse,
+  CreateMemoRequestBody,
 };
 
 interface ApiResponse<T> {
@@ -81,6 +81,7 @@ interface KakaoAuthData {
   userId: number;
   nickName: string;
   profileUrl: string;
+  tag: number;
   status: string;
   tokenType: string;
   accessToken: string;
@@ -155,17 +156,21 @@ interface UserStatusResponse {
   };
 }
 
+interface CreateMemoRequestBody {
+  travelId: number;
+  memo: string;
+}
+
 interface CreateMemoResponse {
   id: number;
   travelId: number;
   memo: string;
 }
 
-// interface GetMemoResponse {
-//   data: {
-//     id: number;
-//     travelId: number;
-//     memo: string;
-//   };
-//   [];
-// }
+interface GetMemoResponse {
+  data: {
+    id: number;
+    travelId: number;
+    memo: string;
+  };
+}

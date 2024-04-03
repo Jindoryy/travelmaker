@@ -107,7 +107,7 @@ const FeatureContainer = styled.div`
 `;
 
 const FeatureThumnail = styled.img`
-  width: 100px;
+  width: 30%;
   height: 100px;
   border-radius: 10px;
   object-fit: cover;
@@ -116,17 +116,20 @@ const FeatureThumnail = styled.img`
 `;
 
 const TextContainer = styled.div`
-  width: 180px;
+  display: relative;
+  width: 70%;
   height: 100px;
 `;
 
 const TopConatiner = styled.div`
-  width: 170px;
+  display: relative;
+  width: 90%;
   height: 25px;
   line-height: 25px;
   margin-bottom: 4px;
   display: flex;
   justify-content: space-between;
+  padding: 0px 10px;
 `;
 const TextTravelName = styled.div`
   font-size: 16px;
@@ -137,6 +140,7 @@ const TextDate = styled.div`
   font-size: 11px;
   font-weight: 700;
   margin-bottom: 5px;
+  margin-left: 10px;
 `;
 
 const TextFreind = styled.div`
@@ -144,6 +148,7 @@ const TextFreind = styled.div`
   font-weight: 700;
   margin-bottom: 12px;
   height: 14px;
+  margin-left: 10px;
 `;
 
 const ButtonPlace = styled.div`

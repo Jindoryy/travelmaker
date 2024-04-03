@@ -26,22 +26,26 @@ const DiaryUpdate = () => {
           <TitleDate>2024.02.15 ~ 2024.02.17</TitleDate>
         </TitleContainer>
         <PhotoContainer>
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-          style={{backgroundColor: '#566CF0'}}
-        >
-          Upload file
-          <VisuallyHiddenInput type="file" />
-        </Button>
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            style={{ backgroundColor: '#566CF0' }}
+          >
+            Upload file
+            <VisuallyHiddenInput type="file" />
+          </Button>
         </PhotoContainer>
         <ContentContainer>
-          <StyledTextarea placeholder="일기를 작성해보세요." id="text" 
-            value={'내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다'}>
-          </StyledTextarea>
+          <StyledTextarea
+            placeholder="일기를 작성해보세요."
+            id="text"
+            value={
+              '내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다'
+            }
+          ></StyledTextarea>
         </ContentContainer>
         <ButtonBox>
           <ChooseButton>수정</ChooseButton>
@@ -52,34 +56,34 @@ const DiaryUpdate = () => {
   );
 };
 const PageContainer = styled.div`
-  width:412px;
+  width: 412px;
   min-height: 100%;
-  background-color:#eff1fe;
+  background-color: #eff1fe;
   font-size: 1.2rem;
   padding-top: 15px;
-  `;
-  const TitleContainer = styled.div`
+`;
+const TitleContainer = styled.div`
   background-color: white;
   margin: 0px 12px 20px;
   padding: 20px 30px;
   border-radius: 8px;
-  `;
-  const TitleCity = styled.div`
+`;
+const TitleCity = styled.div`
   font-weight: bold;
   margin-bottom: 5px;
-  `;
-  const TitleDate = styled.div`
+`;
+const TitleDate = styled.div`
   font-size: 1.1rem;
   color: #555;
-  `;
-  const PhotoContainer = styled.div`
+`;
+const PhotoContainer = styled.div`
   background-color: white;
   margin: 0px 12px 20px;
   width: 347px;
   padding: 20px 20px;
   border-radius: 8px;
-  `;
-  const ContentContainer = styled.div`
+`;
+const ContentContainer = styled.div`
   background-color: white;
   margin: 0px 12px 10px;
   padding: 20px 20px;
@@ -108,7 +112,6 @@ const ChooseButton = styled.button`
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;
@@ -123,7 +126,6 @@ const ChooseButtonBorder = styled.button`
   padding: 10px;
   border: 1px solid;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;

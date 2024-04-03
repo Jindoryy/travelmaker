@@ -9,7 +9,7 @@ const MyPage = () => {
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!userInfo || userInfo.userId === -1) {
+    if (userInfo.userId === -1) {
       navigate('/login');
     }
   }, [userInfo, navigate]);
@@ -28,12 +28,13 @@ const PageContainer = styled.div`
   box-sizing: border-box;
   background-color: #eff1fe;
   display: flex;
-  width: 412px;
+  width: 100%;
   flex-direction: column;
   align-items: center;
-  height: auto;
+  height: 100vh;
   padding: 0;
   margin: 0;
+  padding-bottom: 20px;
   overflow: auto;
 `;
 

@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import useUserInfo from '../../store/useUserStore';
+import { useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { kakaoLocalRemoteURL, kakaoAuthRemoteURL } from '../../utils/oauth';
@@ -14,6 +18,13 @@ const KakaoButtonComponent = ({}) => (
 );
 
 const LoginPage = () => {
+  const { userInfo } = useUserInfo();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userInfo.userId !== -1) {
+      navigate('/mypage');
+    }
+  }, [userInfo, navigate]);
   return (
     <>
       <LoginPageContainer>
@@ -52,7 +63,6 @@ const TextContainer = styled.div`
 const TextSpan = styled.span`
   display: block;
   font-weight: bold;
-  font-family: 'Pretendard', sans-serif;
 `;
 
 const KakaoLoginButton = styled(Button)`

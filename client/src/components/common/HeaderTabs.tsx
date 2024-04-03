@@ -18,18 +18,17 @@ const HeaderTabs = ({ selectedTab, letters, onTabChange, size }: any) => {
   );
 };
 
-const HeaderBox = styled(Box)`
-  && {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 10px 0px;
-    padding: 2px 4px;
-    height: 50px;
-    background-color: #f2f4f6;
-    border-radius: 30px;
-  }
+const HeaderBox = styled.div`
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0px;
+  padding: 2px 4px;
+  height: 50px;
+  background-color: #f2f4f6;
+  border-radius: 30px;
 `;
 
 const OneButton = styled.button`
@@ -39,7 +38,6 @@ const OneButton = styled.button`
   background-color: ${(props) =>
     props.className === 'active' ? 'rgba(86, 108, 240, 0.8)' : '#f2f4f6'};
   color: ${(props) => (props.className === 'active' ? 'white' : '#B1AFAF')};
-  font-family: 'Pretendard';
   font-size: 16px;
   font-weight: bold;
   border: none;

@@ -7,7 +7,11 @@ const getImage = () => {
   return require('../../assets/image/BookmarkTabs.png');
 };
 
-const MyMemoButton = () => {
+interface MyMemoButtonProps {
+  travelId: number; // 혹은 다른 유형에 맞게 설정
+}
+
+const MyMemoButton: React.FC<MyMemoButtonProps> = ({ travelId }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -35,7 +39,7 @@ const MyMemoButton = () => {
           },
         }}
       >
-        <MyMemoList />
+        <MyMemoList travelId={travelId} />
       </StyledDrawer>
     </>
   );
@@ -44,12 +48,13 @@ const MyMemoButton = () => {
 export default MyMemoButton;
 
 const MemoButton = styled.div`
-  border-radius: 20px;
+  border-radius: 15px;
   background-color: white;
   margin: 10px;
   padding: 20px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 
   img {
     width: 50px; /* 이미지 너비 조정 */
@@ -58,7 +63,6 @@ const MemoButton = styled.div`
     margin-left: 10px;
   }
   .greytext {
-    font-family: 'Pretendard';
     color: #898989;
     /* font-weight: bold; */
     text-align: left;
@@ -67,7 +71,6 @@ const MemoButton = styled.div`
     margin-right: 10px;
   }
   .boldtext {
-    font-family: 'Pretendard';
     font-weight: bold;
     font-size: 20px;
     margin-right: 20px;

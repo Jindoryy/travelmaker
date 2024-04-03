@@ -44,10 +44,10 @@ const CheckSite = () => {
   }, []);
 
   useEffect(() => {
-    // 5초 후에 로딩 상태 변경
+    // 3초 후에 로딩 상태 변경
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -166,20 +166,20 @@ const CheckSite = () => {
             onTabChange={handleTabChange}
             size={3}
           />
-          <HeaderInfo>
-            가고 싶은 장소에
-            <CheckBoxIcon
-              style={{
-                width: '12px',
-                height: '12px',
-                textAlign: 'center',
-                margin: '0px 3px',
-                color: '#FFC65C',
-              }}
-            />
-            해주세요!
-          </HeaderInfo>
         </StyledHeaderTabs>
+        <HeaderInfo>
+          가고 싶은 장소에
+          <CheckBoxIcon
+            style={{
+              width: '20px',
+              height: '20px',
+              textAlign: 'center',
+              margin: '0px 3px',
+              color: '#FFC65C',
+            }}
+          />
+          해주세요!
+        </HeaderInfo>
 
         <SitePicturesContainer>
           <SitePicturesStyle>
@@ -202,29 +202,33 @@ const CheckSite = () => {
 
 const StyledHeaderTabs = styled.div`
   position: fixed;
+  padding-left: 5px;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   background-color: white;
+  display: flex;
+  justify-content: center;
 `;
 
 const HeaderInfo = styled.div`
   position: fixed;
-  width: 412px;
-  height: 15px;
-  text-align: center;
+  width: 98%;
+  height: 25px;
+  text-align: flex-start;
+  line-height: 20px;
   top: 65px;
   background-color: white;
-  font-family: 'Pretendard', sans-serif;
-  font-size: 12px;
+  font-size: 15px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-left: 30px;
+  z-index: 2;
 `;
 const MainPageContainer = styled.div`
-  margin-top: 20px;
+  padding-top: 30px;
   display: flex;
-  max-width: 412px;
-  width: 100vw;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -246,7 +250,7 @@ const SitePicturesContainer = styled.div`
 const NextPageButton = styled.button`
   position: fixed; /* 버튼의 위치를 조정하기 위해 필요 */
   bottom: 0;
-  width: 380px;
+  width: 330px;
   border: none;
   padding: 10px 20px;
   background-color: #566cf0;

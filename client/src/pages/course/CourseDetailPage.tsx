@@ -42,7 +42,6 @@ const CourseDetailPage = () => {
       try {
         const travelId = location.state;
         const response = await getTravelDetail(travelId);
-        console.log(response.data);
         const data = response.data.data;
         setCityName(data.cityName);
         setEndDate(data.endDate);
@@ -172,12 +171,10 @@ const BoxContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 400px;
-  max-width: 412px;
+  width: 100%;
 `;
 
 const CourseMap = styled.div`
-  max-width: 400px;
   width: 95%;
   display: flex;
   flex-direction: column;
@@ -194,7 +191,6 @@ const TravelHeader = styled.div`
   justify-content: center;
   margin: 5px;
   padding: 5px;
-  font-family: 'Pretendard';
 `;
 
 const HeaderTitle = styled.div`

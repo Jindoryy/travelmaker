@@ -104,7 +104,7 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({
 };
 
 const CardContainer = styled.div`
-  width: 380px;
+  width: 350px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,6 +112,8 @@ const CardContainer = styled.div`
   padding: 5px;
   margin: 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 2.4px 2.4px 3.2px;
+  margin-left: 0px;
+  padding-left: 0px;
   border-radius: 10px;
   background-color: white;
 `;
@@ -155,7 +157,6 @@ const CardDetail = styled(Box)`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    font-family: 'Pretendard';
     margin-left: 10px;
   }
 `;
@@ -170,7 +171,6 @@ const DetailHeader = styled(Box)`
 const DetailCategory = styled(Box)`
   && {
     width: 90%;
-    font-family: 'Pretendard';
     font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.main};
@@ -181,7 +181,6 @@ const DetailCategory = styled(Box)`
 const DetailTitle = styled(Box)`
   && {
     width: 95%;
-    font-family: 'Pretendard';
     font-size: 16px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};
@@ -192,7 +191,6 @@ const DetailTitle = styled(Box)`
 const DetailTime = styled(Box)`
   && {
     width: 70%;
-    font-family: 'Pretendard';
     font-size: 12px;
     font-weight: bold;
     color: ${(props) => props.theme.maintext};

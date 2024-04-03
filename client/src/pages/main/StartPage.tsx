@@ -12,11 +12,10 @@ const StartPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
-  
+
   const { userInfo } = useUserInfo();
 
   useEffect(() => {
-  
     if (userInfo.userId !== -1) {
       navigate('/main');
     }
@@ -115,7 +114,6 @@ const Logo = styled.div`
 `;
 
 const Title = styled.div`
-  font-family: 'Pretendard';
   font-size: 18px;
   line-height: 30px;
   font-weight: bold;
@@ -136,11 +134,11 @@ const ContentDetail = styled.div`
 
 const Step = styled.div`
   margin-top: 20px;
-  width: 90%
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px;
 `;
 
 const StepContent = styled.div`
@@ -174,7 +172,6 @@ const Description = styled.p`
   font-size: 16px;
   line-height: 20px;
   margin-bottom: 10px;
-  font-family: 'Pretendard';
   word-break: keep-all;
 `;
 
@@ -192,15 +189,17 @@ const NavigationButton = styled(Button)`
 
 const StartButton = styled.button`
   width: 330px;
-  height: 70px;
-  position: relative;
+  height: 40px;
+  position: fixed;
+  bottom: 0;
   border-color: ${(props) => props.theme.main};
   color: #ffffff;
   background-color: ${(props) => props.theme.main};
   border-radius: 10px;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 90px;
+  cursor: pointer;
 `;
 
 export default StartPage;

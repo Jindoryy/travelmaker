@@ -25,10 +25,10 @@ const OauthLandingPage = () => {
       kakaoauthentication(code)
         .then((response) => {
           // 요청 성공 시 로직
-          console.log(response.data); // 서버 응답 확인
-          const { userId, nickName, profileUrl, accessToken, refreshToken } = response.data.data;
+          const { userId, nickName, profileUrl, tag, accessToken, refreshToken } =
+            response.data.data;
           // 스토어에 사용자 정보 저장
-          setUserInfo({ userId, nickName, profileUrl });
+          setUserInfo({ userId, nickName, profileUrl, tag });
           // LocalStorage에 사용자 정보 저장 => Zustand persist를 사용하기 때문에 별도로 같은 키값으로 저장하면 에러발생
           // localStorage.setItem('userInfo', JSON.stringify({ userId, nickName, profileUrl }));
           // LocalStorage에 인증토큰,재발급토큰 저장
@@ -36,15 +36,7 @@ const OauthLandingPage = () => {
           localStorage.setItem('refreshToken', refreshToken);
           // 스토어와 로컬 스토리지에서 사용자 정보를 읽어와 콘솔에 출력
           // 저장된 정보 및 토큰 확인
-          console.log(
-            '로컬 스토리지에 저장된 사용자 정보:',
-            JSON.parse(localStorage.getItem('userInfo') || '{}'),
-          );
-          console.log('로컬 스토리지에 저장된 액세스 토큰:', localStorage.getItem('accessToken'));
-          console.log(
-            '로컬 스토리지에 저장된 리프레시 토큰:',
-            localStorage.getItem('refreshToken'),
-          );
+
           navigate('/');
         })
         .catch((error) => {
@@ -101,7 +93,6 @@ const TextContainer = styled.div`
 const TextSpan = styled.span`
   display: block;
   font-weight: bold;
-  font-family: 'Pretendard', sans-serif;
   margin-top: 10px;
 `;
 export default OauthLandingPage;

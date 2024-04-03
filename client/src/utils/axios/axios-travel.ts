@@ -66,6 +66,25 @@ interface SiteListResponse {
   };
 }
 
+//CF 장소 목록 (메인 페이지 - 비로그인)
+interface NonLoginSiteListResponse {
+  status: string;
+  data: {
+    destinationListResponseMap: {
+      basic: [
+        {
+          destinationId: number;
+          destinationType: string;
+          destinationContent: string;
+          destinationName: string;
+          destinationImgUrl: string;
+          likes_flag: boolean;
+        },
+      ];
+    };
+  };
+}
+
 //장소 좋아요
 interface LikeResponse {
   status: string;
@@ -256,9 +275,13 @@ const siteListDetail = () => {
   return oauthInstance.get<SiteListResponse>('destination/list', {});
 };
 
+//CF 장소 목록 (메인 페이지 - 비로그인)
+const nonLoginsiteList = () => {
+  return instance.get<NonLoginSiteListResponse>('destination/list/non-login', {});
+};
+
 // 장소조회(장소선택 페이지)
 const destinationArray = (destinationsIdList: number[] | undefined) => {
-  console.log(destinationsIdList);
   if (!destinationsIdList) return Promise.reject('destinationsIdList is undefined');
   return oauthInstance.get<DestinationArrayResponse>('destination', {
     params: {
@@ -334,4 +357,5 @@ export {
   TravelDetailResponse,
   findFriend,
   getAlreadyConfirm,
+  nonLoginsiteList,
 };

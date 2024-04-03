@@ -9,7 +9,7 @@ const Profile = ({ userState }: { userState: string }) => {
       case 'AFTER_COURSE':
         return '두근두근 기대되는 여행';
       default:
-        return '나만의 여행 코스를 만들어봐요';
+        return '나만의 여행을 만들어봐요';
     }
   };
 
@@ -35,21 +35,20 @@ const Profile = ({ userState }: { userState: string }) => {
 const StyledProfileContainer = styled.div`
   background-color: white;
   color: #000;
-  padding: 10px;
   margin: 10px;
-  max-width: 365px;
-  width: 100%;
-  text-align: center;
-  border-radius: 20px;
-  display: flex; /* flexbox 설정 */
-  align-items: center; /* 수직 중앙 정렬 */
-  /* justify-content: space-between; */
+  border-radius: 15px;
   height: 110px;
+  cursor: pointer;
+  padding: 20px;
+  padding-bottom: 25px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  position: relative;
 `;
 
 const StyledProfileContent = styled.p`
-  font-size: 23px;
-  font-family: 'Pretendard';
+  font-size: 22px;
   font-weight: bold;
   text-align: center;
   width: 100%;

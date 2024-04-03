@@ -70,7 +70,6 @@ const BeforeConfirm = () => {
       transportation: travelSaveStore.travel.transportation,
       destinationIdList: travelSaveStore.travel.courseList,
     });
-    console.log(travelSaveStore.travel);
   }, []);
 
   useEffect(() => {
@@ -82,7 +81,6 @@ const BeforeConfirm = () => {
   const getTravel = (travelInfo: TravelInfo) => {
     travelDetail(travelInfo)
       .then((response) => {
-        console.log(response.data.data.travelList);
         const travelLists = response.data.data.travelList;
         if (travelLists.length >= 4) {
           const lists = travelLists.slice(0, 3);
@@ -158,8 +156,6 @@ const BeforeConfirm = () => {
   const letters = ['1일차', '2일차', '3일차'];
 
   const editButton = () => {
-    console.log('edit');
-    console.log(courseInfo);
     navigate('/editcourse', {
       state: {
         firstDate: firstDate,
@@ -285,11 +281,10 @@ const BoxContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  max-width: 412px;
+  width: 100%;
 `;
 
 const CourseMap = styled.div`
-  max-width: 400px;
   width: 95%;
   display: flex;
   flex-direction: column;
@@ -306,7 +301,6 @@ const TravelHeader = styled.div`
   justify-content: center;
   margin: 5px;
   padding: 5px;
-  font-family: 'Pretendard';
 `;
 
 const HeaderTitle = styled.div`
@@ -336,7 +330,6 @@ const EditBody = styled.div`
 const EditButton = styled(Button)`
   && {
     border: none;
-    font-family: 'Pretendard';
     font-size: 16px;
     font-weight: bold;
     color: black;
@@ -358,17 +351,17 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 330px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;
   cursor: pointer;
+  margin-bottom: 30px;
 `;
 export default BeforeConfirm;

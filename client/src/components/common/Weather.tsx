@@ -18,8 +18,6 @@ interface WeatherData {
 }
 
 const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
-  // console.log(weather);
-
   const weatherDescKo = [
     { id: 201, description: '가벼운 비를 동반한 천둥구름' },
     { id: 200, description: '비를 동반한 천둥구름' },
@@ -108,7 +106,7 @@ const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
         </div>
         {weather && (
           <>
-            <h3>{getKoreanDescription(weather.weather[0].id)}</h3>
+            <h3 className="weatherinfo">{getKoreanDescription(weather.weather[0].id)}</h3>
             <h3>
               {`${Math.round(weather?.main.temp_max)}℃`} /{' '}
               {`${Math.round(weather?.main.temp_min)}℃`}
@@ -123,7 +121,7 @@ const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
 export default Weather;
 
 const WeatherBoxContainer = styled.div`
-  border-radius: 20px;
+  border-radius: 15px;
   background-color: white;
   margin: 10px;
   padding: 10px;
@@ -142,7 +140,6 @@ const WeatherBoxContainer = styled.div`
       margin-left: 10px;
     }
     h3 {
-      font-family: 'Pretendard';
       font-weight: bold;
       font-size: 15px;
       margin-right: 10px;

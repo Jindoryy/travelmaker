@@ -76,7 +76,6 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
       columns={2}
       spacing={1}
       style={{
-        maxWidth: '412px',
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -97,6 +96,7 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
             onChange={handleCheckboxChange(site.destinationId)}
           />
           <SiteImage
+            loading="lazy"
             style={{ height: `${imageHeights[index]}px` }}
             src={site.destinationImgUrl}
             alt={site.destinationName}
@@ -153,6 +153,7 @@ const SiteImage = styled.img<{ isFlipped: boolean }>`
   transform: ${({ isFlipped }) =>
     isFlipped ? 'rotateY(180deg)' : 'rotateY(0)'}; // 클릭 시 뒤집힌 이미지의 회전
   transition: transform 0.5s ease; // 부드러운 애니메이션 효과 추가
+  z-index: 0;
 `;
 
 const Back = styled.div`
@@ -164,6 +165,7 @@ const Back = styled.div`
   padding: 10px;
   margin-right: -6px;
   margin-bottom: -20px;
+  margin-top: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   backface-visibility: hidden; // 뒷면 텍스트가 앞면에 보이지 않도록 함
   display: flex;
@@ -175,7 +177,6 @@ const BackText = styled.p`
   font-size: 12px;
   font-weight: bold;
   color: black;
-  font-family: 'Pretendard';
   text-align: center; // 가운데 정렬
   padding: 10px;
   padding-left: 15px;

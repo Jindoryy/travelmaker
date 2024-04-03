@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const MyPageDiaryFeature: React.FC<MyPageDiaryFeatureProps> = ({ data }) => {
   const { diaryId, name, startDate, endDate, imgUrls } = data;
-  console.log('urls', imgUrls);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -75,7 +74,7 @@ const FeatureTravelName = styled.div`
   align-self: center;
   z-index: 1;
   font:
-    900 18px Pretendard,
+    900 18px,
     sans-serif;
 `;
 
@@ -84,6 +83,6 @@ const FeatureTravelDate = styled.div`
   margin-top: 5px;
   z-index: 1;
   font:
-    700 8px Pretendard,
+    700 8px,
     sans-serif;
 `;

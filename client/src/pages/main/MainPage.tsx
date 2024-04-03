@@ -72,9 +72,6 @@ const MainPage = () => {
     if (userInfo.userId !== -1) {
       getUserStatus()
         .then((response) => {
-          // console.log(response.data.data.birthCheck);
-          // console.log(response.data.data.genderCheck);
-          // console.log(response.data.data.diaryCheck);
           setUserStatus(response.data); // 상태를 업데이트
           if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
             setIsOpenModal(true);
@@ -111,17 +108,17 @@ const MainPage = () => {
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
       {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
-        <div>
+        <>
           <ServiceInfo></ServiceInfo>
           <SitePicturesContainer>
             <SitePicturesStyle>
               <SitePictures />
             </SitePicturesStyle>
           </SitePicturesContainer>
-        </div>
+        </>
       )}
       {userStatus?.data.status === 'AFTER_COURSE' && (
-        <div>
+        <>
           <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* d-day */}
           <StyledDDAY>
@@ -132,12 +129,12 @@ const MainPage = () => {
             <MyCourseListDiv />
           </StyledMyCourseListDiv>
           {/* memo */}
-          <MyMemoButton></MyMemoButton>
-        </div>
+          <MyMemoButton travelId={userStatus?.data.afterCourseResponse.travelId}></MyMemoButton>
+        </>
       )}
 
       {userStatus?.data.status === 'ON_COURSE' && (
-        <div>
+        <>
           <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* 내 코스보기 페이지로 이동 div */}
           <StyledMyCourseListDiv>
@@ -147,50 +144,47 @@ const MainPage = () => {
           <StyledCourseCard>
             <OnCourseCard></OnCourseCard>
           </StyledCourseCard>
-        </div>
+        </>
       )}
     </MainPageContainer>
   );
 };
 
 const MainPageContainer = styled.div`
-  max-width: 412px;
-  height: 100%;
-  position: relative;
+  width: 100%;
+  height: 100vh;
   justify-content: center;
-  background-color: #dde2fc;
   align-items: center;
+  margin: 0;
+  padding: 0;
+  background-color: #dde2fc;
+  padding-bottom: 30px;
 `;
 // 로고헤더
 const LogoLargeContainer = styled.div`
   background-color: white;
-  max-width: 412px;
   width: 100%;
   z-index: 2;
 `;
 const LogoContainer = styled.div`
-  position: fixed;
+  position: relative;
+  padding-top: 5px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   top: 0;
-  z-index: 2;
-  width: 412px;
-  max-width: 412px;
-  height: 60px;
+  height: 40px;
   background-color: #dde2fc;
   margin-bottom: 5px;
 `;
 const Logo = styled.img`
-  width: 150px;
+  width: 150px; /* 로고 이미지의 적절한 크기로 조정하세요 */
   height: auto;
+  max-width: 100%;
   padding-left: 10px;
-  max-width: 412px;
 `;
 // 프로필
 const StyledProfile = styled.div`
-  padding-top: 55px;
-  max-width: 412px;
   padding-left: 3px;
   width: 100%;
 `;
@@ -209,37 +203,27 @@ const SitePicturesContainer = styled.div`
 `;
 //날씨
 const Container = styled.div`
-  // 스타일링을 여기에 추가하세요
-  max-width: 412px;
-  width: 412px;
+  width: 100%;
   text-align: center;
-
   background-color: #dde2fc;
   z-index: 0;
 `;
 //코스짜기 페이지로 이동
 const StyledMyCourseListDiv = styled.div`
-  max-width: 412px;
-  width: 412px;
+  width: 100%;
   text-align: center;
-
   background-color: #dde2fc;
   z-index: 0;
-  padding-bottom: 5px;
 `;
 //디데이
 const StyledDDAY = styled.div`
-  max-width: 412px;
-  width: 412px;
   text-align: center;
-  /* padding-top: 380px; */
+  width: 100%;
   background-color: #dde2fc;
   z-index: 0;
 `;
 //여행중 코스 정보 카드
 const StyledCourseCard = styled.div`
-  max-width: 412px;
-  width: 412px;
   text-align: center;
   /* padding-top: 380px; */
   background-color: #dde2fc;

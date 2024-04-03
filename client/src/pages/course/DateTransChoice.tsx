@@ -70,6 +70,20 @@ const DateTransChoice = () => {
   ];
 
   useEffect(() => {
+    const nextDay = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
+    const nextNextDay = dayjs(startDate).add(2, 'day').format('YYYY-MM-DD');
+    let updatedDisable = [];
+    if (savedDate.includes(nextDay) && !savedDate.includes(nextNextDay)) {
+      updatedDisable = savedDate;
+      updatedDisable.push(nextDay);
+      updatedDisable.push(nextNextDay);
+    } else {
+      updatedDisable = savedDate;
+    }
+    setSavedDate(updatedDisable);
+  }, [startDate]);
+
+  useEffect(() => {
     if (startDate && endDate) {
       const newEndDate = startDate.add(2, 'day');
       setEndDate(newEndDate);
@@ -156,7 +170,7 @@ const DateTransChoice = () => {
               </DatePickerContainer>
               <DatePickerContainer>
                 <MobileDatePicker
-                  label="여행 마지막일"
+                  label="여행 마지막날"
                   views={['year', 'month', 'day']}
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
@@ -164,11 +178,7 @@ const DateTransChoice = () => {
                   maxDate={
                     startDate ? startDate.add(2, 'day') : dayjs().startOf('day').add(2, 'day')
                   }
-                  shouldDisableDate={(date) => {
-                    const nextDay = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
-                    const nextNextDay = dayjs(startDate).add(2, 'day').format('YYYY-MM-DD');
-                    return savedDate.includes(nextDay) || savedDate.includes(nextNextDay);
-                  }}
+                  shouldDisableDate={(date) => savedDate.includes(date.format('YYYY-MM-DD'))}
                 />
               </DatePickerContainer>
             </LocalizationProvider>
@@ -197,12 +207,17 @@ const DateTransChoice = () => {
   );
 };
 const PageContainer = styled.div`
-  width: 412px;
+  width: 90%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 const CalendarContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -218,7 +233,7 @@ const CalendarInfoContainer = styled.div`
   background-color: #566cf038;
   padding: 10px;
   display: inline-block;
-  width: 380px;
+  width: 95%;
   border-radius: 8px 8px 0px 0px;
 `;
 const CalendarInfoText1 = styled.div`
@@ -234,6 +249,7 @@ const DatePickerContainer = styled.div`
   margin-bottom: 20px;
 `;
 const TransContainer = styled.div`
+  width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -243,16 +259,18 @@ const TransContainer = styled.div`
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 `;
 const TransInfoText = styled.div`
+  width: 95%;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
   background-color: #566cf038;
   padding: 10px;
   display: inline-block;
-  width: 380px;
+
   border-radius: 8px 8px 0px 0px;
 `;
 const TransChoiceContainer = styled.div`
+  width: 95%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -276,14 +294,13 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 330px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;

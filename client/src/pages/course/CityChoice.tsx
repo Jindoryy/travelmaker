@@ -135,7 +135,7 @@ const CityChoice = () => {
   return (
     <div
       style={{
-        maxWidth: '400px',
+        maxWidth: '95%',
         alignItems: 'center',
         justifyContent: 'center',
         margin: 'auto',
@@ -209,7 +209,6 @@ const CityTypography = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 25px;
 `;
@@ -247,8 +246,8 @@ const SwipeImage = styled.img`
   margin: auto;
   border-radius: 10px;
   display: block;
-  width: 380px;
-  height: 450px;
+  width: 93%;
+  height: 400px;
   object-fit: cover;
 `;
 
@@ -260,15 +259,14 @@ const ButtonBox = styled(Box)`
   }
 `;
 const ChooseButton = styled.button`
-  width: 100%;
+  width: 80%;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
   margin: 10px;
-  margin-top: 50px;
+  margin-top: 40px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;
