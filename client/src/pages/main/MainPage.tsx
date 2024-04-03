@@ -129,7 +129,7 @@ const MainPage = () => {
             <MyCourseListDiv />
           </StyledMyCourseListDiv>
           {/* memo */}
-          <MyMemoButton></MyMemoButton>
+          <MyMemoButton travelId={userStatus?.data.afterCourseResponse.travelId}></MyMemoButton>
         </div>
       )}
 

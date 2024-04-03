@@ -7,7 +7,11 @@ const getImage = () => {
   return require('../../assets/image/BookmarkTabs.png');
 };
 
-const MyMemoButton = () => {
+interface MyMemoButtonProps {
+  travelId: number; // 혹은 다른 유형에 맞게 설정
+}
+
+const MyMemoButton: React.FC<MyMemoButtonProps> = ({ travelId }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -35,7 +39,7 @@ const MyMemoButton = () => {
           },
         }}
       >
-        <MyMemoList />
+        <MyMemoList travelId={travelId} />
       </StyledDrawer>
     </>
   );

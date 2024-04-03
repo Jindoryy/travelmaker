@@ -106,7 +106,7 @@ const Weather: React.FC<{ weather: WeatherData | null }> = ({ weather }) => {
         </div>
         {weather && (
           <>
-            <h3>{getKoreanDescription(weather.weather[0].id)}</h3>
+            <h3 className="weatherinfo">{getKoreanDescription(weather.weather[0].id)}</h3>
             <h3>
               {`${Math.round(weather?.main.temp_max)}℃`} /{' '}
               {`${Math.round(weather?.main.temp_min)}℃`}
