@@ -211,6 +211,7 @@ const SitePictures = () => {
             onChange={handleCheckboxChange(destination.destinationId)}
           />
           <SiteImage
+            loading="lazy"
             style={{ height: `${imageHeights[index]}px` }}
             src={destination.destinationImgUrl}
             alt={destination.destinationName}
