@@ -285,7 +285,6 @@ const BackText = styled.p`
   font-size: 12px;
   font-weight: bold;
   color: black;
-  font-family: 'Pretendard';
   text-align: center;
   padding: 10px;
   padding-left: 15px;

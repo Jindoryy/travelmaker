@@ -120,7 +120,6 @@ const BackText = styled.p`
   font-size: 12px;
   font-weight: bold;
   color: black;
-  font-family: 'Pretendard';
   text-align: center; // 가운데 정렬
   padding: 10px;
   padding-left: 15px;

@@ -139,7 +139,6 @@ const TextOverlay = styled.div`
   bottom: 42%;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Pretendard';
   font-weight: bold;
   font-size: 30px;
   text-align: center;

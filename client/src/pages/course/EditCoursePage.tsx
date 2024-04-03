@@ -413,7 +413,6 @@ const TravelHeader = styled.div`
   justify-content: center;
   margin: 5px;
   padding: 5px;
-  font-family: 'Pretendard';
 `;
 
 const HeaderTitle = styled.div`
@@ -469,7 +468,6 @@ const ChooseButton = styled.button`
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 8px;
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 16px;
   border: none;
