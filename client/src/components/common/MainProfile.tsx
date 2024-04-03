@@ -43,20 +43,22 @@ const StyledProfileContainer = styled.div`
   border-radius: 20px;
   display: flex; /* flexbox 설정 */
   align-items: center; /* 수직 중앙 정렬 */
-  justify-content: space-between;
-  height: 80px;
+  /* justify-content: space-between; */
+  height: 110px;
 `;
 
 const StyledProfileContent = styled.p`
-  font-size: 20px;
+  font-size: 23px;
   font-family: 'Pretendard';
   font-weight: bold;
-  padding-right: 10px;
+  text-align: center;
+  width: 100%;
 `;
 
 const StyledProfileImage = styled.img`
   max-width: 100%;
-  height: 60px;
+  /* width: 100px; */
+  height: 80px;
   padding-left: 5px;
 `;
 

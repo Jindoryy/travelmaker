@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import Profile from '../../components/common/MainProfile';
+import ServiceInfo from '../../components/common/ServiceInfo';
 import Weather from '../../components/common/Weather';
 import SitePictures from '../../components/common/SitePictures';
 import MyCourseListDiv from '../../features/course/GoToMyCourseListDiv';
+import MyMemoButton from '../../features/user/MyMemoButton';
 import DDayDiv from '../../features/course/DDayDiv';
 import OnCourseCard from '../../features/course/OnCourseCard';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -70,9 +72,9 @@ const MainPage = () => {
     if (userInfo.userId !== -1) {
       getUserStatus()
         .then((response) => {
-          console.log(response.data.data.birthCheck);
-          console.log(response.data.data.genderCheck);
-          console.log(response.data.data.diaryCheck);
+          // console.log(response.data.data.birthCheck);
+          // console.log(response.data.data.genderCheck);
+          // console.log(response.data.data.diaryCheck);
           setUserStatus(response.data); // 상태를 업데이트
           if (response.data.data.genderCheck === false || response.data.data.birthCheck === false) {
             setIsOpenModal(true);
@@ -109,11 +111,14 @@ const MainPage = () => {
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
       {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
-        <SitePicturesContainer>
-          <SitePicturesStyle>
-            <SitePictures />
-          </SitePicturesStyle>
-        </SitePicturesContainer>
+        <div>
+          <ServiceInfo></ServiceInfo>
+          <SitePicturesContainer>
+            <SitePicturesStyle>
+              <SitePictures />
+            </SitePicturesStyle>
+          </SitePicturesContainer>
+        </div>
       )}
       {userStatus?.data.status === 'AFTER_COURSE' && (
         <div>
@@ -127,6 +132,7 @@ const MainPage = () => {
             <MyCourseListDiv />
           </StyledMyCourseListDiv>
           {/* memo */}
+          <MyMemoButton></MyMemoButton>
         </div>
       )}
 
@@ -149,39 +155,19 @@ const MainPage = () => {
 
 const MainPageContainer = styled.div`
   max-width: 412px;
+  height: 100%;
   position: relative;
   justify-content: center;
   background-color: #dde2fc;
+  align-items: center;
 `;
-
-const StyledProfile = styled.div`
-  padding-top: 55px;
-  top: 0;
-  max-width: 412px;
-  width: 100%;
-`;
-
-const SitePicturesStyle = styled.div`
-  margin: 10px;
-  background-color: white;
-  border-radius: 15px;
-  z-index: 0;
-`;
-
-const SitePicturesContainer = styled.div`
-  /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
-  background-color: #dde2fc;
-  z-index: 0;
-  margin-bottom: 5px;
-`;
-
+// 로고헤더
 const LogoLargeContainer = styled.div`
   background-color: white;
   max-width: 412px;
   width: 100%;
   z-index: 2;
 `;
-
 const LogoContainer = styled.div`
   position: fixed;
   display: flex;
@@ -189,20 +175,39 @@ const LogoContainer = styled.div`
   justify-content: flex-start;
   top: 0;
   z-index: 2;
-  width: 100%;
+  width: 412px;
   max-width: 412px;
   height: 60px;
   background-color: #dde2fc;
   margin-bottom: 5px;
 `;
-
 const Logo = styled.img`
-  width: 150px; /* 로고 이미지의 너비 조정 */
-  height: auto; /* 비율 유지 */
+  width: 150px;
+  height: auto;
   padding-left: 10px;
   max-width: 412px;
 `;
-
+// 프로필
+const StyledProfile = styled.div`
+  padding-top: 55px;
+  max-width: 412px;
+  padding-left: 3px;
+  width: 100%;
+`;
+// 장소 리스트(좋아요가능)
+const SitePicturesStyle = styled.div`
+  margin: 10px;
+  background-color: white;
+  border-radius: 15px;
+  z-index: 0;
+`;
+const SitePicturesContainer = styled.div`
+  /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+  background-color: #dde2fc;
+  z-index: 0;
+  margin-bottom: 5px;
+`;
+//날씨
 const Container = styled.div`
   // 스타일링을 여기에 추가하세요
   max-width: 412px;
@@ -211,9 +216,8 @@ const Container = styled.div`
 
   background-color: #dde2fc;
   z-index: 0;
-  padding-bottom: 5px;
 `;
-
+//코스짜기 페이지로 이동
 const StyledMyCourseListDiv = styled.div`
   max-width: 412px;
   width: 412px;
@@ -223,7 +227,7 @@ const StyledMyCourseListDiv = styled.div`
   z-index: 0;
   padding-bottom: 5px;
 `;
-
+//디데이
 const StyledDDAY = styled.div`
   max-width: 412px;
   width: 412px;
@@ -231,9 +235,8 @@ const StyledDDAY = styled.div`
   /* padding-top: 380px; */
   background-color: #dde2fc;
   z-index: 0;
-  padding-bottom: 5px;
 `;
-
+//여행중 코스 정보 카드
 const StyledCourseCard = styled.div`
   max-width: 412px;
   width: 412px;

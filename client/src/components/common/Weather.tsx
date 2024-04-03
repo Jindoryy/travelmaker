@@ -144,7 +144,7 @@ const WeatherBoxContainer = styled.div`
     h3 {
       font-family: 'Pretendard';
       font-weight: bold;
-      font-size: 16px;
+      font-size: 15px;
       margin-right: 10px;
     }
   }
