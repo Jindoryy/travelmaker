@@ -29,7 +29,7 @@ public class SchedulingService {
 
         for (Travel travel : travels) {
             LocalDate twoWeeksAfterStartDate = today.plusWeeks(2);
-            if (!travel.getStartDate().isAfter(twoWeeksAfterStartDate) && !travel.getStartDate().isBefore(today)) {
+            if (!travel.getStartDate().isAfter(twoWeeksAfterStartDate) && travel.getStartDate().isAfter(today)) {
                 updateUserStatusAfterCourse(travel.getUser().getId());
                 if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
                     String[] friendIds = travel.getFriends().split(",");
