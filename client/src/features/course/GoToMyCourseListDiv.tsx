@@ -46,13 +46,15 @@ const MyCourseListDiv = (props: SVGProps<SVGSVGElement>) => {
 export default MyCourseListDiv;
 
 const CourseListContainer = styled.div`
+  width: 85%;
   border-radius: 15px;
   background-color: white;
-  margin: 10px;
+  margin: 5px;
   padding: 20px;
   display: flex;
   align-items: center;
   cursor: pointer;
+  position: relative;
 
   img {
     width: 50px; /* 이미지 너비 조정 */
