@@ -18,18 +18,16 @@ const HeaderTabs = ({ selectedTab, letters, onTabChange, size }: any) => {
   );
 };
 
-const HeaderBox = styled(Box)`
-  && {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 10px 0px;
-    padding: 2px 4px;
-    height: 50px;
-    background-color: #f2f4f6;
-    border-radius: 30px;
-  }
+const HeaderBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0px;
+  padding: 2px 4px;
+  height: 50px;
+  background-color: #f2f4f6;
+  border-radius: 30px;
 `;
 
 const OneButton = styled.button`

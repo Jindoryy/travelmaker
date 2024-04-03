@@ -153,6 +153,7 @@ const SiteImage = styled.img<{ isFlipped: boolean }>`
   transform: ${({ isFlipped }) =>
     isFlipped ? 'rotateY(180deg)' : 'rotateY(0)'}; // 클릭 시 뒤집힌 이미지의 회전
   transition: transform 0.5s ease; // 부드러운 애니메이션 효과 추가
+  z-index: 0;
 `;
 
 const Back = styled.div`

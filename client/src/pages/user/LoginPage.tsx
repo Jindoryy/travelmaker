@@ -21,7 +21,7 @@ const LoginPage = () => {
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
   useEffect(() => {
-    if (userInfo.userId || userInfo.userId !== -1) {
+    if (userInfo.userId !== -1) {
       navigate('/mypage');
     }
   }, [userInfo, navigate]);
