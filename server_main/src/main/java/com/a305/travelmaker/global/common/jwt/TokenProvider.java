@@ -77,6 +77,7 @@ public class TokenProvider {
             .userId(user.getId())
             .nickName(user.getNickname())
             .profileUrl(user.getProfileUrl())
+            .tag(user.getTag())
             .status(user.getStatus())
             .accessToken(accessToken)
             .tokenType(BEARER_TYPE)
