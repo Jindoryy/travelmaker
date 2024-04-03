@@ -23,6 +23,10 @@ const MyPageList = ({ userInfo }: MyPageHeaderProps) => {
   }, [location.search]);
 
   useEffect(() => {
+    loadSchedules();
+  }, []);
+
+  useEffect(() => {
     if (activeTab === 'tab1') {
       loadSchedules();
     } else {
