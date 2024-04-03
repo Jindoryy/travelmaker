@@ -207,10 +207,11 @@ const DateTransChoice = () => {
   );
 };
 const PageContainer = styled.div`
-  width: 412px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 const CalendarContainer = styled.div`
   display: flex;

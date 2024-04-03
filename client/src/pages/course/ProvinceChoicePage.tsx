@@ -30,11 +30,11 @@ const PageContainer = styled.div`
   border-radius: 10px;
   /* background-color: #eff1fe; */
   display: flex;
-  max-width: 410px;
   flex-direction: column;
   padding: 10px;
   height: 100%;
   min-height: 100vh;
+  width: 100%;
   padding: 0;
   margin: 0;
 `;

@@ -40,7 +40,6 @@ const StyledProfileContainer = styled.div`
   height: 110px;
   cursor: pointer;
   padding: 20px;
-  padding-top: 25px;
   padding-bottom: 25px;
   display: flex;
   align-items: center;
