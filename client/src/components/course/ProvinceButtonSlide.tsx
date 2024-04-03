@@ -6,6 +6,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { getRecommandCourse } from '../../utils/axios/axios-course';
 import ProvinceSlideButton from '../../features/course/ProvinceSlideButton';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 interface Province {
   provinceId: number;
@@ -86,7 +87,11 @@ const ProvinceButtonSlide = () => {
 
   return (
     <ListContainer>
-      <GudieText> 추천 지역</GudieText>
+      <GudieText>
+        <LocalFireDepartmentIcon style={{ color: '#FF9075' }} />
+        추천 지역
+        <LocalFireDepartmentIcon style={{ color: '#FF9075' }} />
+      </GudieText>
       {loading || provinceContents.length === 0 ? (
         <>
           <Skeleton variant="rectangular" width={210} height={118} />
@@ -125,8 +130,12 @@ const Box = styled.div`
 `;
 
 const GudieText = styled.div`
-  font-size: larger;
+  font-size: 20px;
+  font-weight: bold;
   padding: 0 0 10px 10px;
+  vertical-align: bottom;
+  display: flex;
+  text-align: center;
 `;
 
 export default ProvinceButtonSlide;

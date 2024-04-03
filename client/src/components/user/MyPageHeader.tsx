@@ -6,6 +6,7 @@ const MyPageHeader = ({ userInfo }: MyPageHeaderProps) => {
       <ProfileContainer>
         <ProfileImage src={userInfo.profileUrl} />
         <ProfileText>{userInfo.nickName} </ProfileText>
+        <ProfileText>#{userInfo.tag} </ProfileText>
       </ProfileContainer>
     </>
   );
@@ -16,6 +17,7 @@ interface UserInfo {
   userId: number;
   profileUrl: string;
   nickName: string;
+  tag: number;
 }
 
 interface MyPageHeaderProps {

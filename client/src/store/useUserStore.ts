@@ -5,6 +5,7 @@ interface UserInfo {
   userId: number;
   profileUrl: string;
   nickName: string;
+  tag : number;
 }
 
 interface UserInfoState {
@@ -13,7 +14,7 @@ interface UserInfoState {
   clearUserInfo: () => void;
 }
 
-const initialState = { userId: -1, profileUrl: '', nickName: '' };
+const initialState = { userId: -1, profileUrl: '', nickName: '', tag: -1 };
 
 const useUserInfo = create(
   persist<UserInfoState>(
