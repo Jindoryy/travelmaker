@@ -4,6 +4,8 @@ import com.a305.travelmaker.domain.travel.entity.Travel;
 import com.a305.travelmaker.domain.travel.repository.TravelRepository;
 import com.a305.travelmaker.domain.user.service.UserService;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,12 +21,15 @@ public class SchedulingService {
     @Scheduled(cron = "0 0 0 * * *") // 자정마다 스케줄링 실행
     public void updateUsersBasedOnTravelDates() {
         LocalDate today = LocalDate.now();
-        List<Travel> travels = travelRepository.findAll();
+
+        List<Travel> travels = travelRepository.findTravelsAfterToday();
+
+        // travels 리스트를 endDate를 기준으로 내림차순으로 정렬합니다.
+        travels.sort(Comparator.comparing(Travel::getEndDate).reversed());
 
         for (Travel travel : travels) {
-            System.out.println("travel = " + travel);
-            LocalDate twoWeeksBeforeStartDate = travel.getStartDate().minusWeeks(2);
-            if (!today.isBefore(twoWeeksBeforeStartDate) && today.isBefore(travel.getStartDate())) {
+            LocalDate twoWeeksAfterStartDate = today.plusWeeks(2);
+            if (!travel.getStartDate().isAfter(twoWeeksAfterStartDate) && !travel.getStartDate().isBefore(today)) {
                 updateUserStatusAfterCourse(travel.getUser().getId());
                 if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
                     String[] friendIds = travel.getFriends().split(",");
