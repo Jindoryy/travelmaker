@@ -190,7 +190,6 @@ const SitePictures = () => {
     userId === -1
       ? [...nonLoginSiteInfoList.data.destinationListResponseMap.basic]
       : [
-          ...nonLoginSiteInfoList.data.destinationListResponseMap.basic,
           ...siteInfoList.data.destinationListResponseMap.popular,
           ...siteInfoList.data.destinationListResponseMap.basic,
         ];
