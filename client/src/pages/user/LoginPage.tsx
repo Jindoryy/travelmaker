@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import useUserInfo from '../../store/useUserStore';
+import { useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { kakaoLocalRemoteURL, kakaoAuthRemoteURL } from '../../utils/oauth';
@@ -14,6 +18,13 @@ const KakaoButtonComponent = ({}) => (
 );
 
 const LoginPage = () => {
+  const { userInfo } = useUserInfo();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userInfo.userId || userInfo.userId !== -1) {
+      navigate('/mypage');
+    }
+  }, [userInfo, navigate]);
   return (
     <>
       <LoginPageContainer>
