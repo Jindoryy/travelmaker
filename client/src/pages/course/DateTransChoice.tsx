@@ -70,6 +70,21 @@ const DateTransChoice = () => {
   ];
 
   useEffect(() => {
+    const nextDay = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
+    const nextNextDay = dayjs(startDate).add(2, 'day').format('YYYY-MM-DD');
+    let updatedDisable = [];
+    if (savedDate.includes(nextDay) && !savedDate.includes(nextNextDay)) {
+      updatedDisable = savedDate;
+      updatedDisable.push(nextDay);
+      updatedDisable.push(nextNextDay);
+    } else {
+      updatedDisable = savedDate;
+    }
+    setSavedDate(updatedDisable);
+    console.log(updatedDisable);
+  }, [startDate]);
+
+  useEffect(() => {
     if (startDate && endDate) {
       const newEndDate = startDate.add(2, 'day');
       setEndDate(newEndDate);
@@ -156,7 +171,7 @@ const DateTransChoice = () => {
               </DatePickerContainer>
               <DatePickerContainer>
                 <MobileDatePicker
-                  label="여행 마지막일"
+                  label="여행 마지막날"
                   views={['year', 'month', 'day']}
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
@@ -164,11 +179,7 @@ const DateTransChoice = () => {
                   maxDate={
                     startDate ? startDate.add(2, 'day') : dayjs().startOf('day').add(2, 'day')
                   }
-                  shouldDisableDate={(date) => {
-                    const nextDay = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
-                    const nextNextDay = dayjs(startDate).add(2, 'day').format('YYYY-MM-DD');
-                    return savedDate.includes(nextDay) || savedDate.includes(nextNextDay);
-                  }}
+                  shouldDisableDate={(date) => savedDate.includes(date.format('YYYY-MM-DD'))}
                 />
               </DatePickerContainer>
             </LocalizationProvider>
