@@ -11,18 +11,18 @@ const getProfileImage = () => {
 const MyCourseListDiv = (props: SVGProps<SVGSVGElement>) => {
   const navigate = useNavigate();
   return (
-    <CourseListContainer>
+    <CourseListContainer
+      onClick={() => {
+        navigate('/mypage');
+      }}
+    >
       {/* 이미지 컴포넌트로 사용 */}
       <img src={getProfileImage()} alt="World Map" />
       <div>
         <h2 className="greytext">여행코스보기</h2>
         <h2 className="boldtext">여행 코스를 확인하세요</h2>
       </div>
-      <GotoPageButton
-        onClick={() => {
-          navigate('/mypage');
-        }}
-      >
+      <GotoPageButton>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="25px"

@@ -29,9 +29,9 @@ const DDayDiv = () => {
     <DDayContainer>
       {userStatus && (
         <OverlayContainer>
-          <StyledImg src={userStatus.data.afterCourseResponse.imgUrl} alt="Course Image" />
+          <StyledImg src={userStatus.data.afterCourseResponse?.imgUrl} alt="Course Image" />
           <TextOverlay>
-            <h1>{userStatus.data.afterCourseResponse.cityName}</h1>
+            <h1>{userStatus.data.afterCourseResponse?.cityName}</h1>
             {daysUntil !== null && <h1>D-{daysUntil}</h1>}
           </TextOverlay>
         </OverlayContainer>
