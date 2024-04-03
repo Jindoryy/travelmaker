@@ -30,6 +30,7 @@ const OutletBox = styled(Box)`
     -ms-overflow-style: none;
     scrollbar-width: none;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   &&::-webkit-scrollbar {
