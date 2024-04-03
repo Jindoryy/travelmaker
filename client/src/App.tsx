@@ -148,10 +148,12 @@ function App() {
 const StyledContainer = styled.div`
   background-color: #fff;
   position: relative;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 412px;
   width: 100vw;
   height: 100vh;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0;
   overscroll-behavior-y: none;
 `;
 

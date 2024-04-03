@@ -151,42 +151,40 @@ const MainPage = () => {
 };
 
 const MainPageContainer = styled.div`
-  max-width: 412px;
+  width: 100%;
   height: 100%;
   position: relative;
   justify-content: center;
-  background-color: #dde2fc;
   align-items: center;
+  margin: 0;
+  padding: 0;
+  background-color: #dde2fc;
 `;
 // 로고헤더
 const LogoLargeContainer = styled.div`
   background-color: white;
-  max-width: 412px;
   width: 100%;
   z-index: 2;
 `;
 const LogoContainer = styled.div`
-  position: fixed;
+  position: relative;
+  padding-top: 5px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   top: 0;
-  z-index: 2;
-  width: 412px;
-  max-width: 412px;
-  height: 60px;
+  height: 40px;
   background-color: #dde2fc;
   margin-bottom: 5px;
 `;
 const Logo = styled.img`
-  width: 150px;
+  width: 150px; /* 로고 이미지의 적절한 크기로 조정하세요 */
   height: auto;
+  max-width: 100%;
   padding-left: 10px;
-  max-width: 412px;
 `;
 // 프로필
 const StyledProfile = styled.div`
-  padding-top: 55px;
   max-width: 412px;
   padding-left: 3px;
   width: 100%;

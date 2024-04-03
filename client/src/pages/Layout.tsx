@@ -16,27 +16,34 @@ const Layout = () => {
   );
 };
 
-const ContainerBox = styled(Box)`
+const ContainerBox = styled.div`
+  width: 100%;
   height: 100vh;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-family: 'Pretendard';
+  letter-spacing: -1px;
 `;
 
-const OutletBox = styled(Box)`
-  && {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+const OutletBox = styled.div`
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-y: auto;
 
-  &&::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
   }
-  flex: 1;
 `;
 
 const FooterBox = styled(Box)`

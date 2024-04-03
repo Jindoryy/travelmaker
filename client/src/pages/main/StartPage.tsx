@@ -114,7 +114,6 @@ const Logo = styled.div`
 `;
 
 const Title = styled.div`
-  font-family: 'IBM Plex Sans KR';
   font-size: 18px;
   line-height: 30px;
   font-weight: bold;
@@ -173,7 +172,6 @@ const Description = styled.p`
   font-size: 16px;
   line-height: 20px;
   margin-bottom: 10px;
-  font-family: 'IBM Plex Sans KR';
   word-break: keep-all;
 `;
 
@@ -202,7 +200,6 @@ const StartButton = styled.button`
   font-weight: bold;
   margin-bottom: 90px;
   cursor: pointer;
-  font-family: 'IBM Plex Sans KR';
 `;
 
 export default StartPage;

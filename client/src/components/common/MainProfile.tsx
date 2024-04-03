@@ -35,17 +35,17 @@ const Profile = ({ userState }: { userState: string }) => {
 const StyledProfileContainer = styled.div`
   background-color: white;
   color: #000;
-  padding: 10px;
   margin: 10px;
-  max-width: 365px;
-  width: 100%;
-  text-align: center;
   border-radius: 20px;
-  display: flex; /* flexbox 설정 */
-  align-items: center; /* 수직 중앙 정렬 */
-  /* justify-content: space-between; */
   height: 110px;
   cursor: pointer;
+  padding: 20px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  position: relative;
 `;
 
 const StyledProfileContent = styled.p`
