@@ -156,8 +156,8 @@ const MainPageContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin: 0;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
   background-color: #dde2fc;
   padding-bottom: 30px;
 `;
@@ -207,8 +207,8 @@ const SitePicturesStyle = styled.div`
 const SitePicturesContainer = styled.div`
   /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
   width: 100%;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   background-color: #dde2fc;
   z-index: 0;
   margin-bottom: 5px;

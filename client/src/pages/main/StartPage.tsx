@@ -57,7 +57,7 @@ const StartPage = () => {
       <Logo>
         <img src="/img/logo.png" alt="logo" />
       </Logo>
-      <Title style={{ animationDelay: '0.9s' }}>당신의 여행을 편리하게!</Title>
+      
       <ContentWrapper>
         <StepperWrapper>
           <ContentDetail>
@@ -113,12 +113,6 @@ const Logo = styled.div`
   }
 `;
 
-const Title = styled.div`
-  font-size: 18px;
-  line-height: 30px;
-  font-weight: bold;
-  color: black;
-`;
 
 const ContentWrapper = styled.div`
   width: 100%;
