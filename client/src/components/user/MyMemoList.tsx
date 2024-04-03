@@ -8,7 +8,7 @@ const MyMemoList = (props: SVGProps<SVGSVGElement>) => {
 
   useEffect(() => {
     // 여기서 travelId를 적절하게 가져와서 사용하세요
-    const travelId = 22;
+    const travelId = 28;
     getMemoList(travelId)
       .then((response) => {
         setMemos(response.data.data);
@@ -18,7 +18,7 @@ const MyMemoList = (props: SVGProps<SVGSVGElement>) => {
       });
   }, []);
 
-  if (memos === null) {
+  if (memos === null || 'undefined') {
     return <p>Loading...</p>; // 데이터 로딩 중일 때 표시할 컴포넌트
   }
   return (
