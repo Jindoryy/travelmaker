@@ -27,7 +27,10 @@ const Profile = ({ userState }: { userState: string }) => {
   return (
     <StyledProfileContainer>
       <StyledProfileImage src={getProfileImage()} alt="Profile" />
-      <StyledProfileContent>{getProfileContent()}</StyledProfileContent>
+      <StyledProfileContent>
+        {getProfileContent()}
+      <StyledText>코스를 짜러 가볼까요?</StyledText>
+        </StyledProfileContent>
     </StyledProfileContainer>
   );
 };
@@ -37,7 +40,7 @@ const StyledProfileContainer = styled.div`
   color: #000;
   margin: 10px;
   border-radius: 15px;
-  height: 110px;
+  height: 90px;
   cursor: pointer;
   padding: 20px;
   padding-bottom: 25px;
@@ -48,7 +51,7 @@ const StyledProfileContainer = styled.div`
 `;
 
 const StyledProfileContent = styled.p`
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   text-align: center;
   width: 100%;
@@ -61,4 +64,10 @@ const StyledProfileImage = styled.img`
   padding-left: 5px;
 `;
 
+const StyledText = styled.div`
+  width: 100%;
+  font-size: 14px;
+  font-align: flex-start;
+  margin-top: 5px;
+`
 export default Profile;
