@@ -96,6 +96,7 @@ const CheckSitePictures: React.FC<any> = ({ array }) => {
             onChange={handleCheckboxChange(site.destinationId)}
           />
           <SiteImage
+            loading="lazy"
             style={{ height: `${imageHeights[index]}px` }}
             src={site.destinationImgUrl}
             alt={site.destinationName}
