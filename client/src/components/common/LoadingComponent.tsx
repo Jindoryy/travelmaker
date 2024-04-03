@@ -4,6 +4,7 @@ const LoadingComponent = () => {
   return (
     <Overlay>
       <StyledImage src={getImage()} alt="Loading" />
+      <LoadingText>조금만 기다려주세요...</LoadingText>
     </Overlay>
   );
 };
@@ -18,6 +19,7 @@ const Overlay = styled.div`
   height: 100%;
   background-color: white;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 999;
@@ -26,6 +28,10 @@ const Overlay = styled.div`
 const StyledImage = styled.img`
   width: 410px;
   object-fit: cover;
+`;
+
+const LoadingText = styled.div`
+  width: 410px;
 `;
 
 const getImage = () => {
