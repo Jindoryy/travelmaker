@@ -9,7 +9,7 @@ const MyPage = () => {
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!userInfo || userInfo.userId === -1) {
+    if (userInfo.userId === -1) {
       navigate('/login');
     }
   }, [userInfo, navigate]);

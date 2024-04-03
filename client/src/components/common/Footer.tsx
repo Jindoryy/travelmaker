@@ -14,14 +14,17 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
   const isCoursePage = location.pathname.startsWith('/course');
   const isMyPage = location.pathname.startsWith('/mypage');
   const isDiaryPage = location.pathname.startsWith('/diary');
+  const isLoginPage = location.pathname.startsWith('/login');
 
   useEffect(() => {
     if (isCoursePage) {
       setActiveButton(1);
     } else if (isMyPage || isDiaryPage) {
       setActiveButton(3);
+    } else if (isLoginPage) {
+      setActiveButton(0);
     }
-  }, [isCoursePage, isMyPage, isDiaryPage]);
+  }, [isCoursePage, isMyPage, isDiaryPage, isLoginPage]);
 
   const checkLoginAndNavigatetoMap = () => {
     if (userInfo.userId === -1 || userInfo.userId === undefined) {
@@ -32,7 +35,7 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       setActiveButton(1);
       navigate('/course/datetrans');
     }
-  }
+  };
   const checkLoginAndNavigate = () => {
     if (userInfo.userId === -1 || userInfo.userId === undefined) {
       // userId가 -1이거나 undefined면 로그인 페이지로 이동
@@ -49,7 +52,9 @@ const Footer = (props: SVGProps<SVGSVGElement>) => {
       <OneButton
         disableRipple
         className={activeButton === 1 ? 'active' : undefined}
-        onClick={() => { checkLoginAndNavigatetoMap() }}
+        onClick={() => {
+          checkLoginAndNavigatetoMap();
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
