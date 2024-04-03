@@ -81,6 +81,7 @@ interface KakaoAuthData {
   userId: number;
   nickName: string;
   profileUrl: string;
+  tag: number;
   status: string;
   tokenType: string;
   accessToken: string;
