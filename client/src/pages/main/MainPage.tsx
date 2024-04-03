@@ -108,14 +108,14 @@ const MainPage = () => {
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
       {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
-        <>
+        <BeforeCourse >
           <ServiceInfo></ServiceInfo>
           <SitePicturesContainer>
             <SitePicturesStyle>
               <SitePictures />
             </SitePicturesStyle>
           </SitePicturesContainer>
-        </>
+        </BeforeCourse>
       )}
       {userStatus?.data.status === 'AFTER_COURSE' && (
         <>
@@ -151,12 +151,13 @@ const MainPage = () => {
 };
 
 const MainPageContainer = styled.div`
-  width: 100%;
+  width: 95%;
   height: 100vh;
   justify-content: center;
   align-items: center;
   margin: 0;
-  padding: 0;
+  padding-left: 30px;
+  padding-right: 30px;
   background-color: #dde2fc;
   padding-bottom: 30px;
 `;
@@ -188,6 +189,14 @@ const StyledProfile = styled.div`
   padding-left: 3px;
   width: 100%;
 `;
+
+const BeforeCourse = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
 // 장소 리스트(좋아요가능)
 const SitePicturesStyle = styled.div`
   margin: 10px;
@@ -197,6 +206,9 @@ const SitePicturesStyle = styled.div`
 `;
 const SitePicturesContainer = styled.div`
   /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
   background-color: #dde2fc;
   z-index: 0;
   margin-bottom: 5px;
