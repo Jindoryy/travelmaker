@@ -107,8 +107,8 @@ const OnCourseCard = () => {
 export default OnCourseCard;
 
 const OnCourseCards = styled.div`
-  width: 400px;
-  border-radius: 20px;
+  width: 96%;
+  border-radius: 15px;
   height: 400px;
   /* margin: 10px; */
   /* padding: 10px; */
@@ -117,7 +117,7 @@ const OnCourseCards = styled.div`
 `;
 
 const SliderContainer = styled.div`
-  width: 408px;
+  width: 99%;
   height: 100%;
   .slick-slide img {
     width: 100%;
@@ -146,8 +146,7 @@ const TextOverlay = styled.div`
 `;
 
 const StyledImg = styled.img`
-  max-width: 94%; /* 최대 너비를 400px로 설정 */
-  /*  너비를 최대 너비에 맞춰 설정 */
+  max-width: 100%;
   height: 160px;
   object-fit: cover;
   border-radius: 20px;

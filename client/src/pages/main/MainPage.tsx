@@ -108,17 +108,17 @@ const MainPage = () => {
         <Profile userState={userStatus?.data.status || ''} />
       </StyledProfile>
       {(userInfo.userId === -1 || userStatus?.data.status === 'BEFORE_COURSE') && (
-        <div>
+        <>
           <ServiceInfo></ServiceInfo>
           <SitePicturesContainer>
             <SitePicturesStyle>
               <SitePictures />
             </SitePicturesStyle>
           </SitePicturesContainer>
-        </div>
+        </>
       )}
       {userStatus?.data.status === 'AFTER_COURSE' && (
-        <div>
+        <>
           <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* d-day */}
           <StyledDDAY>
@@ -130,11 +130,11 @@ const MainPage = () => {
           </StyledMyCourseListDiv>
           {/* memo */}
           <MyMemoButton travelId={userStatus?.data.afterCourseResponse.travelId}></MyMemoButton>
-        </div>
+        </>
       )}
 
       {userStatus?.data.status === 'ON_COURSE' && (
-        <div>
+        <>
           <Container className="container">{weather && <Weather weather={weather} />}</Container>
           {/* 내 코스보기 페이지로 이동 div */}
           <StyledMyCourseListDiv>
@@ -144,7 +144,7 @@ const MainPage = () => {
           <StyledCourseCard>
             <OnCourseCard></OnCourseCard>
           </StyledCourseCard>
-        </div>
+        </>
       )}
     </MainPageContainer>
   );
@@ -152,12 +152,13 @@ const MainPage = () => {
 
 const MainPageContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   justify-content: center;
   align-items: center;
   margin: 0;
   padding: 0;
   background-color: #dde2fc;
+  padding-bottom: 30px;
 `;
 // 로고헤더
 const LogoLargeContainer = styled.div`
@@ -202,24 +203,22 @@ const SitePicturesContainer = styled.div`
 `;
 //날씨
 const Container = styled.div`
-  // 스타일링을 여기에 추가하세요
+  width: 100%;
   text-align: center;
-
   background-color: #dde2fc;
   z-index: 0;
 `;
 //코스짜기 페이지로 이동
 const StyledMyCourseListDiv = styled.div`
+  width: 100%;
   text-align: center;
-
   background-color: #dde2fc;
   z-index: 0;
-  padding-bottom: 5px;
 `;
 //디데이
 const StyledDDAY = styled.div`
   text-align: center;
-  /* padding-top: 380px; */
+  width: 100%;
   background-color: #dde2fc;
   z-index: 0;
 `;

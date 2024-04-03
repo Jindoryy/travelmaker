@@ -25,29 +25,29 @@ const DateTransChoice = () => {
   const travelInfoStore = useTravelInfo();
   const userInfo = useUserInfo();
 
-  // useEffect(() => {
-  //   getAlreadyConfirm(userInfo.userInfo.userId)
-  //     .then((response) => {
-  //       const dates = response.data;
-  //       if (dates) {
-  //         const getSavedDate: string[] = [];
-  //         dates.map((dateObj: any) => {
-  //           const startDate = new Date(dateObj.startDate);
-  //           const endDate = new Date(dateObj.endDate);
-  //           const currentDate = new Date(startDate);
+  useEffect(() => {
+    getAlreadyConfirm(userInfo.userInfo.userId)
+      .then((response) => {
+        const dates = response.data;
+        if (dates) {
+          const getSavedDate: string[] = [];
+          dates.map((dateObj: any) => {
+            const startDate = new Date(dateObj.startDate);
+            const endDate = new Date(dateObj.endDate);
+            const currentDate = new Date(startDate);
 
-  //           while (currentDate <= endDate) {
-  //             getSavedDate.push(currentDate.toISOString().slice(0, 10));
-  //             currentDate.setDate(currentDate.getDate() + 1);
-  //           }
-  //         });
-  //         setSavedDate(getSavedDate);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // }, []);
+            while (currentDate <= endDate) {
+              getSavedDate.push(currentDate.toISOString().slice(0, 10));
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+          });
+          setSavedDate(getSavedDate);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   const transportations = [
     {
       image:
