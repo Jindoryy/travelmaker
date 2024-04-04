@@ -32,6 +32,9 @@ const NotFoundContent = styled.div`
   line-height: 1.4;
   text-align: center;
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  word-break: keep-all;
 `;
 
 const NotFound404 = styled.div`
