@@ -131,7 +131,7 @@ const BackText = styled.p`
 const StyledCheckbox = styled(Checkbox)`
   position: absolute;
   top: 20px;
-  right: -70px;
+  right: -40%;
   z-index: 1;
 `;
 
