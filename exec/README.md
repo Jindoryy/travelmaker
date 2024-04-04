@@ -4,37 +4,37 @@
 
 ### 1-1. 개발환경
 
-Backend - 메인
+| Backend - 메인
 
 Spring Boot 3.2.1
-Spring Data JPA
-Spring Security
-Jwt
-Swagger 3
-MariaDB
+<br>Spring Data JPA
+<br>Spring Security
+<br>Jwt
+<br>Swagger 3
+<br>MariaDB
 
-Backend - 추천
+| Backend - 추천
 
 Django RestAPI
-MariaDB
+<br>MariaDB
 
-Frontend
+| Frontend
 
 React
-MUI
-Styled-Components
-axios
-React Router DOM
-SweetAlert 2
+<br>MUI
+<br>Styled-Components
+<br>axios
+<br>React Router DOM
+<br>SweetAlert 2
 
-배포
+| 배포
 
 AWS Lightsail
-AWS S3
-AWS RDS
-Nginx
-Jenkins
-Docker
+<br>AWS S3
+<br>AWS RDS
+<br>Nginx
+<br>Jenkins
+<br>Docker
 
 ### 1-2. 환경변수
 
