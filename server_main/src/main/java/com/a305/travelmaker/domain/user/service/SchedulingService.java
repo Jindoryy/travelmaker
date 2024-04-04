@@ -30,73 +30,18 @@ public class SchedulingService {
         for (Travel travel : travels) {
             LocalDate twoWeeksAfterStartDate = today.plusWeeks(2);
             if (!travel.getStartDate().isAfter(twoWeeksAfterStartDate) && travel.getStartDate().isAfter(today)) {
+
                 updateUserStatusAfterCourse(travel.getUser().getId());
-                if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
-                    String[] friendIds = travel.getFriends().split(",");
 
-                    for (String friendId : friendIds) {
-                        try {
-                            Long userId = Long.parseLong(friendId.trim());
-                            updateUserStatusAfterCourse(userId);
-
-                        } catch (NumberFormatException e) {
-                            // 친구 ID가 유효하지 않은 경우 예외 처리
-                            // 필요에 따라 로그를 남기거나 예외 처리를 수행합니다.
-                            e.printStackTrace();
-                        }
-                    }
-                }
             } else if (today.isAfter(travel.getEndDate())) {
                 updateUserStatusBeforeCourse(travel.getUser().getId());
-                if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
-                    String[] friendIds = travel.getFriends().split(",");
 
-                    for (String friendId : friendIds) {
-                        try {
-                            Long userId = Long.parseLong(friendId.trim());
-                            updateUserStatusBeforeCourse(userId);
-
-                        } catch (NumberFormatException e) {
-                            // 친구 ID가 유효하지 않은 경우 예외 처리
-                            // 필요에 따라 로그를 남기거나 예외 처리를 수행합니다.
-                            e.printStackTrace();
-                        }
-                    }
-                }
             } else if (today.isAfter(travel.getStartDate()) || today.equals(travel.getStartDate())) {
                 updateUserStatusOnCourse(travel.getUser().getId());
-                if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
-                    String[] friendIds = travel.getFriends().split(",");
 
-                    for (String friendId : friendIds) {
-                        try {
-                            Long userId = Long.parseLong(friendId.trim());
-                            updateUserStatusOnCourse(userId);
-
-                        } catch (NumberFormatException e) {
-                            // 친구 ID가 유효하지 않은 경우 예외 처리
-                            // 필요에 따라 로그를 남기거나 예외 처리를 수행합니다.
-                            e.printStackTrace();
-                        }
-                    }
-                }
             }else{
                 updateUserStatusBeforeCourse(travel.getUser().getId());
-                if (travel.getFriends() != null && !travel.getFriends().isEmpty()) {
-                    String[] friendIds = travel.getFriends().split(",");
 
-                    for (String friendId : friendIds) {
-                        try {
-                            Long userId = Long.parseLong(friendId.trim());
-                            updateUserStatusBeforeCourse(userId);
-
-                        } catch (NumberFormatException e) {
-                            // 친구 ID가 유효하지 않은 경우 예외 처리
-                            // 필요에 따라 로그를 남기거나 예외 처리를 수행합니다.
-                            e.printStackTrace();
-                        }
-                    }
-                }
             }
         }
     }
