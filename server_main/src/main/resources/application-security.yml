@@ -1,0 +1,13 @@
+oauth2:
+  jwt:
+    header: Authorization
+    secret: 4oCYbGVhLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtbmZ0LXNwcmluZy1ib290LWp3dC10dXRvcmlhbOKAmQo=
+    token-validity-in-seconds: 86400
+  provider:
+    kakao:
+      client-rest-key: ${KAKAO_CLIENT_REST_KEY}
+      client-secret: ${KAKAO_CLIENT_SECRET}
+
+bigdata:
+  server:
+    domain: ${BIGDATA_SERVER_DOMAIN}

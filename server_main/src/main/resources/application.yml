@@ -1,0 +1,6 @@
+spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+  profiles:
+    active: db, security, swagger, s3
