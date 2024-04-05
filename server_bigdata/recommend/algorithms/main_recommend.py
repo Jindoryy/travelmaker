@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from surprise import SVD, Dataset, Reader
 from surprise.model_selection import cross_validate
 from recommend.models import Likes, Destination, User
+import time
 
 
 def genderAgeRecommend(user_id, num_result):
@@ -68,11 +69,12 @@ def basicCbfRecommend(user_id):
     top_features = [feature for feature, _ in feature_counter.most_common(10)]
 
     # 가장 많이 등장한 특성들을 가지고 있는 장소 찾기
-    similar_destinations = []
-    for feature in top_features:
-        destinations_with_feature = Destination.objects.filter(FEATURE__contains=feature)
-        similar_destinations.extend(destinations_with_feature)
-
+    # similar_destinations = []
+    # for feature in top_features:
+    #     destinations_with_feature = Destination.objects.filter(FEATURE__contains=feature)
+    #     similar_destinations.extend(destinations_with_feature)
+    similar_destinations = Destination.objects.filter(FEATURE__in=top_features)
+    
     # 중복 제거
     similar_destinations = list(set(similar_destinations))
 
@@ -111,58 +113,43 @@ def basicCbfRecommend(user_id):
     return destination_ids
 
 
-
-def predict_destination_rating(algo, user_id, features, similarity):
-    # 사용자가 좋아하는 특징에 대한 예상 평점 계산
-    predictions = [algo.predict(user_id, feature).est for feature in features]
-
-    # 가중 평균 평점 계산
-    total_weighted_rating = sum(pred * similarity for pred in predictions)
-    total_weight = sum(similarity for _ in predictions)
-
-    if total_weight > 0:
-        return total_weighted_rating / total_weight
+def predict_destination_rating(algo, user_id, destination_id, flag):
+    if flag == 1:
+        return 5
+    elif flag == 0:
+        return 2
     else:
-        return 0  # 특징이 없는 경우 평점을 0으로 반환
-
+        return 0
 
 def basicCfRecommend(user_id):
     # 사용자가 좋아요를 누른 장소 데이터 가져오기
     user_likes = Likes.objects.filter(USER_ID=user_id)
 
-    # 사용자가 좋아요를 누른 장소의 특징 가져오기
-    liked_destinations = [like.DESTINATION_ID for like in user_likes]
-    user_features = []
-    for dest_id in liked_destinations:
-        destination = Destination.objects.get(pk=dest_id)
-        user_features.extend(destination.FEATURE.split(','))
-
-    # 중복을 제거하고 리스트로 변환
-    user_features = list(set(user_features))
-
     # Surprise 라이브러리에서 데이터 로드
-    reader = Reader(rating_scale=(0, 2))  # 평점 스케일을 0~2로 변경
-    dataset = Dataset.load_builtin('ml-100k')
-    # print(dataset.raw_ratings[:10])
+    reader = Reader(rating_scale=(0, 5))  # 평점 스케일을 0~5로 변경
+    # 사용자가 좋아하는 장소의 평점 데이터 구성
+    data = []
+    for like in user_likes:
+        data.append((like.USER_ID, like.DESTINATION_ID, like.FLAG))
+
+    dataset = Dataset.load_from_df(pd.DataFrame(data, columns=['user_id', 'item_id', 'rating']), reader)
 
     # SVD 알고리즘을 사용하여 모델 학습
     algo = SVD()
-    cross_validate(algo, dataset, measures=['RMSE', 'MAE'], cv=2, verbose=True)
+    trainset = dataset.build_full_trainset()
+    algo.fit(trainset)
 
     # 모든 장소에 대한 예상 평점 계산
-    all_destinations = Destination.objects.all()
+    liked_destinations_with_flag = Likes.objects.filter(USER_ID=user_id, FLAG__in=[0, 1]).values_list('DESTINATION_ID', flat=True)
+    all_destinations = Destination.objects.filter(DESTINATION_ID__in=liked_destinations_with_flag)
     predictions = []
     for destination in all_destinations:
-        # 각 장소의 특징을 콤마로 분리하여 리스트로 변환
-        features = destination.FEATURE.split(',')
-        # 사용자가 좋아하는 특징과 장소의 특징의 교집합 계산
-        common_features = set(user_features) & set(features)
-        # 교집합의 크기를 사용자가 좋아하는 특징의 수로 나눠서 유사도 산출
-        similarity = len(common_features) / len(user_features)
-        # 유사도를 가중치로 사용하여 장소의 예상 평점 계산
-        pred = predict_destination_rating(algo, user_id, features, similarity)
+        flag = Likes.objects.filter(USER_ID=user_id, DESTINATION_ID=destination.DESTINATION_ID).values_list('FLAG', flat=True).first()
+        if flag is None:
+            continue  # 데이터가 없는 경우 다음 장소로 건너뜁니다.
+        pred = predict_destination_rating(algo, user_id, destination.DESTINATION_ID, flag)
         predictions.append((destination, pred))
-
+        
     # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
     top_100 = heapq.nlargest(20000, predictions, key=lambda x: x[1])
     random.shuffle(top_100)
