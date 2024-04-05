@@ -74,7 +74,7 @@ def basicCbfRecommend(user_id):
     #     destinations_with_feature = Destination.objects.filter(FEATURE__contains=feature)
     #     similar_destinations.extend(destinations_with_feature)
     similar_destinations = Destination.objects.filter(FEATURE__in=top_features)
-    
+
     # 중복 제거
     similar_destinations = list(set(similar_destinations))
 
@@ -122,16 +122,21 @@ def predict_destination_rating(algo, user_id, destination_id, flag):
         return 0
 
 def basicCfRecommend(user_id):
-    # 사용자가 좋아요를 누른 장소 데이터 가져오기
-    user_likes = Likes.objects.filter(USER_ID=user_id)
+    # 사용자가 좋아요를 누른 장소 데이터 한 번에 가져오기
+    user_likes = Likes.objects.filter(USER_ID=user_id).values_list('DESTINATION_ID', flat=True)
 
     # Surprise 라이브러리에서 데이터 로드
     reader = Reader(rating_scale=(0, 5))  # 평점 스케일을 0~5로 변경
-    # 사용자가 좋아하는 장소의 평점 데이터 구성
-    data = []
-    for like in user_likes:
-        data.append((like.USER_ID, like.DESTINATION_ID, like.FLAG))
 
+    # 모든 장소에서 무작위 샘플링하여 예상 평점 계산
+    all_destinations = Destination.objects.all().values_list('DESTINATION_ID', flat=True)
+    destinations_to_sample = [dest_id for dest_id in all_destinations if dest_id not in user_likes]
+
+    sample_size = min(20000, len(destinations_to_sample))
+    sample_destinations = random.sample(destinations_to_sample, sample_size)
+
+    # 사용자가 좋아요를 누른 장소 제외하고 예상 평점 계산
+    data = [(user_id, destination_id, 0) for destination_id in sample_destinations]
     dataset = Dataset.load_from_df(pd.DataFrame(data, columns=['user_id', 'item_id', 'rating']), reader)
 
     # SVD 알고리즘을 사용하여 모델 학습
@@ -139,22 +144,13 @@ def basicCfRecommend(user_id):
     trainset = dataset.build_full_trainset()
     algo.fit(trainset)
 
-    # 모든 장소에 대한 예상 평점 계산
-    liked_destinations_with_flag = Likes.objects.filter(USER_ID=user_id, FLAG__in=[0, 1]).values_list('DESTINATION_ID', flat=True)
-    all_destinations = Destination.objects.filter(DESTINATION_ID__in=liked_destinations_with_flag)
     predictions = []
-    for destination in all_destinations:
-        flag = Likes.objects.filter(USER_ID=user_id, DESTINATION_ID=destination.DESTINATION_ID).values_list('FLAG', flat=True).first()
-        if flag is None:
-            continue  # 데이터가 없는 경우 다음 장소로 건너뜁니다.
-        pred = predict_destination_rating(algo, user_id, destination.DESTINATION_ID, flag)
-        predictions.append((destination, pred))
-        
-    # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
-    top_100 = heapq.nlargest(20000, predictions, key=lambda x: x[1])
-    random.shuffle(top_100)
-    top_100 = top_100[:50]
+    for destination_id in sample_destinations:
+        pred = algo.predict(user_id, destination_id).est
+        predictions.append((destination_id, pred))
 
-    recommended_destination_ids = [pred[0].DESTINATION_ID for pred in top_100]
+    # 결과를 예상 평점에 따라 정렬하여 상위 N개의 장소 추출
+    top_50 = heapq.nlargest(50, predictions, key=lambda x: x[1])
+    recommended_destination_ids = [pred[0] for pred in top_50]
 
     return recommended_destination_ids
