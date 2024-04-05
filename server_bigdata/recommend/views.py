@@ -12,11 +12,13 @@ def getMainList(request, user_id):
     user_likes_count = Likes.objects.filter(USER_ID=user_id, FLAG=1).count()
     
     # 사용자의 좋아요 누른 장소 수에 따라 추천 방식 선택
-    if user_likes_count <= 2000:
+    if user_likes_count <= 20:
+        print('========================CBF 추천중========================')
         # 기준점 이하일 때 user-based 추천(8) + CBF(30)
         gender_age_response = main_recommend.genderAgeRecommend(user_id,8)
         basic_response = main_recommend.basicCbfRecommend(user_id)
     else:
+        print('========================CF 추천중========================')
         # 기준점 초과일 때 user-based 추천(4) + CF(30)
         gender_age_response = main_recommend.genderAgeRecommend(user_id,4)
         basic_response = main_recommend.basicCfRecommend(user_id)
