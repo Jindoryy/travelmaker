@@ -8,6 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
 import { pink } from '@mui/material/colors';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 interface SiteListProps {
   status: string;
@@ -155,6 +156,7 @@ const SitePictures = () => {
   const getSiteInfoList = () => {
     siteListDetail()
       .then((response) => {
+        console.log(response.data)
         const siteListResponse: SiteListProps = {
           status: response.data.status,
           data: response.data.data,
@@ -198,6 +200,16 @@ const SitePictures = () => {
     <Masonry columns={2} spacing={1} sequential>
       {combinedArray.map((destination, index) => (
         <SiteItem key={index}>
+          {index < 4 && index !== flippedIndex ? (
+              <IconContainer onClick={() => handleImageClick(index)} isFlipped={index === flippedIndex}>
+                <LocalFireDepartmentIcon
+                  style={{ color: 'white', width: '15px', height: '15px', textAlign: 'center' }}
+                />
+                <IconText>또래PICK</IconText>
+              </IconContainer>
+            ) : (
+              <></>
+            )}
           <StyledCheckbox
             {...label}
             sx={{
@@ -253,6 +265,31 @@ const SiteItem = styled.div`
   max-width: 47%;
   text-align: center;
   position: relative;
+`;
+
+const IconContainer = styled.div<{ isFlipped: boolean }>`
+  position: absolute;
+  top: 40px;
+  z-index: 1;
+  display: flex;
+  width: 35%;
+  height: 13px;
+  border: 1px solid #ff9075;
+  border-radius: 30px;
+  background-color: #ff9075;
+  padding: 3px;
+  margin-left: 10px;
+  text-align: center;
+`;
+
+const IconText = styled.div`
+  text-align: center; 
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: flex-end;
+  letter-spacing: 1px;
 `;
 
 const SiteImage = styled.img<{ isFlipped: boolean }>`
