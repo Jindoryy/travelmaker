@@ -7,6 +7,7 @@ import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import Slider from 'react-slick';
 
 const StartPage = () => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const StartPage = () => {
       <Logo>
         <img src="/img/logo.png" alt="logo" />
       </Logo>
-      
+      <StarterGuide>사용자 가이드</StarterGuide>
       <ContentWrapper>
         <StepperWrapper>
           <ContentDetail>
@@ -88,7 +89,8 @@ const StartPage = () => {
         </StepperWrapper>
       </ContentWrapper>
       <hr className="border-white w-full border-1 opacity-50" />
-      <StartButton onClick={() => navigate('/main')}>시작하기</StartButton>
+      {activeStep == 3 ? <StartButton onClick={() => navigate('/main')}>시작하기</StartButton> : <></> }
+      {/* // <StartButton onClick={() => navigate('/main')}>시작하기</StartButton> */}
     </Container>
   );
 };
@@ -96,12 +98,12 @@ const StartPage = () => {
 const Container = styled.div`
   max-width: 412px;
   display: flex;
-  /* width: 100%; */
-  height: 100%;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  margin-bottom: 100px;
 `;
 
 const Logo = styled.div`
@@ -113,22 +115,28 @@ const Logo = styled.div`
   }
 `;
 
+const StarterGuide = styled.div`
+  width: 50%;
+  font-size: 20px;
+  font-weight: bold;
+`
 
 const ContentWrapper = styled.div`
-  width: 100%;
+  width: 90%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `;
 
 const ContentDetail = styled.div`
+  width: 100%;
   flex-grow: 1;
-  position: relative;
 `;
 
 const Step = styled.div`
+  width: 95%;
   margin-top: 20px;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,8 +144,8 @@ const Step = styled.div`
 `;
 
 const StepContent = styled.div`
-  width: 300px;
-  height: 250px;
+  width: 90%;
+  height: 200px;
   background-color: white;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
   border-radius: 15px;
@@ -179,10 +187,12 @@ const StepperWrapper = styled.div`
 
 const NavigationButton = styled(Button)`
   background-color: none;
+  margin-bottom: 10px;
 `;
 
 const StartButton = styled.button`
-  width: 330px;
+  max-width: 412px;
+  width: 80%;
   height: 40px;
   position: fixed;
   bottom: 0;
