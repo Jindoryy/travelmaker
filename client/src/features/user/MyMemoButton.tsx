@@ -70,11 +70,14 @@ const MemoButton = styled.div`
     margin-bottom: 8px;
     font-size: 15px;
     margin-right: 10px;
+    margin-left: 2px;
   }
   .boldtext {
     font-weight: bold;
     font-size: 20px;
+    text-align: left;
     margin-right: 20px;
+    margin-left: 2px;
   }
 `;
 

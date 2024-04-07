@@ -159,6 +159,7 @@ const CheckSite = () => {
         <LoadingComponent />
       </LoadingComponents>
       <HiddenDuringLoading isLoading={isLoading}>
+          <SitePicturesContainer>
         <StyledHeaderTabs>
           <HeaderTabs
             selectedTab={selectedTab}
@@ -181,7 +182,6 @@ const CheckSite = () => {
           해주세요!
         </HeaderInfo>
 
-        <SitePicturesContainer>
           <SitePicturesStyle>
             <TabContent isVisible={selectedTab === 1}>
               <CheckSitePictures array={sightsList} />
@@ -202,8 +202,8 @@ const CheckSite = () => {
 const MainPageContainer = styled.div`
   padding-top: 30px;
   margin-bottom: 30px;
-  display: flex;
   width: 100%;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -217,6 +217,7 @@ const StyledHeaderTabs = styled.div`
   background-color: white;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const HeaderInfo = styled.div`

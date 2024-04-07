@@ -69,11 +69,14 @@ const CourseListContainer = styled.div`
     margin-bottom: 8px;
     font-size: 15px;
     margin-right: 10px;
+    margin-left: 2px;
   }
   .boldtext {
     font-weight: bold;
     font-size: 20px;
     margin-right: 20px;
+    text-align: left;
+    margin-left: 2px;
   }
 `;
 

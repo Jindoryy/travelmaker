@@ -30,6 +30,7 @@ const HeaderBox = styled.div`
   height: 50px;
   background-color: #f2f4f6;
   border-radius: 30px;
+  margin-bottom: 2px;
 `;
 
 const OneButton = styled.button`
