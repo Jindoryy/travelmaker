@@ -226,7 +226,8 @@ const SitePictures = () => {
             loading="lazy"
             style={{ height: `${imageHeights[index]}px` }}
             src={destination.destinationImgUrl}
-            alt={'/img/logo.png'}
+            alt={destination.destinationName}
+            onError={(e: React.MouseEvent<HTMLImageElement, MouseEvent>) => { e.currentTarget.src = '/img/logo.png' }}
             onClick={() => handleImageClick(index)}
             isFlipped={index === flippedIndex}
           />
