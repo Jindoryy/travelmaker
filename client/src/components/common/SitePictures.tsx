@@ -201,7 +201,7 @@ const SitePictures = () => {
       {combinedArray.map((destination, index) => (
         <SiteItem key={index}>
           {index < 4 && index !== flippedIndex ? (
-              <IconContainer onClick={() => handleImageClick(index)} isFlipped={index === flippedIndex}>
+              <IconContainer onClick={() => handleImageClick(index)}>
                 <LocalFireDepartmentIcon
                   style={{ color: 'white', width: '15px', height: '15px', textAlign: 'center' }}
                 />
@@ -226,7 +226,7 @@ const SitePictures = () => {
             loading="lazy"
             style={{ height: `${imageHeights[index]}px` }}
             src={destination.destinationImgUrl}
-            alt={destination.destinationName}
+            alt={'/img/logo.png'}
             onClick={() => handleImageClick(index)}
             isFlipped={index === flippedIndex}
           />
@@ -267,12 +267,12 @@ const SiteItem = styled.div`
   position: relative;
 `;
 
-const IconContainer = styled.div<{ isFlipped: boolean }>`
+const IconContainer = styled.div`
   position: absolute;
   top: 40px;
   z-index: 1;
   display: flex;
-  width: 35%;
+  width: 30%;
   height: 13px;
   border: 1px solid #ff9075;
   border-radius: 30px;
@@ -285,7 +285,7 @@ const IconContainer = styled.div<{ isFlipped: boolean }>`
 const IconText = styled.div`
   text-align: center; 
   color: white;
-  font-size: 10px;
+  font-size: 8px;
   font-weight: bold;
   display: flex;
   align-items: flex-end;
