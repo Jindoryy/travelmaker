@@ -200,7 +200,7 @@ const SitePictures = () => {
     <Masonry columns={2} spacing={1} sequential>
       {combinedArray.map((destination, index) => (
         <SiteItem key={index}>
-          {index < 4 && index !== flippedIndex ? (
+          {index < 4 && index !== flippedIndex && userId !== -1 ? (
               <IconContainer onClick={() => handleImageClick(index)}>
                 <LocalFireDepartmentIcon
                   style={{ color: 'white', width: '15px', height: '15px', textAlign: 'center' }}
@@ -271,14 +271,15 @@ const IconContainer = styled.div`
   position: absolute;
   top: 40px;
   z-index: 1;
-  display: flex;
-  width: 30%;
+  width: 35%;
   height: 13px;
   border: 1px solid #ff9075;
   border-radius: 30px;
   background-color: #ff9075;
   padding: 3px;
   margin-left: 10px;
+  display: flex;
+  justify-content: center;
   text-align: center;
 `;
 

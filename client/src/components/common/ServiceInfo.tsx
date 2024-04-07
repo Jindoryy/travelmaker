@@ -13,9 +13,8 @@ const ServiceInfo = (props: SVGProps<SVGSVGElement>) => {
   };
   return isVisible ? (
     <CourseListContainer>
-      <div>
-        <h2 className="boldtext">하단의 마음에 드는 여행지에 </h2>
-        <h2 className="boldtext">
+      <TextInfo>
+        하단의 마음에 드는 여행지에 <br />
           <Checkbox
             sx={{
               color: pink[600],
@@ -28,10 +27,11 @@ const ServiceInfo = (props: SVGProps<SVGSVGElement>) => {
             }}
             icon={<FavoriteBorder />}
             checkedIcon={<Favorite />}
-          />를 눌러보세요!</h2>
-        <h2 className="boldtext">코스 추천에 도움이 될거예요.</h2>
-        <h2 className="greytext">(사진을 클릭하면 어떤 장소인지 알 수 있답니다)</h2>
-      </div>
+          />를 눌러보세요! <br/>
+        코스 추천에 도움이 될거예요.
+        <br />
+        <div className="greytext">(사진을 클릭하면 어떤 장소인지 알 수 있답니다)</div>
+      </TextInfo>
       <DeleteButton onClick={handleButtonClick}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -56,35 +56,36 @@ const ServiceInfo = (props: SVGProps<SVGSVGElement>) => {
 
 
 const CourseListContainer = styled.div`
-width: 85%; 
-border-radius: 15px;
-background-color: #fefdd5;
-margin: 10px;
-padding: 20px;
-padding-top: 25px;
-padding-bottom: 25px;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-position: relative;
+  width: 85%; 
+  border-radius: 15px;
+  background-color: #fefdd5;
+  margin: 10px;
+  padding: 20px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+`;
 
-.greytext {
-  color: grey;
-  /* font-weight: bold; */
-  text-align: left;
-  padding-left: 10px;
-  font-size: 15px;
-  margin-right: 10px;
-}
-.boldtext {
+const TextInfo = styled.div`
+  word-break: keep-all;
+  width: 95%;
+  height: auto;
+  text-align: center;
   font-weight: bold;
   font-size: 18px;
-  margin-right: 20px;
-  margin-bottom: 8px;
-  padding-left: 35px;
-}
-`;
+  line-height: 25px;
+  letter-spacing: 0.5px;
+  box-shadow: ;
+  .greytext {
+    color: grey;
+    text-align: center;
+    font-size: 15px;
+  }
+`
 const DeleteButton = styled.div`
 position: absolute;
 top: 13px;
