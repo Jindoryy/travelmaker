@@ -19,7 +19,8 @@ const HeaderTabs = ({ selectedTab, letters, onTabChange, size }: any) => {
 };
 
 const HeaderBox = styled.div`
-  width: 90%;
+  max-width: 412px;
+  width: 90vw;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -32,7 +33,7 @@ const HeaderBox = styled.div`
 `;
 
 const OneButton = styled.button`
-  width: 130px;
+  width: 33%;
   height: 40px;
   border-radius: 30px;
   background-color: ${(props) =>

@@ -55,7 +55,7 @@ const DiaryDetail = () => {
           <div>{diaryData.text}</div>
         </ContentContainer>
         <ButtonBox>
-          <ChooseButton onClick={handleEditClick}>수정</ChooseButton>
+          {/* <ChooseButton onClick={handleEditClick}>수정</ChooseButton> */}
           <ChooseButtonBorder onClick={handleListClick}>목록</ChooseButtonBorder>
         </ButtonBox>
       </PageContainer>
@@ -120,15 +120,18 @@ const ContentContainer = styled.div`
   padding: 20px 30px;
   border-radius: 8px;
   min-height: 230px;
-  word-break: keep-all;
+  word-break: break-all;
+  line-height: 30px;
+  font-size: 20px;
 `;
 const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 const ChooseButton = styled.button`
-  width: 180px;
+  width: 160px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
@@ -141,7 +144,7 @@ const ChooseButton = styled.button`
   cursor: pointer;
 `;
 const ChooseButtonBorder = styled.button`
-  width: 180px;
+  width: 160px;
   height: 40px;
   color: ${(props) => props.theme.main};
   background-color: ${(props) => props.theme.subtext};

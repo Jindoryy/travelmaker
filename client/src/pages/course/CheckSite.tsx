@@ -199,6 +199,15 @@ const CheckSite = () => {
     </MainPageContainer>
   );
 };
+const MainPageContainer = styled.div`
+  padding-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`;
 
 const StyledHeaderTabs = styled.div`
   position: fixed;
@@ -224,15 +233,6 @@ const HeaderInfo = styled.div`
   justify-content: flex-start;
   padding-left: 30px;
   z-index: 2;
-`;
-const MainPageContainer = styled.div`
-  padding-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
 `;
 
 const SitePicturesStyle = styled.div`

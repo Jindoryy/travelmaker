@@ -82,7 +82,7 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({
             </DetailCategory>
           </DetailHeader>
           <DetailTitle>{course.destinationName}</DetailTitle>
-          {idx < size ? <DetailTime>예상추정시간: 약 {toGoTime}분</DetailTime> : <></>}
+          {idx < size ? <DetailTime>예상시간: 약 {toGoTime}분</DetailTime> : <></>}
         </CardDetail>
       </CardBox>
       <MoveCard {...provided.dragHandleProps}>
@@ -104,16 +104,14 @@ const CourseEditCard: React.FC<CourseEditCardProps> = ({
 };
 
 const CardContainer = styled.div`
-  width: 350px;
+  width: 95%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100px;
   padding: 5px;
   margin: 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 2.4px 2.4px 3.2px;
-  margin-left: 0px;
-  padding-left: 0px;
   border-radius: 10px;
   background-color: white;
 `;
@@ -143,8 +141,8 @@ const CardBox = styled(Box)`
 `;
 
 const CardImage = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 35%;
+  height: 100%;
   border-radius: 10px;
   object-fit: cover;
   margin: auto;

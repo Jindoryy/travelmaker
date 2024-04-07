@@ -152,7 +152,7 @@ const TextFreind = styled.div`
 `;
 
 const ButtonPlace = styled.div`
-  width: 170px;
+  width: 95%;
   display: flex;
   justify-content: flex-end;
 `;
