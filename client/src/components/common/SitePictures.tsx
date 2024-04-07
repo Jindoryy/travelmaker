@@ -156,7 +156,6 @@ const SitePictures = () => {
   const getSiteInfoList = () => {
     siteListDetail()
       .then((response) => {
-        console.log(response.data)
         const siteListResponse: SiteListProps = {
           status: response.data.status,
           data: response.data.data,
@@ -197,7 +196,7 @@ const SitePictures = () => {
         ];
 
   return (
-    <Masonry columns={2} spacing={1} sequential style={{margin: 0, alignContent: 'center'}}>
+    <Masonry columns={2} spacing={1} sequential style={{marginLeft: '3px'}}>
       {combinedArray.map((destination, index) => (
         <SiteItem key={index}>
           {index < 4 && index !== flippedIndex && userId !== -1 ? (
@@ -260,7 +259,7 @@ const SitePictures = () => {
 };
 
 const SiteItem = styled.div`
-  padding: 5px 5px;
+  padding: 5px;
   border-radius: 5px;
   max-width: 47%;
   text-align: center;

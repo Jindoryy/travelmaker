@@ -213,8 +213,6 @@ const SitePicturesStyle = styled.div`
   background-color: white;
   border-radius: 15px;
   z-index: 0;
-  display: flex;
-  justify-content: center;
 `;
 const SitePicturesContainer = styled.div`
   /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
