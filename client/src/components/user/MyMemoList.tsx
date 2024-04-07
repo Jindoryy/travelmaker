@@ -135,7 +135,7 @@ export default MyMemoList;
 const CenteredContainer = styled.div`
   margin-left: 35%;
   padding-right: 30%;
-  width: 412px;
+  width: 100%;
   display: flex;
   align-items: center;
 
@@ -151,7 +151,7 @@ const CenteredContainer = styled.div`
 const MemoItems = styled.div``;
 
 const MemoItem = styled.div`
-  width: 380px;
+  width: 95%;
   height: 50px;
   text-align: left;
   display: flex;

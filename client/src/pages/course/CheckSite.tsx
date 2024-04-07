@@ -221,6 +221,7 @@ const StyledHeaderTabs = styled.div`
 `;
 
 const HeaderInfo = styled.div`
+  max-width: 412px;
   position: fixed;
   width: 98%;
   height: 25px;
@@ -231,8 +232,7 @@ const HeaderInfo = styled.div`
   font-size: 15px;
   display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
-  padding-left: 30px;
+  padding-left: 50px;
   z-index: 2;
 `;
 
