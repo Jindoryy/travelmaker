@@ -197,7 +197,7 @@ const SitePictures = () => {
         ];
 
   return (
-    <Masonry columns={2} spacing={1} sequential>
+    <Masonry columns={2} spacing={1} sequential style={{margin: 0, alignContent: 'center'}}>
       {combinedArray.map((destination, index) => (
         <SiteItem key={index}>
           {index < 4 && index !== flippedIndex && userId !== -1 ? (
@@ -260,8 +260,7 @@ const SitePictures = () => {
 };
 
 const SiteItem = styled.div`
-  margin: 5px;
-  padding: 10px 0px 10px 10px;
+  padding: 5px 5px;
   border-radius: 5px;
   max-width: 47%;
   text-align: center;
@@ -295,7 +294,6 @@ const IconText = styled.div`
 `;
 
 const SiteImage = styled.img<{ isFlipped: boolean }>`
-  margin: 5px;
   max-width: 100%;
   margin-top: -25px;
   margin-bottom: -30px;
@@ -313,7 +311,7 @@ const Back = styled.div`
   bottom: 0;
   padding: 10px;
   margin-right: -6px;
-  margin-bottom: -20px;
+  margin-bottom: -25px;
   margin-top: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   backface-visibility: hidden;
@@ -323,13 +321,11 @@ const Back = styled.div`
 `;
 
 const BackText = styled.p`
-  margin-left: 13px;
   font-size: 12px;
   font-weight: bold;
   color: black;
-  text-align: center;
+  text-align: center; 
   padding: 10px;
-  padding-left: 15px;
   letter-spacing: 1px;
   white-space: pre-line;
   line-height: 1.5;
@@ -338,7 +334,7 @@ const BackText = styled.p`
 const StyledCheckbox = styled(Checkbox)`
   position: absolute;
   top: 20px;
-  right: -40%;
+  right: -37%;
   z-index: 1;
 `;
 

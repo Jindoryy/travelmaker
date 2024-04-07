@@ -213,6 +213,8 @@ const SitePicturesStyle = styled.div`
   background-color: white;
   border-radius: 15px;
   z-index: 0;
+  display: flex;
+  justify-content: center;
 `;
 const SitePicturesContainer = styled.div`
   /* Profile  컴포넌트의 높이만큼 상단 여백 추가 */
@@ -222,6 +224,7 @@ const SitePicturesContainer = styled.div`
   background-color: #dde2fc;
   z-index: 0;
   margin-bottom: 5px;
+
 `;
 //날씨
 const Container = styled.div`
