@@ -177,6 +177,7 @@ const WaveTop = styled.div`
 `;
 
 const TabContainer = styled.div`
+  width: 95%;
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
