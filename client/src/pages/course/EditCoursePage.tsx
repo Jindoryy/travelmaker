@@ -299,12 +299,14 @@ const EditCoursePage: React.FC = () => {
   };
   return (
     <BoxContainer>
-      <HeaderTabs
-        selectedTab={selectedTab}
-        onTabChange={handleTabChange}
-        size={size}
-        letters={letters}
-      />
+      <StyledHeaderTabs>
+        <HeaderTabs
+          selectedTab={selectedTab}
+          onTabChange={handleTabChange}
+          size={size}
+          letters={letters}
+          />
+      </StyledHeaderTabs>
       <CourseMap>
         <TravelHeader>
           <HeaderTitle>{travelCity.city}</HeaderTitle>
@@ -323,7 +325,7 @@ const EditCoursePage: React.FC = () => {
             key={`course-edit-droppable-${selectedTab}`}
           >
             {(provided: any) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
+              <StyledBox {...provided.droppableProps} ref={provided.innerRef}>
                 {selectedDate &&
                   selectedDate.map((place: any, index: number) => (
                     <Draggables
@@ -349,7 +351,7 @@ const EditCoursePage: React.FC = () => {
                     </Draggables>
                   ))}
                 {provided.placeholder}
-              </div>
+              </StyledBox>
             )}
           </Droppables>
         </DragDropContexts>
@@ -394,6 +396,16 @@ const BoxContainer = styled(Box)`
   justify-content: flex-start;
 `;
 
+const StyledHeaderTabs = styled.div`
+  position: fixed;
+  padding-left: 5px;
+  top: 0;
+  z-index: 2;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+`;
+
 const CourseMap = styled.div`
   width: 95%;
   display: flex;
@@ -432,7 +444,7 @@ const TravelMap = styled.div`
 `;
 
 const EditBody = styled.div`
-  width: 95%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -449,6 +461,10 @@ const DragDropContexts = styled(DragDropContext)`
 const Droppables = styled(Droppable)`
   width: 100%;
 `;
+
+const StyledBox = styled.div`
+  width: 100%;
+`
 
 const Draggables = styled(Draggable)`
   width: 100%;

@@ -55,7 +55,7 @@ const DiaryDetail = () => {
           <div>{diaryData.text}</div>
         </ContentContainer>
         <ButtonBox>
-          <ChooseButton onClick={handleEditClick}>수정</ChooseButton>
+          {/* <ChooseButton onClick={handleEditClick}>수정</ChooseButton> */}
           <ChooseButtonBorder onClick={handleListClick}>목록</ChooseButtonBorder>
         </ButtonBox>
       </PageContainer>
@@ -87,15 +87,15 @@ const SlideShow: React.FC<SlideShowProps> = ({ imgUrls }) => {
 };
 
 const PageContainer = styled.div`
-  width: 412px;
-  min-height: 100%;
+  width: 100%;
   background-color: #eff1fe;
   font-size: 1.2rem;
   padding-top: 15px;
+  padding-bottom: 30px;
 `;
 const TitleContainer = styled.div`
   background-color: white;
-  margin: 0px 12px 20px;
+  margin: 1rem;
   padding: 20px 30px;
   border-radius: 8px;
 `;
@@ -109,26 +109,29 @@ const TitleDate = styled.div`
 `;
 const PhotoContainer = styled.div`
   background-color: white;
-  margin: 0px 12px 20px;
-  width: 347px;
+  margin: 1rem;
   height: 200px;
   padding: 20px 20px 30px;
   border-radius: 8px;
 `;
 const ContentContainer = styled.div`
   background-color: white;
-  margin: 0px 12px 10px;
+  margin: 1rem;
   padding: 20px 30px;
   border-radius: 8px;
   min-height: 230px;
+  word-break: break-all;
+  line-height: 30px;
+  font-size: 20px;
 `;
 const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 const ChooseButton = styled.button`
-  width: 390px;
+  width: 160px;
   height: 40px;
   background-color: ${(props) => props.theme.main};
   color: ${(props) => props.theme.subtext};
@@ -141,7 +144,7 @@ const ChooseButton = styled.button`
   cursor: pointer;
 `;
 const ChooseButtonBorder = styled.button`
-  width: 390px;
+  width: 160px;
   height: 40px;
   color: ${(props) => props.theme.main};
   background-color: ${(props) => props.theme.subtext};
@@ -155,9 +158,10 @@ const ChooseButtonBorder = styled.button`
 `;
 
 const StyledImage = styled.img`
-  width: 350px;
+  width: 100%;
   height: 200px;
-  object-fit: cover;
+  object-fit: fit;
   object-position: center bottom;
+  border-radius: 8px;
 `;
 export default DiaryDetail;

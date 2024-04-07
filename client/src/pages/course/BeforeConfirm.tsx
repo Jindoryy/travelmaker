@@ -239,12 +239,14 @@ const BeforeConfirm = () => {
     return (
       <StyledEngineProvider>
         <BoxContainer>
+          <StyledHeaderTabs>
           <HeaderTabs
             selectedTab={selectedTab}
             onTabChange={handleTabChange}
             size={size}
             letters={letters}
           />
+          </StyledHeaderTabs>
           <CourseMap>
             <TravelHeader>
               <HeaderTitle>{travelCity.city}</HeaderTitle>
@@ -282,6 +284,16 @@ const BoxContainer = styled(Box)`
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+`;
+
+const StyledHeaderTabs = styled.div`
+  position: fixed;
+  padding-left: 5px;
+  top: 0;
+  z-index: 2;
+  background-color: white;
+  display: flex;
+  justify-content: center;
 `;
 
 const CourseMap = styled.div`

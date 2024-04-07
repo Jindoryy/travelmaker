@@ -39,7 +39,7 @@ const OutletBox = styled.div`
   -ms-overflow-style: none;
   scrollbar-width: none;
   overflow-y: auto;
-
+  word-break: keep-all;
   &::-webkit-scrollbar {
     display: none;
   }

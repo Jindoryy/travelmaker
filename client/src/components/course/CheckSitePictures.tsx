@@ -174,6 +174,7 @@ const Back = styled.div`
 `;
 
 const BackText = styled.p`
+margin-left: 13px;
   font-size: 12px;
   font-weight: bold;
   color: black;
@@ -188,7 +189,7 @@ const BackText = styled.p`
 const StyledCheckbox = styled(Checkbox)`
   position: absolute;
   top: 20px;
-  right: -70px;
+  right: -40%;
   z-index: 1;
 `;
 

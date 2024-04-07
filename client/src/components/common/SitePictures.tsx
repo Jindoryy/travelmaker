@@ -275,6 +275,7 @@ const Back = styled.div`
   padding: 10px;
   margin-right: -6px;
   margin-bottom: -20px;
+  margin-top: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   backface-visibility: hidden;
   display: flex;
@@ -283,6 +284,7 @@ const Back = styled.div`
 `;
 
 const BackText = styled.p`
+  margin-left: 13px;
   font-size: 12px;
   font-weight: bold;
   color: black;

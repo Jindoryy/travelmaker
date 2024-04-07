@@ -42,6 +42,7 @@ const ChooseSitePictures: React.FC<any> = ({ array, onlikeChange }) => {
             onChange={() => onlikeChange(site.destinationId)}
           />
           <SiteImage
+            loading="lazy"
             style={{ height: `${imageHeights[index]}px` }}
             src={site.destinationImgUrl}
             alt={site.destinationName}
@@ -109,6 +110,7 @@ const Back = styled.div`
   padding: 10px;
   margin-right: -6px;
   margin-bottom: -20px;
+  margin-top: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   backface-visibility: hidden; // 뒷면 텍스트가 앞면에 보이지 않도록 함
   display: flex;
@@ -117,6 +119,7 @@ const Back = styled.div`
 `;
 
 const BackText = styled.p`
+  margin-left: 13px;
   font-size: 12px;
   font-weight: bold;
   color: black;
